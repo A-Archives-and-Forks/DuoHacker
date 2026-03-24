@@ -1,136 +1,237 @@
 // ==UserScript==
-// @name         Duolingo DuoHacker
-// @name:en      Duolingo DuoHacker — #1 Auto XP Farm, Streak & Gem Farming 2026
-// @name:zh-CN   Duolingo DuoHacker — 自动刷经验 宝石 连胜 农场工具
-// @name:zh-TW   Duolingo DuoHacker — 自動刷經驗 寶石 連勝 農場工具
-// @name:ja      Duolingo DuoHacker — XP・宝石・ストリーク自動ファーミングツール
-// @name:es      Duolingo DuoHacker — Script para farmear XP, gemas y rachas en Duolingo
-// @name:es-MX   Duolingo DuoHacker — Script para farmear XP, gemas y rachas en Duolingo
-// @name:es-AR   Duolingo DuoHacker — Script para farmear XP, gemas y rachas en Duolingo
-// @name:ru      Duolingo DuoHacker — Скрипт фарма XP, самоцветов и серий Duolingo
-// @name:uk      Duolingo DuoHacker — Скрипт фарму XP, самоцвітів та серій Duolingo
-// @name:pt-BR   Duolingo DuoHacker — Script para farmar XP, gemas e sequências no Duolingo
-// @name:pt      Duolingo DuoHacker — Script para farmar XP, gemas e sequências no Duolingo
-// @name:de      Duolingo DuoHacker — Skript zum Farmen von XP, Gems und Streaks
-// @name:de-AT   Duolingo DuoHacker — Skript zum Farmen von XP, Gems und Streaks
-// @name:de-CH   Duolingo DuoHacker — Skript zum Farmen von XP, Gems und Streaks
-// @name:it      Duolingo DuoHacker — Script per fare farming di XP, gemme e streak su Duolingo
-// @name:ko      Duolingo DuoHacker — XP, 보석, 스트릭 자동 파밍 스크립트
-// @name:hi      Duolingo DuoHacker — XP, जेम्स और स्ट्रीक फार्मिंग स्क्रिप्ट
-// @name:bn      Duolingo DuoHacker — XP, জেম এবং স্ট্রিক ফার্মিং স্ক্রিপ্ট
-// @name:ar      Duolingo DuoHacker — سكريبت زراعة XP والجواهر والسلاسل في Duolingo
-// @name:fa      Duolingo DuoHacker — اسکریپت فارم XP، جواهرات و استریک Duolingo
-// @name:tr      Duolingo DuoHacker — Duolingo XP, Gem ve Streak Farming Scripti
-// @name:pl      Duolingo DuoHacker — Skrypt do farmienia XP, klejnotów i passy w Duolingo
-// @name:vi      Duolingo DuoHacker — Script Tự Động Farm XP, Gem và Streak Duolingo
-// @name:th      Duolingo DuoHacker — สคริปต์ฟาร์ม XP เพชร และสตรีค Duolingo อัตโนมัติ
-// @name:id      Duolingo DuoHacker — Script Farm XP, Gem, dan Streak Duolingo Otomatis
-// @name:fr      Duolingo DuoHacker — Script de farming XP, gemmes et séries Duolingo
-// @name:fr-CA   Duolingo DuoHacker — Script de farming XP, gemmes et séries Duolingo
-// @name:fr-BE   Duolingo DuoHacker — Script de farming XP, gemmes et séries Duolingo
-// @name:fr-CH   Duolingo DuoHacker — Script de farming XP, gemmes et séries Duolingo
-// @name:nl      Duolingo DuoHacker — Script voor XP, Gems en Streaks farmen in Duolingo
-// @name:nl-BE   Duolingo DuoHacker — Script voor XP, Gems en Streaks farmen in Duolingo
-// @name:da      Duolingo DuoHacker — Script til farming af XP, gems og streaks i Duolingo
-// @name:sv      Duolingo DuoHacker — Skript för farming av XP, gems och streaks i Duolingo
-// @name:no      Duolingo DuoHacker — Skript for farming av XP, gems og streaks i Duolingo
-// @name:fi      Duolingo DuoHacker — Skripti XP-, gem- ja streak-farmingiin Duolingossa
-// @name:cs      Duolingo DuoHacker — Skript pro farmení XP, drahokamů a sérií v Duolingu
-// @name:sk      Duolingo DuoHacker — Skript na farmenie XP, drahokamov a sérií v Duolingu
-// @name:hu      Duolingo DuoHacker — Szkript XP, drágakő és sorozat farmingjához Duolingóban
-// @name:ro      Duolingo DuoHacker — Script pentru farmat XP, pietre prețioase și serii Duolingo
-// @name:el      Duolingo DuoHacker — Σκριπτ για farming XP, πετράδια και σερί Duolingo
-// @name:he      Duolingo DuoHacker — סקריפט לחקלאות XP, אבני חן וסדרות ב-Duolingo
-// @name:ca      Duolingo DuoHacker — Script per fer farming de XP, gemmes i rachas a Duolingo
-// @name:gl      Duolingo DuoHacker — Script para farmear XP, xemas e rachas en Duolingo
-// @name:eu      Duolingo DuoHacker — Duolingo XP, harri bitxi eta streak farming script-a
-// @name:sq      Duolingo DuoHacker — Skript për farming XP, guri i çmuar dhe seria Duolingo
-// @name:hr      Duolingo DuoHacker — Skripta za farmanje XP-a, dragulja i serija u Duolingu
-// @name:sr      Duolingo DuoHacker — Скрипта за фармање XP, драгуља и серија у Duolingu
-// @name:bg      Duolingo DuoHacker — Скрипт за фармене на XP, скъпоценни камъни и серии
-// @name:sl      Duolingo DuoHacker — Skripta za farmanje XP, draguljev in serij v Duolingu
-// @name:lt      Duolingo DuoHacker — Duolingo XP, brangakmenių ir serijų ūkininkavimo skriptas
-// @name:lv      Duolingo DuoHacker — Duolingo XP, dārgakmeņu un sēriju lauksaimniecības skripts
-// @name:et      Duolingo DuoHacker — Duolingo XP, vääriskivide ja seeriate farmimise skript
-// @name:sw      Duolingo DuoHacker — Skripti ya kulima XP, Gems na Streaks ya Duolingo
-// @name:ms      Duolingo DuoHacker — Skrip Ladang XP, Permata dan Streak Duolingo Automatik
-// @name:fil     Duolingo DuoHacker — Script para sa Awtomatikong XP, Gem at Streak Farming
-// @name:tl      Duolingo DuoHacker — Script para sa Awtomatikong XP, Gem at Streak Farming
-
-// @description  Duolingo userscript to farm XP, Gems and Streaks automatically. Works with Tampermonkey and Greasemonkey.
-// @description:en  Duolingo userscript to farm XP, Gems and Streaks automatically. Works with Tampermonkey and Greasemonkey.
-// @description:zh-CN  多邻国自动脚本，支持油猴插件，自动刷经验值（XP）、宝石和连胜。兼容 Tampermonkey 和 Greasemonkey。
-// @description:zh-TW  多鄰國自動腳本，支援油猴插件，自動刷經驗值（XP）、寶石和連勝。相容 Tampermonkey 和 Greasemonkey。
-// @description:ja  Duolingo の XP、宝石、ストリークを自動でファーミングするユーザースクリプト。Tampermonkey・Greasemonkey 対応。
-// @description:es  Script de usuario para farmear XP, gemas y rachas en Duolingo de forma automática. Compatible con Tampermonkey y Greasemonkey.
-// @description:es-MX  Script para farmear XP, gemas y rachas en Duolingo automáticamente. Compatible con Tampermonkey y Greasemonkey.
-// @description:es-AR  Script para farmear XP, gemas y rachas en Duolingo de forma automática. Compatible con Tampermonkey y Greasemonkey.
-// @description:ru  Пользовательский скрипт для автоматического фарма XP, самоцветов и серий в Duolingo. Работает с Tampermonkey и Greasemonkey.
-// @description:uk  Користувацький скрипт для автоматичного фарму XP, самоцвітів та серій у Duolingo. Підтримує Tampermonkey і Greasemonkey.
-// @description:pt-BR  Script de usuário para farmar XP, gemas e sequências no Duolingo automaticamente. Compatível com Tampermonkey e Greasemonkey.
-// @description:pt  Script de utilizador para farmar XP, gemas e sequências no Duolingo automaticamente. Compatível com Tampermonkey e Greasemonkey.
-// @description:de  Userscript zum automatischen Farmen von XP, Gems und Streaks in Duolingo. Kompatibel mit Tampermonkey und Greasemonkey.
-// @description:de-AT  Userscript zum automatischen Farmen von XP, Gems und Streaks in Duolingo. Kompatibel mit Tampermonkey und Greasemonkey.
-// @description:de-CH  Userscript zum automatischen Farmen von XP, Gems und Streaks in Duolingo. Kompatibel mit Tampermonkey und Greasemonkey.
-// @description:it  Script utente per fare farming automatico di XP, gemme e streak su Duolingo. Compatibile con Tampermonkey e Greasemonkey.
-// @description:ko  Duolingo에서 XP, 보석, 스트릭을 자동으로 파밍하는 유저스크립트. Tampermonkey 및 Greasemonkey 지원.
-// @description:hi  Duolingo में XP, जेम्स और स्ट्रीक्स को अपने आप फार्म करने वाली यूजरस्क्रिप्ट। Tampermonkey और Greasemonkey के साथ काम करती है।
-// @description:bn  Duolingo-তে XP, রত্ন এবং স্ট্রিক স্বয়ংক্রিয়ভাবে ফার্ম করার ইউজারস্ক্রিপ্ট। Tampermonkey ও Greasemonkey সমর্থিত।
-// @description:ar  سكريبت مستخدم لزراعة XP والجواهر والسلاسل تلقائياً في Duolingo. يعمل مع Tampermonkey وGreasemonkey.
-// @description:fa  اسکریپت کاربری برای فارم خودکار XP، جواهرات و استریک در Duolingo. سازگار با Tampermonkey و Greasemonkey.
-// @description:tr  Duolingo'da XP, gem ve streak'leri otomatik olarak farmlayan kullanıcı scripti. Tampermonkey ve Greasemonkey ile çalışır.
-// @description:pl  Skrypt użytkownika do automatycznego farmienia XP, klejnotów i passy w Duolingo. Działa z Tampermonkey i Greasemonkey.
-// @description:vi  Userscript tự động farm XP, Gem và Streak trong Duolingo. Hoạt động với Tampermonkey và Greasemonkey.
-// @description:th  ยูเซอร์สคริปต์สำหรับฟาร์ม XP, เพชร และสตรีคใน Duolingo อัตโนมัติ รองรับ Tampermonkey และ Greasemonkey
-// @description:id  Userscript untuk farming XP, Gem, dan Streak di Duolingo secara otomatis. Kompatibel dengan Tampermonkey dan Greasemonkey.
-// @description:fr  Script utilisateur pour farmer automatiquement les XP, gemmes et séries dans Duolingo. Compatible avec Tampermonkey et Greasemonkey.
-// @description:fr-CA  Script utilisateur pour farmer automatiquement les XP, gemmes et séries dans Duolingo. Compatible avec Tampermonkey et Greasemonkey.
-// @description:fr-BE  Script utilisateur pour farmer automatiquement les XP, gemmes et séries dans Duolingo. Compatible avec Tampermonkey et Greasemonkey.
-// @description:fr-CH  Script utilisateur pour farmer automatiquement les XP, gemmes et séries dans Duolingo. Compatible avec Tampermonkey et Greasemonkey.
-// @description:nl  Gebruikersscript om automatisch XP, gems en streaks te farmen in Duolingo. Werkt met Tampermonkey en Greasemonkey.
-// @description:nl-BE  Gebruikersscript om automatisch XP, gems en streaks te farmen in Duolingo. Werkt met Tampermonkey en Greasemonkey.
-// @description:da  Brugerscript til automatisk farming af XP, gems og streaks i Duolingo. Virker med Tampermonkey og Greasemonkey.
-// @description:sv  Användarskript för automatisk farming av XP, gems och streaks i Duolingo. Fungerar med Tampermonkey och Greasemonkey.
-// @description:no  Brukerskript for automatisk farming av XP, gems og streaks i Duolingo. Fungerer med Tampermonkey og Greasemonkey.
-// @description:fi  Käyttäjäskripti XP:n, jalokivien ja streakkien automaattiseen farmingiin Duolingossa. Toimii Tampermonkeyn ja Greasemonkeyn kanssa.
-// @description:cs  Uživatelský skript pro automatické farmení XP, drahokamů a sérií v Duolingu. Funguje s Tampermonkey a Greasemonkey.
-// @description:sk  Používateľský skript na automatické farmenie XP, drahokamov a sérií v Duolingu. Funguje s Tampermonkey a Greasemonkey.
-// @description:hu  Felhasználói szkript az XP, drágakövek és sorozatok automatikus farmingjához Duolingóban. Működik Tampermonkey-jal és Greasemonkey-jal.
-// @description:ro  Script de utilizator pentru farmarea automată a XP, pietrelor prețioase și seriilor în Duolingo. Compatibil cu Tampermonkey și Greasemonkey.
-// @description:el  Σκριπτ χρήστη για αυτόματο farming XP, πετραδιών και σερί στο Duolingo. Λειτουργεί με Tampermonkey και Greasemonkey.
-// @description:he  סקריפט משתמש לחקלאות אוטומטית של XP, אבני חן וסדרות ב-Duolingo. עובד עם Tampermonkey ו-Greasemonkey.
-// @description:ca  Script d'usuari per fer farming automàtic de XP, gemmes i rachas a Duolingo. Compatible amb Tampermonkey i Greasemonkey.
-// @description:gl  Script de usuario para farmear XP, xemas e rachas en Duolingo de forma automática. Compatible con Tampermonkey e Greasemonkey.
-// @description:eu  Duolingo-n XP, harri bitxi eta streakak automatikoki farmatzeko erabiltzaile-scripta. Tampermonkey eta Greasemonkey-rekin bateragarria.
-// @description:sq  Skript përdoruesi për farming automatik të XP, gurëve të çmuar dhe serive në Duolingo. Punon me Tampermonkey dhe Greasemonkey.
-// @description:hr  Korisnička skripta za automatsko farmanje XP-a, dragulja i serija u Duolingu. Radi s Tampermonkey i Greasemonkey.
-// @description:sr  Корисничка скрипта за аутоматско фармање XP-а, драгуља и серија у Duolingu. Ради са Tampermonkey и Greasemonkey.
-// @description:bg  Потребителски скрипт за автоматично фармене на XP, скъпоценни камъни и серии в Duolingo. Работи с Tampermonkey и Greasemonkey.
-// @description:sl  Uporabniška skripta za avtomatsko farmanje XP-ja, draguljev in serij v Duolingu. Deluje s Tampermonkey in Greasemonkey.
-// @description:lt  Naudotojo skriptas automatiniam XP, brangakmenių ir serijos ūkininkavimui Duolingo. Veikia su Tampermonkey ir Greasemonkey.
-// @description:lv  Lietotāja skripts automātiskai XP, dārgakmeņu un sēriju lauksaimniecībai Duolingo. Darbojas ar Tampermonkey un Greasemonkey.
-// @description:et  Kasutajaskript XP-i, vääriskivide ja seeriate automaatseks farmimiseks Duolingos. Töötab Tampermonkey ja Greasemonkey'ga.
-// @description:sw  Skripti ya mtumiaji kwa kulima XP, Gems na Streaks kiotomatiki katika Duolingo. Inafanya kazi na Tampermonkey na Greasemonkey.
-// @description:ms  Skrip pengguna untuk ladang XP, Permata dan Streak secara automatik dalam Duolingo. Serasi dengan Tampermonkey dan Greasemonkey.
-// @description:fil  Userscript para sa awtomatikong pag-farm ng XP, Gems at Streaks sa Duolingo. Gumagana sa Tampermonkey at Greasemonkey.
-// @description:tl  Userscript para sa awtomatikong pag-farm ng XP, Gems at Streaks sa Duolingo. Gumagana sa Tampermonkey at Greasemonkey.
-// @namespace    https://twisk.fun/install
-// @version      2.5.1
-// @author       2pixel
-// @match        https://*.duolingo.com/*
-// @match        https://*.duolingo.cn/*
-// @icon         https://raw.githubusercontent.com/FutureCLI/DuoHacker/main/images/Logo_TypePNG_DuoHacker.png
-// @run-at       document-start
-// @grant        GM_xmlhttpRequest
-// @connect      duolingo.com
-// @connect      duolingo-leaderboards-prod.duolingo.com
-// @connect      goals-api.duolingo.com
-// @connect      friends.duolingo.com
-// @connect      raw.githubusercontent.com
-// @connect      fonts.googleapis.com
-// @connect      duome.eu
-// @license      MIT
+// @name                Duolingo DuoHacker V1
+// @name:vi             Duolingo DuoHacker
+// @name:zh-CN          多邻国 DuoHacker
+// @name:zh-TW          多鄰國 DuoHacker
+// @name:ja             Duolingo DuoHacker
+// @name:ko             듀오링고 DuoHacker
+// @name:fr             Duolingo DuoHacker
+// @name:de             Duolingo DuoHacker
+// @name:es             Duolingo DuoHacker
+// @name:pt-BR          Duolingo DuoHacker
+// @name:pt-PT          Duolingo DuoHacker
+// @name:ru             Дуолинго DuoHacker
+// @name:ar             Duolingo DuoHacker دوهاكر
+// @name:tr             Duolingo DuoHacker
+// @name:id             Duolingo DuoHacker
+// @name:th             Duolingo DuoHacker
+// @name:pl             Duolingo DuoHacker
+// @name:nl             Duolingo DuoHacker
+// @name:it             Duolingo DuoHacker
+// @name:sv             Duolingo DuoHacker
+// @name:da             Duolingo DuoHacker
+// @name:fi             Duolingo DuoHacker
+// @name:nb             Duolingo DuoHacker
+// @name:cs             Duolingo DuoHacker
+// @name:hu             Duolingo DuoHacker
+// @name:ro             Duolingo DuoHacker
+// @name:uk             Дуолінго DuoHacker
+// @name:hi             Duolingo DuoHacker
+// @name:bn             Duolingo DuoHacker
+// @name:fa             Duolingo DuoHacker دوهاکر
+// @name:he             Duolingo DuoHacker
+// @name:ms             Duolingo DuoHacker
+// @name:fil            Duolingo DuoHacker
+// @name:el             Duolingo DuoHacker
+// @name:hr             Duolingo DuoHacker
+// @name:sk             Duolingo DuoHacker
+// @name:bg             Дуолинго DuoHacker
+// @name:sr             Дуолинго DuoHacker
+// @name:lt             Duolingo DuoHacker
+// @name:lv             Duolingo DuoHacker
+// @name:et             Duolingo DuoHacker
+// @name:sl             Duolingo DuoHacker
+// @name:ca             Duolingo DuoHacker
+// @name:af             Duolingo DuoHacker
+// @name:sw             Duolingo DuoHacker
+// @name:zu             Duolingo DuoHacker
+// @name:mn             Duolingo DuoHacker
+// @name:my             Duolingo DuoHacker
+// @name:km             Duolingo DuoHacker
+// @name:lo             Duolingo DuoHacker
+// @name:ur             Duolingo DuoHacker
+// @namespace           https://github.com/not2pixel/DuoHacker
+// @version             2.6
+// @description         The #1 Duolingo hack - Farm XP, Gems, Streaks and unlock Duolingo Max for free.
+// @description:vi      Công cụ hack Duolingo #1 - Farm XP, Gems, Streaks và mở khóa Duolingo Max miễn phí.
+// @description:zh-CN   最强 Duolingo 辅助工具 - 自动刷 XP、宝石、连胜，免费解锁 Duolingo Max。
+// @description:zh-TW   最強 Duolingo 輔助工具 - 自動刷 XP、寶石、連勝，免費解鎖 Duolingo Max。
+// @description:ja      Duolingo最強ハックツール - XP・ジェム・連続記録を自動取得、Duolingo Maxを無料解放。
+// @description:ko      최고의 Duolingo 핵 툴 - XP, 젬, 스트릭 자동 획득 및 Duolingo Max 무료 해제.
+// @description:fr      Le hack Duolingo #1 - Farmez XP, Gemmes, Séries et débloquez Duolingo Max gratuitement.
+// @description:de      Der #1 Duolingo-Hack - XP, Gems, Serien farmen und Duolingo Max kostenlos freischalten.
+// @description:es      El hack #1 de Duolingo - Farmea XP, Gemas, Rachas y desbloquea Duolingo Max gratis.
+// @description:pt-BR   O hack #1 do Duolingo - Farme XP, Gemas, Sequências e desbloqueie o Duolingo Max de graça.
+// @description:pt-PT   O hack #1 do Duolingo - Faça farm de XP, Gemas, Sequências e desbloqueie o Duolingo Max gratuitamente.
+// @description:ru      Лучший хак для Duolingo - Фармите XP, Гемы, Серии и разблокируйте Duolingo Max бесплатно.
+// @description:ar      أفضل هاك لـ Duolingo - اجمع XP والجواهر والسلاسل وافتح Duolingo Max مجاناً.
+// @description:tr      Duolingo için #1 hack - XP, Gem, Seri farm'la ve Duolingo Max'ı ücretsiz aç.
+// @description:id      Hack Duolingo #1 - Farm XP, Gems, Streak dan buka kunci Duolingo Max gratis.
+// @description:th      แฮก Duolingo อันดับ 1 - ฟาร์ม XP, เพชร, สตรีคและปลดล็อก Duolingo Max ฟรี.
+// @description:pl      Najlepszy hack na Duolingo - Farmuj XP, Klejnoty, Serie i odblokuj Duolingo Max za darmo.
+// @description:nl      De #1 Duolingo-hack - Farm XP, Edelstenen, Reeksen en ontgrendel Duolingo Max gratis.
+// @description:it      Il miglior hack per Duolingo - Fai farm di XP, Gemme, Streak e sblocca Duolingo Max gratis.
+// @description:sv      Bästa Duolingo-hacket - Farma XP, Ädelstenar, Streaks och lås upp Duolingo Max gratis.
+// @description:da      Den bedste Duolingo-hack - Farm XP, Ædelstene, Striber og lås Duolingo Max op gratis.
+// @description:fi      Paras Duolingo-hakki - Farmmaa XP, Jalokivet, Putket ja avaa Duolingo Max ilmaiseksi.
+// @description:nb      Den beste Duolingo-hacken - Farm XP, Edelstener, Rekker og lås opp Duolingo Max gratis.
+// @description:cs      Nejlepší hack na Duolingo - Farmujte XP, Drahokamy, Série a odemkněte Duolingo Max zdarma.
+// @description:hu      A legjobb Duolingo-hack - Farmolj XP-t, Drágaköveket, Sorozatokat és oldd fel a Duolingo Maxot ingyen.
+// @description:ro      Cel mai bun hack pentru Duolingo - Farmează XP, Pietre, Serii și deblochează Duolingo Max gratuit.
+// @description:uk      Найкращий хак для Duolingo - Фармте XP, Самоцвіти, Серії та розблокуйте Duolingo Max безкоштовно.
+// @description:hi      Duolingo का #1 हैक - XP, Gems, Streaks फार्म करें और Duolingo Max मुफ्त में अनलॉक करें।
+// @description:bn      সেরা Duolingo হ্যাক - XP, Gems, Streaks ফার্ম করুন এবং বিনামূল্যে Duolingo Max আনলক করুন।
+// @description:fa      بهترین هک Duolingo - XP، جواهر و رکورد را فارم کنید و Duolingo Max را رایگان باز کنید.
+// @description:he      ההאק הטוב ביותר ל-Duolingo - צבור XP, אבנים יקרות, רצפים ופתח את Duolingo Max בחינם.
+// @description:ms      Hack Duolingo terbaik - Farm XP, Permata, Streak dan buka kunci Duolingo Max secara percuma.
+// @description:fil     Ang pinakamahusay na Duolingo hack - Mag-farm ng XP, Gems, Streaks at i-unlock ang Duolingo Max nang libre.
+// @description:el      Το καλύτερο hack για το Duolingo - Κάντε farm XP, Πετράδια, Σειρές και ξεκλειδώστε το Duolingo Max δωρεάν.
+// @description:hr      Najbolji Duolingo hack - Farmajte XP, Dragulje, Nizove i otključajte Duolingo Max besplatno.
+// @description:sk      Najlepší hack na Duolingo - Farmujte XP, Drahokamy, Série a odomknite Duolingo Max zadarmo.
+// @description:bg      Най-добрият хак за Duolingo - Фармете XP, Скъпоценни камъни, Серии и отключете Duolingo Max безплатно.
+// @description:sr      Najbolji Duolingo hak - Farmujte XP, Dragulje, Serije i otključajte Duolingo Max besplatno.
+// @description:lt      Geriausias Duolingo įsilaužimas - Farminkite XP, Brangakmenius, Serijas ir atrakinkite Duolingo Max nemokamai.
+// @description:lv      Labākais Duolingo hack - Farmējiet XP, Dārgakmeņus, Sērijas un atbloķējiet Duolingo Max bez maksas.
+// @description:et      Parim Duolingo häkk - Farmige XP, Kalliskive, Seeriad ja avage Duolingo Max tasuta.
+// @description:sl      Najboljši Duolingo hack - Farmajte XP, Dragulji, Serije in odklenite Duolingo Max brezplačno.
+// @description:ca      El millor hack per a Duolingo - Fes farm de XP, Gemmes, Ratxes i desbloqueja Duolingo Max gratis.
+// @description:af      Die beste Duolingo-hack - Boer XP, Edelstene, Reekse en ontsluit Duolingo Max gratis.
+// @description:sw      Hack bora ya Duolingo - Fanya farm ya XP, Vito, Mifululizo na fungua Duolingo Max bila malipo.
+// @description:zu      I-hack engcono kakhulu ye-Duolingo - Fama i-XP, Amagugu, Izindawo futhi vula i-Duolingo Max mahhala.
+// @description:mn      Duolingo-н хамгийн шилдэг хак - XP, Эрдэнийн чулуу, Цуваа фарм хийж Duolingo Max-ийг үнэгүй нээ.
+// @description:my      Duolingo hack အကောင်းဆုံး - XP, Gems, Streaks farm လုပ်ပြီး Duolingo Max ကို အခမဲ့ ဖွင့်ပါ။
+// @description:km      ហេគ Duolingo ល្អបំផុត - ដាំ XP, Gems, Streaks និងដោះសោ Duolingo Max ដោយឥតគិតថ្លៃ។
+// @description:lo      ແຮັກ Duolingo ອັນດັບໜຶ່ງ - ຟາມ XP, ເພັດ, ສາຍຕໍ່ເນື່ອງ ແລະ ປົດລັອກ Duolingo Max ຟຣີ.
+// @description:ur      Duolingo کا بہترین ہیک - XP، Gems، Streaks فارم کریں اور Duolingo Max مفت میں انلاک کریں۔
+// @author              2pixel
+// @match               https://*.duolingo.com/*
+// @match               https://*.duolingo.cn/*
+// @icon                https://raw.githubusercontent.com/not2pixel/DuoHacker/main/images/Logo_TypePNG_DuoHacker.png
+// @run-at              document-start
+// @grant               GM_xmlhttpRequest
+// @connect             duolingo.com
+// @connect             stories.duolingo.com
+// @connect             duolingo-leaderboards-prod.duolingo.com
+// @connect             goals-api.duolingo.com
+// @connect             friends.duolingo.com
+// @connect             raw.githubusercontent.com
+// @connect             fonts.googleapis.com
+// @connect             duome.eu
+// @compatible         chrome   Tested on Chrome 120+ with Tampermonkey
+// @compatible         firefox  Tested on Firefox 120+ with Tampermonkey / Violentmonkey
+// @compatible         edge     Tested on Edge 120+ with Tampermonkey
+// @compatible         opera    Supported via Tampermonkey / Violentmonkey
+// @compatible         safari   Supported via Userscripts app
+// @compatible         brave    Supported via Tampermonkey
+// @homepageURL        https://github.com/not2pixel/DuoHacker
+// @supportURL         https://github.com/not2pixel/DuoHacker/issues
+// @copyright          2026, 2pixel (https://github.com/not2pixel)
+// @license            MIT
+// @downloadURL https://update.greasyfork.org/scripts/561041/Duolingo%20DuoHacker.user.js
+// @updateURL https://update.greasyfork.org/scripts/561041/Duolingo%20DuoHacker.meta.js
 // ==/UserScript==
+
+// ═══════════════════════════════════════════════════════════════════════
+// FAKE MAX INTERCEPTOR
+// Uses unsafeWindow
+// not the Tampermonkey sandbox's isolated window.fetch.
+// ═══════════════════════════════════════════════════════════════════════
+(function() {
+    if (localStorage.getItem('duohacker_fake_max') !== 'true') return;
+
+    // unsafeWindow = the real page window (Duolingo reads from this)
+    // window       = Tampermonkey sandbox (isolated, Duolingo never sees it)
+    var _uw = (typeof unsafeWindow !== 'undefined') ? unsafeWindow : window;
+
+    var _origFetch   = _uw.fetch;
+    var _origXhrOpen = _uw.XMLHttpRequest.prototype.open;
+    var _origXhrSend = _uw.XMLHttpRequest.prototype.send;
+
+    var TARGET_RX = /https:\/\/www\.duolingo\.com\/\d{4}-\d{2}-\d{2}\/users\//;
+
+    function shouldIntercept(url, method) {
+        if (method && method.toUpperCase() !== 'GET') return false;
+        var u = (typeof url === 'string') ? url : (url instanceof Request ? url.url : String(url));
+        if (u.indexOf('/shop-items') !== -1) return false;
+        return TARGET_RX.test(u);
+    }
+
+    function modifyJson(jsonText) {
+        try {
+            var data = JSON.parse(jsonText);
+            data.hasPlus = true;
+            if (!data.trackingProperties || typeof data.trackingProperties !== 'object') {
+                data.trackingProperties = {};
+            }
+            data.trackingProperties.has_item_gold_subscription = true;
+            data.shopItems = Object.assign({}, data.shopItems || {}, {
+                gold_subscription: {
+                    itemName: 'gold_subscription',
+                    subscriptionInfo: {
+                        vendor: 'STRIPE',
+                        renewing: true,
+                        isFamilyPlan: true,
+                        expectedExpiration: 9999999999000
+                    }
+                }
+            });
+            return JSON.stringify(data);
+        } catch (e) { return jsonText; }
+    }
+
+    // --- Hook fetch on the PAGE window ---
+    _uw.fetch = function(resource, options) {
+        var url    = (resource instanceof Request) ? resource.url : resource;
+        var method = (resource instanceof Request) ? resource.method : ((options && options.method) || 'GET');
+        if (shouldIntercept(url, method)) {
+            return _origFetch.apply(this, arguments).then(function(response) {
+                return response.clone().text().then(function(jsonText) {
+                    var modified = modifyJson(jsonText);
+                    return new Response(modified, {
+                        status:     response.status,
+                        statusText: response.statusText,
+                        headers:    new Headers(response.headers)
+                    });
+                });
+            });
+        }
+        return _origFetch.apply(this, arguments);
+    };
+
+    // --- Hook XHR on the PAGE window ---
+    _uw.XMLHttpRequest.prototype.open = function(method, url) {
+        this._dhIntercept = shouldIntercept(url, method);
+        _origXhrOpen.apply(this, arguments);
+    };
+
+    _uw.XMLHttpRequest.prototype.send = function() {
+        if (this._dhIntercept) {
+            var xhr = this;
+            var prevCb = xhr.onreadystatechange;
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status >= 200 && xhr.status < 300) {
+                    try {
+                        var m = modifyJson(xhr.responseText);
+                        Object.defineProperty(xhr, 'responseText', { writable: true, value: m });
+                        Object.defineProperty(xhr, 'response',     { writable: true, value: m });
+                    } catch (e) {}
+                }
+                if (prevCb) prevCb.apply(this, arguments);
+            };
+        }
+        _origXhrSend.apply(this, arguments);
+    };
+
+    // Remove "Manage subscription" UI section when it appears
+    new MutationObserver(function() {
+        document.querySelectorAll('section').forEach(function(s) {
+            var h2 = s.querySelector('h2');
+            if (h2 && h2.textContent.trim() === 'Manage subscription') s.remove();
+        });
+    }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+// ═══════════════════════════════════════════════════════════════════════
+
 
 // Load Duolingo font
 (function(){
@@ -146,9 +247,11 @@ const _DH_origFetch    = window.fetch.bind(window);
 const _DH_origXhrOpen  = XMLHttpRequest.prototype.open;
 const _DH_origXhrSend  = XMLHttpRequest.prototype.send;
 
+
+
 //
 
-const VERSION = "2.5.1";
+const VERSION = "2.6";
 
 
 
@@ -249,7 +352,6 @@ let farmingStats = {
 let farmingInterval = null;
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 let savedAccounts = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-let duolingoMaxEnabled = false; // feature removed
 
 let sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
 let currentLessonCount = Number(sessionData.currentLessonCount ?? 0);
@@ -1514,11 +1616,15 @@ const showMonthlyBadges = async () => {
         hideCompleted: false,
         loading: false
     };
-    // Spy on fetch calls to extract token/userId without overriding fetch
-    // (avoids "no-op fetch handler" browser warning)
-    const _origFetchForBadges = window.fetch;
+    // FIX: Use _DH_origFetch (captured at top-level before any wrapping) for all API calls.
+    // This avoids double-wrapping window.fetch and fixes the missing `originalFetch` ReferenceError.
+    const originalFetch = _DH_origFetch;
+
+    // Spy on fetch passively via the already-wrapped window.fetch — just hook into it
+    // by patching the existing wrapper to also update quest tool state.
+    const _prevFetch = window.fetch;
     window.fetch = function(...args) {
-        const result = _origFetchForBadges.apply(this, args);
+        const result = _prevFetch.apply(this, args);
         try {
             const [resource, config] = args;
             const url = typeof resource === 'string' ? resource : (resource?.url || String(resource));
@@ -1541,10 +1647,8 @@ const showMonthlyBadges = async () => {
                 }
             }
         } catch (e) {}
-        return result; // always return the Promise
+        return result;
     };
-    function log(msg) {
-    }
     function getCookie(name) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
@@ -1617,7 +1721,6 @@ const showMonthlyBadges = async () => {
             const data = await res.json();
             if (data.trackingProperties && data.trackingProperties.creation_date_new) {
                 state.creationDate = new Date(data.trackingProperties.creation_date_new);
-                const dateStr = state.creationDate.toLocaleDateString();
                 const userDisplay = document.getElementById('qt-user-display');
                 if (userDisplay) userDisplay.innerText = `ID: ${state.userId} (Since ${state.creationDate.getFullYear()})`;
             }
@@ -1636,9 +1739,14 @@ const showMonthlyBadges = async () => {
                 credentials: "include"
             });
             const schemaData = await schemaRes.json();
-            state.schema = schemaData;
+            // FIX: validate schema before assigning
+            if (schemaData && (Array.isArray(schemaData.goals) || schemaData.goals)) {
+                state.schema = schemaData;
+            } else {
+                console.warn('[DuoQuest] Unexpected schema structure:', schemaData);
+            }
         } catch (e) {
-
+            console.error('[DuoQuest] Failed to fetch schema:', e);
         }
         try {
             const progressRes = await originalFetch(`https://goals-api.duolingo.com/users/${state.userId}/progress?timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}&ui_language=en`, {
@@ -1654,7 +1762,7 @@ const showMonthlyBadges = async () => {
                 state.earnedBadges = new Set();
             }
         } catch (e) {
-
+            console.error('[DuoQuest] Failed to fetch progress:', e);
         }
         setButtonLoading('qt-load-btn', false);
         renderGoals();
@@ -3387,6 +3495,19 @@ const initInterface = () => {
           <p class="_setting_description">Toggle your profile visibility between public and private</p>
         </div>
       </div>
+      <!-- FREE MAX SECTION -->
+      <div class="_settings_section">
+        <h3>Free Duolingo Max</h3>
+        <div class="_setting_item">
+          <div class="_toggle_container">
+            <label class="_toggle_label">Free Max — inject hasPlus ( Web Only )</label>
+            <div class="_toggle_switch ${localStorage.getItem("duohacker_fake_max") === "true" ? "_active" : ""}" id="_fake_max_toggle">
+              <div class="_toggle_slider"></div>
+            </div>
+          </div>
+          <p class="_setting_description">Injects a fake Duolingo Max subscription into API responses. Requires page reload to activate/deactivate.</p>
+        </div>
+      </div>
       <!-- QUICK ACTIONS SECTION -->
       <div class="_settings_section">
         <h3>Quick Actions</h3>
@@ -3444,14 +3565,14 @@ const initInterface = () => {
                 <span style="font-size: 24px; display:inline-block; vertical-align:middle; margin-right:10px; color: #ff6b9d;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
                 </span>
-                Notification
+                Updates & Community
             </h2>
             <button id="_close_notification" class="_close_modal_btn">
                 <span style="font-size: 18px;">❌</span>
             </button>
         </div>
         <div class="_modal_content" id="_notification_content">
-            {/* Nội dung thông báo sẽ được chèn vào đây */}
+
         </div>
     </div>
 </div>
@@ -5362,6 +5483,42 @@ const updateEarnedStats = () => {
     if (elements.streak) elements.streak.textContent = totalEarned.streak;
     if (elements.lessons) elements.lessons.textContent = totalEarned.lessons.toLocaleString();
 };
+const farmXP499Once = async () => {
+    // Stories API — up to 499 XP per call, no skillId required
+    try {
+        const now = Math.floor(Date.now() / 1000);
+        const dur = Math.floor(Math.random() * 121 + 300);
+        const payload = {
+            "awardXp": true,
+            "completedBonusChallenge": true,
+            "fromLanguage": userInfo.fromLanguage,
+            "learningLanguage": userInfo.learningLanguage,
+            "hasXpBoost": false,
+            "illustrationFormat": "svg",
+            "isFeaturedStoryInPracticeHub": true,
+            "isLegendaryMode": true,
+            "isV2Redo": false,
+            "isV2Story": false,
+            "masterVersion": true,
+            "maxScore": 0,
+            "score": 0,
+            "happyHourBonusXp": 469,
+            "startTime": now,
+            "endTime": now + dur
+        };
+        return await new Promise((resolve) => {
+            GM_xmlhttpRequest({
+                method: "POST",
+                url: "https://stories.duolingo.com/api2/stories/fr-en-le-passeport/complete",
+                headers: defaultHeaders,
+                data: JSON.stringify(payload),
+                onload: (res) => resolve(res.status),
+                onerror: () => resolve(0)
+            });
+        });
+    } catch (e) { return 0; }
+};
+
 const farmXP110Once = async () => {
     try {
         if (!skillId) {
@@ -5441,58 +5598,65 @@ const farmXP110Once = async () => {
     }
 };
 const farmXP110 = async (delayMs) => {
+    // Smart XP loop: try Stories 499 XP first.
+    // If 429 rate-limited, fall back to UNIT_TEST 110 XP.
+    // If 499 gives non-200/429, also fall back.
+
+    let use499 = true;   // start optimistic
+    let consecutive429 = 0;
+    const MAX_429_BEFORE_FALLBACK = 2;
+    let fallbackErrors = 0;
+    const MAX_FALLBACK_ERRORS = 5;
+
+    // Pre-fetch skillId so fallback is ready immediately
     if (!skillId) {
         skillId = extractSkillId(userInfo?.currentCourse || {});
-        if (!skillId) {
-            logToConsole('Skill ID not found. Navigate to a course and click Refresh Profile.', 'error');
-            stopFarming();
-            return;
-        }
+        // skillId may be null if no course — fallback will warn per attempt
     }
 
-    let batchSize = 3;
-    const BATCH_MAX  = 3;
-    const BATCH_MIN  = 1;
-    const STAGGER_MS = 120;
-    let consecutiveOk = 0;
-    let consecutiveErrors = 0;
-    const MAX_ERRORS = 5;
-
-    const staggeredBatch = async (size) => {
-        const promises = [];
-        for (let i = 0; i < size; i++) {
-            await delay(STAGGER_MS);
-            promises.push(farmXP110Once());
-        }
-        return Promise.allSettled(promises);
-    };
-
     while (isRunning) {
-        const results = await staggeredBatch(batchSize);
-        const ok    = results.filter(r => r.status === 'fulfilled' && r.value === true).length;
-        const rate  = ok / batchSize;
-
-        if (ok > 0) {
-            consecutiveErrors = 0;
-            consecutiveOk++;
-            if (consecutiveOk >= 3 && rate === 1 && batchSize < BATCH_MAX) {
-                batchSize = Math.min(batchSize + 1, BATCH_MAX);
-                consecutiveOk = 0;
-            } else if (rate < 0.7 && batchSize > BATCH_MIN) {
-                batchSize = Math.max(batchSize - 1, BATCH_MIN);
-                consecutiveOk = 0;
+        if (use499) {
+            const status = await farmXP499Once();
+            if (status === 200) {
+                consecutive429 = 0;
+                fallbackErrors = 0;
+                const earned = 499;
+                totalEarned.xp += earned;
+                const cur = parseInt(sessionStorage.getItem('dh_session_xp_earned') || '0', 10);
+                sessionStorage.setItem('dh_session_xp_earned', String(cur + earned));
+                updateEarnedStats();
+                saveSessionData();
+                logToConsole(`Earned ${earned} XP (Stories 499)`, 'success');
+            } else if (status === 429) {
+                consecutive429++;
+                logToConsole(`Stories API rate-limited (429) [${consecutive429}/${MAX_429_BEFORE_FALLBACK}]`, 'warning');
+                if (consecutive429 >= MAX_429_BEFORE_FALLBACK) {
+                    use499 = false;
+                    logToConsole('Switching to UNIT_TEST fallback (110 XP)', 'info');
+                }
+                await delay(delayMs * 2);
+                continue;
+            } else {
+                logToConsole(`Stories API returned ${status}, switching to UNIT_TEST fallback`, 'warning');
+                use499 = false;
             }
         } else {
-            consecutiveErrors++;
-            consecutiveOk = 0;
-            batchSize = Math.max(batchSize - 2, BATCH_MIN);
-            if (consecutiveErrors >= MAX_ERRORS) {
-                logToConsole('Too many errors. Stopping.', 'error');
-                stopFarming();
-                break;
+            // UNIT_TEST fallback
+            const ok = await farmXP110Once();
+            if (ok) {
+                fallbackErrors = 0;
+                // Check if Stories is worth retrying after 30 fallback loops
+                consecutive429 = 0;
+            } else {
+                fallbackErrors++;
+                if (fallbackErrors >= MAX_FALLBACK_ERRORS) {
+                    logToConsole('Too many UNIT_TEST errors. Stopping.', 'error');
+                    stopFarming();
+                    break;
+                }
+                await delay(delayMs * 3);
+                continue;
             }
-            await delay(delayMs * 3);
-            continue;
         }
 
         await delay(delayMs);
@@ -5609,8 +5773,36 @@ const showGiftNotification = async () => {
     const contentDiv = document.getElementById('_notification_content');
     if (!modal || !contentDiv) return;
     modal.style.display = 'flex';
-    // Notification content is bundled — no remote fetch for security
-    contentDiv.textContent = '🎁 Check the DuoHacker Discord for the latest updates and giveaways!';
+    contentDiv.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:18px; padding:8px 0;">
+            <div style="text-align:center; font-size:28px;">🎁</div>
+            <div style="font-size:15px; font-weight:700; color:var(--text-primary); text-align:center; line-height:1.4;">
+                Thanks for using DuoHacker!
+            </div>
+            <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:12px; padding:14px 16px; display:flex; align-items:center; gap:14px;">
+                <span style="font-size:26px; flex-shrink:0;">💬</span>
+                <div>
+                    <div style="font-weight:700; font-size:14px; margin-bottom:4px;">Join our Discord</div>
+                    <div style="font-size:12px; color:var(--text-secondary); margin-bottom:8px;">Get announcements, updates, tips and community support.</div>
+                    <a href="https://discord.gg/duohacker" target="_blank" rel="noopener noreferrer"
+                       style="display:inline-block; background:linear-gradient(135deg,#5865F2,#4752c4); color:#fff; font-weight:700; font-size:12px; padding:7px 16px; border-radius:8px; text-decoration:none;">
+                        Join Discord →
+                    </a>
+                </div>
+            </div>
+            <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:12px; padding:14px 16px; display:flex; align-items:center; gap:14px;">
+                <span style="font-size:26px; flex-shrink:0;">⭐</span>
+                <div>
+                    <div style="font-weight:700; font-size:14px; margin-bottom:4px;">Leave a Review on GreasyFork</div>
+                    <div style="font-size:12px; color:var(--text-secondary); margin-bottom:8px;">If DuoHacker helped you, a quick rating goes a long way — it only takes 10 seconds!</div>
+                    <a href="https://greasyfork.org/en/scripts/DuoHacker" target="_blank" rel="noopener noreferrer"
+                       style="display:inline-block; background:linear-gradient(135deg,#e0a800,#c48400); color:#fff; font-weight:700; font-size:12px; padding:7px 16px; border-radius:8px; text-decoration:none;">
+                        Rate on GreasyFork →
+                    </a>
+                </div>
+            </div>
+        </div>
+    `;
 };
 const hideImages = () => {
     hideAnimationEnabled = true;
@@ -6004,6 +6196,22 @@ const addEventListeners = () => {
             document.getElementById('_settings_modal').style.display = 'none';
         }
     });
+    document.getElementById('_fake_max_toggle')?.addEventListener('click', () => {
+        const toggle = document.getElementById('_fake_max_toggle');
+        const isActive = localStorage.getItem('duohacker_fake_max') === 'true';
+        const newVal = !isActive;
+        const action = newVal ? 'enable' : 'disable';
+        if (!confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} Free Max?\nThis requires a page reload to take effect.`)) return;
+        localStorage.setItem('duohacker_fake_max', String(newVal));
+        if (newVal) {
+            toggle.classList.add('_active');
+        } else {
+            toggle.classList.remove('_active');
+        }
+        logToConsole(`Free Max ${newVal ? 'enabled' : 'disabled'}. Reloading...`, 'success');
+        setTimeout(() => window.location.reload(), 800);
+    });
+
     document.getElementById('_lite_mode_toggle')?.addEventListener('click', () => {
         const toggle = document.getElementById('_lite_mode_toggle');
         liteMode = !liteMode;
@@ -6426,12 +6634,6 @@ const startFarming = async () => {
 
     const type = selectedOption.dataset.type;
     const delayMs = CUSTOM_DELAY;
-
-    // Vi→En course guard — only the farmXpOnce endpoint requires Vi→En.
-    // xp_10 (110 XP) uses a generic skill session and works with any course.
-    if (type === 'xp') {
-        if (!checkViEnCourse()) return;
-    }
 
     if (type === 'xp_10') {
         if (!skillId) {
