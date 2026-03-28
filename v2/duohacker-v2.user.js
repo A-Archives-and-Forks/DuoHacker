@@ -52,7 +52,7 @@
 // @name:ur             Duolingo DuoHacker
 
 // @namespace           https://github.com/not2pixel/DuoHacker
-// @version             2026.03.24
+// @version             2026.03.28
 
 // @description         The #1 Duolingo hack - Farm XP, Gems, Streaks and unlock Duolingo Max for free.
 // @description:vi      Công cụ hack Duolingo #1 - Farm XP, Gems, Streaks và mở khóa Duolingo Max miễn phí.
@@ -116,8 +116,6 @@
 
 // @grant               GM_xmlhttpRequest
 // @grant               GM_addStyle
-// @downloadURL         https://update.greasyfork.org/scripts/DuoHackerV2/DuoHacker_V2.user.js
-// @updateURL           https://update.greasyfork.org/scripts/DuoHackerV2/DuoHacker_V2.meta.js
 // @connect             duolingo.com
 // @connect             stories.duolingo.com
 // @connect             goals-api.duolingo.com
@@ -137,6 +135,8 @@
 // @supportURL          https://discord.com/invite/Gvmd7deFtS
 // @copyright           2026, DuoHacker (https://github.com/not2pixel)
 // @license             MIT
+// @downloadURL https://update.greasyfork.org/scripts/561041/Duolingo%20DuoHacker.user.js
+// @updateURL https://update.greasyfork.org/scripts/561041/Duolingo%20DuoHacker.meta.js
 // ==/UserScript==
 
 (function () {
@@ -485,6 +485,7 @@ GM_addStyle(`
 .DH_Quest_Get_Btn:active { transform:scale(0.95); }
 .DH_Quest_Get_Btn.done { background:rgba(var(--DH-green),0.10); color:rgb(var(--DH-green)); outline-color:rgba(var(--DH-green),0.20); pointer-events:none; }
 
+#DH_AccSettings_Btn        { transform-origin: right center; }
 #DH_AccSettings_Btn:hover  { filter:brightness(0.85); transform:scale(1.1); }
 #DH_AccSettings_Btn:active { transform:scale(0.92); }
 `);
@@ -505,15 +506,33 @@ _wrap.innerHTML = `
 <div class="DH_Main" id="DH_Main">
 
     <div class="DH_HStack_8" style="align-self:flex-end;">
-        <!-- When panel VISIBLE: solid blue btn + eye-slash icon + "Hide" text -->
+<div class="DH_Btn DH_Btn_Blue_Ghost DH_NoSel" id="DH_SwitchV1_Btn"
+     style="flex:none; display:none; order:-1;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17 1l4 4-4 4" stroke="rgb(var(--DH-blue))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 11V9a4 4 0 0 1 4-4h14" stroke="rgb(var(--DH-blue))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M7 23l-4-4 4-4" stroke="rgb(var(--DH-blue))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M21 13v2a4 4 0 0 1-4 4H3" stroke="rgb(var(--DH-blue))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <p class="DH_T1 DH_NoSel" style="color:rgb(var(--DH-blue));font-size:13px;">Switch to V1</p>
+</div>
+
+<div class="DH_Btn DH_Btn_Blue_Ghost DH_NoSel" id="DH_SwitchV2_Btn"
+     style="flex:none; display:none; order:-1;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17 1l4 4-4 4" stroke="rgb(var(--DH-blue))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 11V9a4 4 0 0 1 4-4h14" stroke="rgb(var(--DH-blue))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M7 23l-4-4 4-4" stroke="rgb(var(--DH-blue))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M21 13v2a4 4 0 0 1-4 4H3" stroke="rgb(var(--DH-blue))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <p class="DH_T1 DH_NoSel" style="color:rgb(var(--DH-blue));font-size:13px;">Switch to V2</p>
+</div>
         <div class="DH_Btn DH_NoSel" id="DH_Hide_Btn"
              style="flex:none; outline:2px solid rgba(0,0,0,0.20); outline-offset:-2px; background:rgb(var(--DH-blue)); backdrop-filter:blur(16px);">
-            <!-- Eye icon: shown when panel is VISIBLE → clicking hides it (eye with slash = "you can see it, click to hide") -->
             <svg id="DH_Ico_Visible" width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 0C5 0 1.73 2.5 0 6c1.73 3.5 5 6 9 6s7.27-2.5 9-6c-1.73-3.5-5-6-9-6zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6.4a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 0 0 0-4.8z" fill="#FFF"/>
                 <path d="M1 1l16 10" stroke="#FFF" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
-            <!-- Eye-open icon: shown when panel is HIDDEN → clicking shows it -->
             <svg id="DH_Ico_Hidden" width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none;">
                 <path d="M9 0C5 0 1.73 2.5 0 6c1.73 3.5 5 6 9 6s7.27-2.5 9-6c-1.73-3.5-5-6-9-6zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6.4a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 0 0 0-4.8z" fill="rgb(var(--DH-blue))"/>
             </svg>
@@ -523,7 +542,6 @@ _wrap.innerHTML = `
 
     <div class="DH_Main_Box" id="DH_Main_Box">
 
-        <!-- PAGE 1 -->
         <div class="DH_Page active" id="DH_Page_1">
 
             <div class="DH_HStack_8">
@@ -558,18 +576,16 @@ _wrap.innerHTML = `
                         </div>
                     </div>
                 </div>
-                <div id="DH_AccSettings_Btn" style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(var(--DH-blue),0.10);outline:2px solid rgba(var(--DH-blue),0.15);outline-offset:-2px;flex-shrink:0;transition:filter 0.3s,transform 0.3s;" title="Account Manager">
-                    <svg width="15" height="15" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M18.1,11c-3.9,0-7,3.1-7,7s3.1,7,7,7c3.9,0,7-3.1,7-7S22,11,18.1,11z M18.1,23c-2.8,0-5-2.2-5-5s2.2-5,5-5c2.8,0,5,2.2,5,5S20.9,23,18.1,23z" fill="rgb(var(--DH-blue))" stroke="rgb(var(--DH-blue))" stroke-width="1.2" stroke-linejoin="round" paint-order="stroke fill"/>
-                        <path d="M32.8,14.7L30,13.8l-0.6-1.5l1.4-2.6c0.3-0.6,0.2-1.4-0.3-1.9l-2.4-2.4c-0.5-0.5-1.3-0.6-1.9-0.3l-2.6,1.4l-1.5-0.6l-0.9-2.8C21,2.5,20.4,2,19.7,2h-3.4c-0.7,0-1.3,0.5-1.4,1.2L14,6c-0.6,0.1-1.1,0.3-1.6,0.6L9.8,5.2C9.2,4.9,8.4,5,7.9,5.5L5.5,7.9C5,8.4,4.9,9.2,5.2,9.8l1.3,2.5c-0.2,0.5-0.4,1.1-0.6,1.6l-2.8,0.9C2.5,15,2,15.6,2,16.3v3.4c0,0.7,0.5,1.3,1.2,1.5L6,22.1l0.6,1.5l-1.4,2.6c-0.3,0.6-0.2,1.4,0.3,1.9l2.4,2.4c0.5,0.5,1.3,0.6,1.9,0.3l2.6-1.4l1.5,0.6l0.9,2.9c0.2,0.6,0.8,1.1,1.5,1.1h3.4c0.7,0,1.3-0.5,1.5-1.1l0.9-2.9l1.5-0.6l2.6,1.4c0.6,0.3,1.4,0.2,1.9-0.3l2.4-2.4c0.5-0.5,0.6-1.3,0.3-1.9l-1.4-2.6l0.6-1.5l2.9-0.9c0.6-0.2,1.1-0.8,1.1-1.5v-3.4C34,15.6,33.5,14.9,32.8,14.7z M32,19.4l-3.6,1.1L28.3,21c-0.3,0.7-0.6,1.4-0.9,2.1l-0.3,0.5l1.8,3.3l-2,2l-3.3-1.8l-0.5,0.3c-0.7,0.4-1.4,0.7-2.1,0.9l-0.5,0.1L19.4,32h-2.8l-1.1-3.6L15,28.3c-0.7-0.3-1.4-0.6-2.1-0.9l-0.5-0.3l-3.3,1.8l-2-2l1.8-3.3l-0.3-0.5c-0.4-0.7-0.7-1.4-0.9-2.1l-0.1-0.5L4,19.4v-2.8l3.4-1l0.2-0.5c0.2-0.8,0.5-1.5,0.9-2.2l0.3-0.5L7.1,9.1l2-2l3.2,1.8l0.5-0.3c0.7-0.4,1.4-0.7,2.2-0.9l0.5-0.2L16.6,4h2.8l1.1,3.5L21,7.7c0.7,0.2,1.4,0.5,2.1,0.9l0.5,0.3l3.3-1.8l2,2l-1.8,3.3l0.3,0.5c0.4,0.7,0.7,1.4,0.9,2.1l0.1,0.5l3.6,1.1V19.4z" fill="rgb(var(--DH-blue))" stroke="rgb(var(--DH-blue))" stroke-width="1.2" stroke-linejoin="round" paint-order="stroke fill"/>
-                    </svg>
-                </div>
+                <svg id="DH_AccSettings_Btn" width="24" height="24" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" title="Account Manager"
+                     style="cursor:pointer;flex-shrink:0;transition:filter 0.3s,transform 0.3s;transform-origin:center;">
+                    <path d="M18.1,11c-3.9,0-7,3.1-7,7s3.1,7,7,7c3.9,0,7-3.1,7-7S22,11,18.1,11z M18.1,23c-2.8,0-5-2.2-5-5s2.2-5,5-5c2.8,0,5,2.2,5,5S20.9,23,18.1,23z" fill="rgb(var(--DH-blue))" stroke="rgb(var(--DH-blue))" stroke-width="1.2" stroke-linejoin="round" paint-order="stroke fill"/>
+                    <path d="M32.8,14.7L30,13.8l-0.6-1.5l1.4-2.6c0.3-0.6,0.2-1.4-0.3-1.9l-2.4-2.4c-0.5-0.5-1.3-0.6-1.9-0.3l-2.6,1.4l-1.5-0.6l-0.9-2.8C21,2.5,20.4,2,19.7,2h-3.4c-0.7,0-1.3,0.5-1.4,1.2L14,6c-0.6,0.1-1.1,0.3-1.6,0.6L9.8,5.2C9.2,4.9,8.4,5,7.9,5.5L5.5,7.9C5,8.4,4.9,9.2,5.2,9.8l1.3,2.5c-0.2,0.5-0.4,1.1-0.6,1.6l-2.8,0.9C2.5,15,2,15.6,2,16.3v3.4c0,0.7,0.5,1.3,1.2,1.5L6,22.1l0.6,1.5l-1.4,2.6c-0.3,0.6-0.2,1.4,0.3,1.9l2.4,2.4c0.5,0.5,1.3,0.6,1.9,0.3l2.6-1.4l1.5,0.6l0.9,2.9c0.2,0.6,0.8,1.1,1.5,1.1h3.4c0.7,0,1.3-0.5,1.5-1.1l0.9-2.9l1.5-0.6l2.6,1.4c0.6,0.3,1.4,0.2,1.9-0.3l2.4-2.4c0.5-0.5,0.6-1.3,0.3-1.9l-1.4-2.6l0.6-1.5l2.9-0.9c0.6-0.2,1.1-0.8,1.1-1.5v-3.4C34,15.6,33.5,14.9,32.8,14.7z M32,19.4l-3.6,1.1L28.3,21c-0.3,0.7-0.6,1.4-0.9,2.1l-0.3,0.5l1.8,3.3l-2,2l-3.3-1.8l-0.5,0.3c-0.7,0.4-1.4,0.7-2.1,0.9l-0.5,0.1L19.4,32h-2.8l-1.1-3.6L15,28.3c-0.7-0.3-1.4-0.6-2.1-0.9l-0.5-0.3l-3.3,1.8l-2-2l1.8-3.3l-0.3-0.5c-0.4-0.7-0.7-1.4-0.9-2.1l-0.1-0.5L4,19.4v-2.8l3.4-1l0.2-0.5c0.2-0.8,0.5-1.5,0.9-2.2l0.3-0.5L7.1,9.1l2-2l3.2,1.8l0.5-0.3c0.7-0.4,1.4-0.7,2.2-0.9l0.5-0.2L16.6,4h2.8l1.1,3.5L21,7.7c0.7,0.2,1.4,0.5,2.1,0.9l0.5,0.3l3.3-1.8l2,2l-1.8,3.3l0.3,0.5c0.4,0.7,0.7,1.4,0.9,2.1l0.1,0.5l3.6,1.1V19.4z" fill="rgb(var(--DH-blue))" stroke="rgb(var(--DH-blue))" stroke-width="1.2" stroke-linejoin="round" paint-order="stroke fill"/>
+                </svg>
             </div>
 
             <div class="DH_Divider"></div>
 
-            <!-- XP -->
-            <div class="DH_VStack_8">
+                   <div class="DH_VStack_8">
                 <p class="DH_T1 DH_NoSel" style="align-self:stretch;">How much XP would you like to gain?</p>
                 <div class="DH_HStack_8">
                     <div class="DH_Input_Wrap">
@@ -583,7 +599,7 @@ _wrap.innerHTML = `
                 <div class="DH_Prog_Wrap" id="DH_XP_Prog"><div class="DH_Prog_Fill" id="DH_XP_Fill"></div></div>
             </div>
 
-            <!-- Gems -->
+
             <div class="DH_VStack_8">
                 <p class="DH_T1 DH_NoSel" style="align-self:stretch;">How many Gems would you like to gain?</p>
                 <div class="DH_HStack_8">
@@ -603,7 +619,7 @@ _wrap.innerHTML = `
                 <div class="DH_Prog_Wrap" id="DH_Gem_Prog"><div class="DH_Prog_Fill" id="DH_Gem_Fill"></div></div>
             </div>
 
-            <!-- Streak -->
+
             <div class="DH_VStack_8">
                 <p class="DH_T1 DH_NoSel" style="align-self:stretch;">How many Streak days to restore?</p>
                 <div class="DH_HStack_8">
@@ -620,7 +636,7 @@ _wrap.innerHTML = `
 
             <div class="DH_Divider"></div>
 
-            <!-- Extra Features -->
+
             <div class="DH_Btn DH_Btn_Blue_Ghost DH_NoSel" id="DH_Settings_Btn" style="align-self:stretch; justify-content:space-between; padding:10px 12px;">
                 <div style="display:flex; align-items:center; gap:8px;">
                     <div class="DH_Btn_Ico">
@@ -635,11 +651,11 @@ _wrap.innerHTML = `
                 </svg>
             </div>
 
-            <!-- Settings -->
+
             <div class="DH_Btn DH_Btn_Blue_Ghost DH_NoSel" id="DH_Page4_Btn" style="align-self:stretch; justify-content:space-between; padding:10px 12px;">
                 <div style="display:flex; align-items:center; gap:8px;">
                     <div class="DH_Btn_Ico">
-                        <!-- Clarity settings-line -->
+
                         <svg width="16" height="16" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M18.1,11c-3.9,0-7,3.1-7,7s3.1,7,7,7c3.9,0,7-3.1,7-7S22,11,18.1,11z M18.1,23c-2.8,0-5-2.2-5-5s2.2-5,5-5c2.8,0,5,2.2,5,5S20.9,23,18.1,23z" fill="rgb(var(--DH-blue))" stroke="rgb(var(--DH-blue))" stroke-width="1.2" stroke-linejoin="round" paint-order="stroke fill"/>
                             <path d="M32.8,14.7L30,13.8l-0.6-1.5l1.4-2.6c0.3-0.6,0.2-1.4-0.3-1.9l-2.4-2.4c-0.5-0.5-1.3-0.6-1.9-0.3l-2.6,1.4l-1.5-0.6l-0.9-2.8C21,2.5,20.4,2,19.7,2h-3.4c-0.7,0-1.3,0.5-1.4,1.2L14,6c-0.6,0.1-1.1,0.3-1.6,0.6L9.8,5.2C9.2,4.9,8.4,5,7.9,5.5L5.5,7.9C5,8.4,4.9,9.2,5.2,9.8l1.3,2.5c-0.2,0.5-0.4,1.1-0.6,1.6l-2.8,0.9C2.5,15,2,15.6,2,16.3v3.4c0,0.7,0.5,1.3,1.2,1.5L6,22.1l0.6,1.5l-1.4,2.6c-0.3,0.6-0.2,1.4,0.3,1.9l2.4,2.4c0.5,0.5,1.3,0.6,1.9,0.3l2.6-1.4l1.5,0.6l0.9,2.9c0.2,0.6,0.8,1.1,1.5,1.1h3.4c0.7,0,1.3-0.5,1.5-1.1l0.9-2.9l1.5-0.6l2.6,1.4c0.6,0.3,1.4,0.2,1.9-0.3l2.4-2.4c0.5-0.5,0.6-1.3,0.3-1.9l-1.4-2.6l0.6-1.5l2.9-0.9c0.6-0.2,1.1-0.8,1.1-1.5v-3.4C34,15.6,33.5,14.9,32.8,14.7z M32,19.4l-3.6,1.1L28.3,21c-0.3,0.7-0.6,1.4-0.9,2.1l-0.3,0.5l1.8,3.3l-2,2l-3.3-1.8l-0.5,0.3c-0.7,0.4-1.4,0.7-2.1,0.9l-0.5,0.1L19.4,32h-2.8l-1.1-3.6L15,28.3c-0.7-0.3-1.4-0.6-2.1-0.9l-0.5-0.3l-3.3,1.8l-2-2l1.8-3.3l-0.3-0.5c-0.4-0.7-0.7-1.4-0.9-2.1l-0.1-0.5L4,19.4v-2.8l3.4-1l0.2-0.5c0.2-0.8,0.5-1.5,0.9-2.2l0.3-0.5L7.1,9.1l2-2l3.2,1.8l0.5-0.3c0.7-0.4,1.4-0.7,2.2-0.9l0.5-0.2L16.6,4h2.8l1.1,3.5L21,7.7c0.7,0.2,1.4,0.5,2.1,0.9l0.5,0.3l3.3-1.8l2,2l-1.8,3.3l0.3,0.5c0.4,0.7,0.7,1.4,0.9,2.1l0.1,0.5l3.6,1.1V19.4z" fill="rgb(var(--DH-blue))" stroke="rgb(var(--DH-blue))" stroke-width="1.2" stroke-linejoin="round" paint-order="stroke fill"/>
@@ -654,17 +670,17 @@ _wrap.innerHTML = `
 
             <div class="DH_HStack_Auto">
                 <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">twisk.fun</p>
-                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">v2026.03.24</p>
+                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">v2026.03.28</p>
             </div>
         </div>
 
-        <!-- PAGE 2: Extra Features -->
+
         <div class="DH_Page" id="DH_Page_2">
             <div class="DH_HStack_4 DH_NoSel" id="DH_Back_Btn" style="align-self:flex-start;cursor:pointer;opacity:0.55;">
                 <svg width="8" height="14" viewBox="0 0 9 16" fill="none"><path d="M8 1L2 8l6 7" stroke="rgb(var(--color-wolf,60,60,67))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 <p class="DH_T1">Back</p>
             </div>
-            <!-- Farm Practice - MOVED TO TOP -->
+
             <div class="DH_HStack_Auto" style="align-self:stretch;">
                 <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;">
                     <p class="DH_T1 DH_NoSel">Farm Practice</p>
@@ -874,12 +890,144 @@ _wrap.innerHTML = `
             </div>
         </div>
 
+        <!-- PAGE 8: V1 Mode — simple farm with live counters, no extra features -->
+        <div class="DH_Page" id="DH_Page_V1">
+
+            <div class="DH_Divider"></div>
+
+            <!-- User row (reused from V2 data) -->
+            <div class="DH_HStack_8" id="DH_V1_User_Row" style="display:none;gap:10px;">
+                <div class="DH_Avatar" id="DH_V1_Avatar">👤</div>
+                <div class="DH_VStack_4" style="flex:1 0 0;min-width:0;align-items:flex-start;">
+                    <p class="DH_T1 DH_NoSel" id="DH_V1_UName" style="font-size:14px;align-self:stretch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></p>
+                    <div class="DH_HStack_4" style="gap:10px;">
+                        <div class="DH_HStack_4" style="gap:3px;">
+                            <img class="DH_Stat_Ico" src="https://d35aaqx5ub95lt.cloudfront.net/images/profile/01ce3a817dd01842581c3d18debcbc46.svg">
+                            <span class="DH_Stat_Val DH_NoSel" id="DH_V1_UXP">0</span>
+                        </div>
+                        <div class="DH_HStack_4" style="gap:3px;">
+                            <img class="DH_Stat_Ico" src="https://d35aaqx5ub95lt.cloudfront.net/images/gems/45c14e05be9c1af1d7d0b54c6eed7eee.svg">
+                            <span class="DH_Stat_Val DH_NoSel" id="DH_V1_UGems">0</span>
+                        </div>
+                        <div class="DH_HStack_4" style="gap:3px;">
+                            <img class="DH_Stat_Ico" src="https://d35aaqx5ub95lt.cloudfront.net/images/icons/398e4298a3b39ce566050e5c041949ef.svg">
+                            <span class="DH_Stat_Val DH_NoSel" id="DH_V1_UStreak">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="DH_Divider" id="DH_V1_User_Divider" style="display:none;"></div>
+
+            <!-- XP Farm -->
+            <div class="DH_VStack_8" style="align-self:stretch;">
+                <p class="DH_T1 DH_NoSel" style="align-self:stretch;">XP Farming</p>
+                <div class="DH_HStack_8">
+                    <div class="DH_Input_Wrap">
+                        <img class="DH_Stat_Ico" src="https://d35aaqx5ub95lt.cloudfront.net/images/profile/01ce3a817dd01842581c3d18debcbc46.svg" style="flex-shrink:0;">
+                        <input type="number" class="DH_Input DH_NoSel" id="DH_V1_XP_Input" placeholder="0" readonly style="pointer-events:none;">
+                    </div>
+                    <button class="DH_Input_Btn DH_NoSel" id="DH_V1_XP_Btn" disabled>
+                        <span class="DH_Btn_Label" id="DH_V1_XP_Lbl" style="color:#fff;">RUN</span>
+                    </button>
+                </div>
+                <div class="DH_Prog_Wrap" id="DH_V1_XP_Prog"><div class="DH_Prog_Fill" id="DH_V1_XP_Fill"></div></div>
+            </div>
+
+            <!-- Gems Farm -->
+            <div class="DH_VStack_8" style="align-self:stretch;">
+                <p class="DH_T1 DH_NoSel" style="align-self:stretch;">Gems Farming</p>
+                <div class="DH_HStack_8">
+                    <div class="DH_Input_Wrap">
+                        <img class="DH_Stat_Ico" src="https://d35aaqx5ub95lt.cloudfront.net/images/gems/45c14e05be9c1af1d7d0b54c6eed7eee.svg" style="flex-shrink:0;">
+                        <input type="number" class="DH_Input DH_NoSel" id="DH_V1_Gem_Input" placeholder="0" readonly style="pointer-events:none;">
+                    </div>
+                    <button class="DH_Input_Btn DH_NoSel" id="DH_V1_Gem_Btn" disabled>
+                        <span class="DH_Btn_Label" id="DH_V1_Gem_Lbl" style="color:#fff;">RUN</span>
+                    </button>
+                </div>
+                <div class="DH_Prog_Wrap" id="DH_V1_Gem_Prog"><div class="DH_Prog_Fill" id="DH_V1_Gem_Fill"></div></div>
+            </div>
+
+            <!-- Streak Farm -->
+            <div class="DH_VStack_8" style="align-self:stretch;">
+                <p class="DH_T1 DH_NoSel" style="align-self:stretch;">Streak Farming</p>
+                <div class="DH_HStack_8">
+                    <div class="DH_Input_Wrap">
+                        <img class="DH_Stat_Ico" src="https://d35aaqx5ub95lt.cloudfront.net/images/icons/398e4298a3b39ce566050e5c041949ef.svg" style="flex-shrink:0;">
+                        <input type="number" class="DH_Input DH_NoSel" id="DH_V1_Streak_Input" placeholder="0" readonly style="pointer-events:none;">
+                    </div>
+                    <button class="DH_Input_Btn DH_NoSel" id="DH_V1_Streak_Btn" disabled>
+                        <span class="DH_Btn_Label" id="DH_V1_Streak_Lbl" style="color:#fff;">RUN</span>
+                    </button>
+                </div>
+                <div class="DH_Prog_Wrap" id="DH_V1_Streak_Prog"><div class="DH_Prog_Fill" id="DH_V1_Streak_Fill"></div></div>
+            </div>
+
+            <div class="DH_Divider"></div>
+
+            <!-- Settings (same as V2 settings page) -->
+            <div class="DH_Btn DH_Btn_Blue_Ghost DH_NoSel" id="DH_V1_Settings_Btn" style="align-self:stretch; justify-content:space-between; padding:10px 12px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="DH_Btn_Ico">
+                        <svg width="16" height="16" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18.1,11c-3.9,0-7,3.1-7,7s3.1,7,7,7c3.9,0,7-3.1,7-7S22,11,18.1,11z M18.1,23c-2.8,0-5-2.2-5-5s2.2-5,5-5c2.8,0,5,2.2,5,5S20.9,23,18.1,23z" fill="rgb(var(--DH-blue))" stroke="rgb(var(--DH-blue))" stroke-width="1.2" stroke-linejoin="round" paint-order="stroke fill"/>
+                            <path d="M32.8,14.7L30,13.8l-0.6-1.5l1.4-2.6c0.3-0.6,0.2-1.4-0.3-1.9l-2.4-2.4c-0.5-0.5-1.3-0.6-1.9-0.3l-2.6,1.4l-1.5-0.6l-0.9-2.8C21,2.5,20.4,2,19.7,2h-3.4c-0.7,0-1.3,0.5-1.4,1.2L14,6c-0.6,0.1-1.1,0.3-1.6,0.6L9.8,5.2C9.2,4.9,8.4,5,7.9,5.5L5.5,7.9C5,8.4,4.9,9.2,5.2,9.8l1.3,2.5c-0.2,0.5-0.4,1.1-0.6,1.6l-2.8,0.9C2.5,15,2,15.6,2,16.3v3.4c0,0.7,0.5,1.3,1.2,1.5L6,22.1l0.6,1.5l-1.4,2.6c-0.3,0.6-0.2,1.4,0.3,1.9l2.4,2.4c0.5,0.5,1.3,0.6,1.9,0.3l2.6-1.4l1.5,0.6l0.9,2.9c0.2,0.6,0.8,1.1,1.5,1.1h3.4c0.7,0,1.3-0.5,1.5-1.1l0.9-2.9l1.5-0.6l2.6,1.4c0.6,0.3,1.4,0.2,1.9-0.3l2.4-2.4c0.5-0.5,0.6-1.3,0.3-1.9l-1.4-2.6l0.6-1.5l2.9-0.9c0.6-0.2,1.1-0.8,1.1-1.5v-3.4C34,15.6,33.5,14.9,32.8,14.7z M32,19.4l-3.6,1.1L28.3,21c-0.3,0.7-0.6,1.4-0.9,2.1l-0.3,0.5l1.8,3.3l-2,2l-3.3-1.8l-0.5,0.3c-0.7,0.4-1.4,0.7-2.1,0.9l-0.5,0.1L19.4,32h-2.8l-1.1-3.6L15,28.3c-0.7-0.3-1.4-0.6-2.1-0.9l-0.5-0.3l-3.3,1.8l-2-2l1.8-3.3l-0.3-0.5c-0.4-0.7-0.7-1.4-0.9-2.1l-0.1-0.5L4,19.4v-2.8l3.4-1l0.2-0.5c0.2-0.8,0.5-1.5,0.9-2.2l0.3-0.5L7.1,9.1l2-2l3.2,1.8l0.5-0.3c0.7-0.4,1.4-0.7,2.2-0.9l0.5-0.2L16.6,4h2.8l1.1,3.5L21,7.7c0.7,0.2,1.4,0.5,2.1,0.9l0.5,0.3l3.3-1.8l2,2l-1.8,3.3l0.3,0.5c0.4,0.7,0.7,1.4,0.9,2.1l0.1,0.5l3.6,1.1V19.4z" fill="rgb(var(--DH-blue))" stroke="rgb(var(--DH-blue))" stroke-width="1.2" stroke-linejoin="round" paint-order="stroke fill"/>
+                        </svg>
+                    </div>
+                    <p class="DH_T1 DH_NoSel" style="color:rgb(var(--DH-blue));">Settings</p>
+                </div>
+                <svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 1l6 5.5L1 12" stroke="rgb(var(--DH-blue))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+
+            <div class="DH_HStack_Auto">
+                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">twisk.fun</p>
+                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">V1 Mode</p>
+            </div>
+        </div>
+
     </div>
 </div>
 `;
 document.body.appendChild(_wrap);
 
 let _jwt=null, _sub=null, _hdrs=null, _user=null, _privacy=null;
+let _v1Mode=false;
+let _v1Running=false, _v1Task=null;
+const _v1Earned={xp:0,gems:0,streak:0};
+function _v1UpdateDisplay(){
+    requestAnimationFrame(()=>{
+        const xi=document.getElementById('DH_V1_XP_Input');
+        const gi=document.getElementById('DH_V1_Gem_Input');
+        const si=document.getElementById('DH_V1_Streak_Input');
+        if(xi) xi.value=_v1Earned.xp>0?String(_v1Earned.xp):'';
+        if(gi) gi.value=_v1Earned.gems>0?String(_v1Earned.gems):'';
+        if(si) si.value=_v1Earned.streak>0?String(_v1Earned.streak):'';
+    });
+}
+function _v1SyncUser(){
+    if(!_user) return;
+    const row=document.getElementById('DH_V1_User_Row');
+    const div=document.getElementById('DH_V1_User_Divider');
+    if(row) row.style.display='flex';
+    if(div) div.style.display='';
+    document.getElementById('DH_V1_UName').textContent=_user.username||'';
+    document.getElementById('DH_V1_UXP').textContent=(_user.totalXp||0).toLocaleString();
+    document.getElementById('DH_V1_UGems').textContent=(_user.gems||0).toLocaleString();
+    document.getElementById('DH_V1_UStreak').textContent=(_user.streak||0).toLocaleString();
+    if(_user.picture){
+        let hq=_user.picture.replace(/\/(medium|large|small)$/,'/xlarge');
+        if(!hq.endsWith('/xlarge')&&hq.includes('duolingo.com/ssr-avatars')) hq+='/xlarge';
+        const av=document.getElementById('DH_V1_Avatar');
+        const img=document.createElement('img');
+        img.src=hq;
+        img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;';
+        img.onerror=function(){av.innerHTML='👤';};
+        av.innerHTML=''; av.appendChild(img);
+    }
+}
 let _isOutdated = false, _remoteVersion = '';
 let _running=false, _task=null, _hidden=false;
 let _delay=parseInt(localStorage.getItem('dh2_delay')||'500',10);
@@ -1456,10 +1604,10 @@ const _autoSolver = {
         if (_solverUI) return;
         _solverUI = document.createElement('div');
         _solverUI.id = 'nightware-solver-ui';
-        _solverUI.style.cssText = `position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 999997; display: flex; gap: 12px; animation: slideUp 0.3s ease-out;`;
+        _solverUI.style.cssText = `position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 2147483647; display: flex; gap: 12px; animation: slideUp 0.3s ease-out; pointer-events: auto;`;
         _solverUI.innerHTML = `
-            <button class="nw-solver-btn" id="nw-solve-single" style="padding: 12px 24px; background: #89e219; border: none; border-bottom: 4px solid #58cc02; border-radius: 12px; color: white; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">SOLVE</button>
-            <button class="nw-solver-btn" id="nw-solve-all" style="padding: 12px 24px; background: #ffc800; border: none; border-bottom: 4px solid #ff9600; border-radius: 12px; color: white; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">SOLVE ALL</button>
+            <button class="nw-solver-btn" id="nw-solve-single" style="padding: 12px 24px; background: #89e219; border: none; border-bottom: 4px solid #58cc02; border-radius: 12px; color: white; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.15); pointer-events: auto;">SOLVE</button>
+            <button class="nw-solver-btn" id="nw-solve-all" style="padding: 12px 24px; background: #ffc800; border: none; border-bottom: 4px solid #ff9600; border-radius: 12px; color: white; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.15); pointer-events: auto;">SOLVE ALL</button>
         `;
         const style = document.createElement('style');
         style.textContent = `@keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } } .nw-solver-btn:hover { filter: brightness(1.1); transform: translateY(-2px); } .nw-solver-btn:active { border-bottom: 0px; transform: translateY(2px); }`;
@@ -1601,7 +1749,7 @@ function _setBtnDone(btnId, label){
 }
 
 const _GF_SCRIPT_URL='https://greasyfork.org/en/scripts/561041-duolingo-duohacker';
-const _CURRENT_VER='2026.03.24';
+const _CURRENT_VER='2026.03.28';
 
 function _setConn(state, label){
         if (state === 'connected' && _isOutdated) {
@@ -1621,7 +1769,7 @@ if(state==='outdated'){
         const ni=document.getElementById('DH_Conn_Ico');
         const nt=document.getElementById('DH_Conn_Txt');
 
-        // main button
+
         nb.style.background=`linear-gradient(0deg,rgba(var(--DH-orange),0.10),rgba(var(--DH-orange),0.10)),rgb(var(--color-snow),0.90)`;
         nb.style.outline=`2px solid rgba(var(--DH-orange),0.30)`;
         nb.style.outlineOffset='-2px';
@@ -1629,11 +1777,11 @@ if(state==='outdated'){
         nb.style.display='flex';
         nb.style.alignItems='center';
 
-        // Text Outdated
+
         nt.textContent='Outdated';
         nt.style.color=`rgb(var(--DH-orange))`;
 
-        // Icon container
+
         ni.textContent='';
         ni.style.display='flex';
         ni.style.alignItems='center';
@@ -1703,8 +1851,9 @@ function _doHide(val){
     const hideBtn=document.getElementById('DH_Hide_Btn');
     main.style.transition='0.8s cubic-bezier(0.16,1,0.32,1)';
     box.style.transition='0.8s cubic-bezier(0.16,1,0.32,1)';
+    const switchV1Btn=document.getElementById('DH_SwitchV1_Btn');
     if(val){
-
+        if(switchV1Btn) switchV1Btn.style.display='none';
         hideBtn.style.background=`linear-gradient(0deg,rgba(var(--DH-blue),0.10),rgba(var(--DH-blue),0.10)),rgb(var(--color-snow),0.80)`;
         hideBtn.style.outline=`2px solid rgba(var(--DH-blue),0.20)`;
         if(icoVisible) icoVisible.style.display='none';
@@ -1712,7 +1861,7 @@ function _doHide(val){
         hideTxt.textContent='Show'; hideTxt.style.color='rgb(var(--DH-blue))';
         main.style.bottom=`-${h-8}px`; box.style.filter='blur(8px)'; box.style.opacity='0';
     } else {
-
+        if(switchV1Btn) switchV1Btn.style.display=(!_v1Mode)?'':'none';
         hideBtn.style.background=`rgb(var(--DH-blue))`;
         hideBtn.style.outline=`2px solid rgba(0,0,0,0.20)`;
         if(icoHidden) icoHidden.style.display='none';
@@ -1794,7 +1943,7 @@ async function _connect(){
         _user=JSON.parse(r.responseText);
         _setConn('connected'); _renderUser(_user);
         _getPrivacy().then(v=>{ _privacy=v; _applyHideProfileToggle(); });
-        ['DH_XP_Btn','DH_Gem_Btn','DH_Streak_Btn','DH_League_Btn','DH_Quest_Btn','DH_Practice_Btn'].forEach(id=>{
+        ['DH_XP_Btn','DH_Gem_Btn','DH_Streak_Btn','DH_League_Btn','DH_Quest_Btn','DH_Practice_Btn','DH_V1_XP_Btn','DH_V1_Gem_Btn','DH_V1_Streak_Btn'].forEach(id=>{
             const b=document.getElementById(id); if(b) b.disabled=false;
         });
 
@@ -1811,6 +1960,7 @@ async function _connect(){
 function _renderUser(u){
     if(!u) return;
     document.getElementById('DH_UName').textContent=u.username||'';
+    _v1SyncUser();
     document.getElementById('DH_UXP').textContent=(u.totalXp||0).toLocaleString();
     document.getElementById('DH_UGems').textContent=(u.gems||0).toLocaleString();
     document.getElementById('DH_UStreak').textContent=(u.streak||0).toLocaleString();
@@ -2316,6 +2466,320 @@ function _resetLeague(){
     if(prog) setTimeout(()=>prog.classList.remove('on'),2000);
 }
 
+
+
+
+function _v1UpdateDisplayNow(){
+    requestAnimationFrame(()=>{
+        const xi=document.getElementById('DH_V1_XP_Input');
+        const gi=document.getElementById('DH_V1_Gem_Input');
+        const si=document.getElementById('DH_V1_Streak_Input');
+
+
+        if(xi){ xi.value=_v1Earned.xp>0?String(_v1Earned.xp):''; }
+        if(gi){ gi.value=_v1Earned.gems>0?String(_v1Earned.gems):''; }
+        if(si){ si.value=_v1Earned.streak>0?String(_v1Earned.streak):''; }
+    });
+}
+
+function _v1SetBtnState(btnId,cfg,label){
+    const btn=document.getElementById(btnId); if(!btn) return;
+    const lbl=btn.querySelector('.DH_Btn_Label'); if(!lbl) return;
+    btn.style.background=cfg.bg;
+    btn.style.outline=`2px solid ${cfg.outline}`;
+    btn.style.outlineOffset='-2px';
+    lbl.style.color=cfg.tc;
+    lbl.textContent=label;
+}
+
+function _v1SetProg(id, pct){
+    const prog=document.getElementById(id+'_Prog');
+    const fill=document.getElementById(id+'_Fill');
+    if(prog&&!prog.classList.contains('on')) prog.classList.add('on');
+    if(fill) fill.style.width=Math.min(100,Math.max(1,pct))+'%';
+}
+function _v1ClearProg(id){
+    const prog=document.getElementById(id+'_Prog');
+    const fill=document.getElementById(id+'_Fill');
+    setTimeout(()=>{ if(prog) prog.classList.remove('on'); },2000);
+    if(fill) fill.style.width='0%';
+}
+
+
+let _v1SkillId=null;
+async function _v1FetchSkillId(){
+    if(_v1SkillId) return _v1SkillId;
+    try{
+        const r=await _gm('GET',
+            `https://www.duolingo.com/2017-06-30/users/${_sub}?fields=currentCourse{pathSectioned{units{levels{pathLevelMetadata{skillId},pathLevelClientData{skillId}}}}}`
+        );
+        if(r.status!==200) return null;
+        const d=JSON.parse(r.responseText);
+        const sections=d.currentCourse?.pathSectioned||[];
+        for(const sec of sections)
+            for(const unit of (sec.units||[]))
+                for(const lvl of (unit.levels||[])){
+                    const sid=lvl.pathLevelMetadata?.skillId||lvl.pathLevelClientData?.skillId;
+                    if(sid){ _v1SkillId=sid; return sid; }
+                }
+    }catch{}
+    return null;
+}
+
+
+async function _v1XP110Once(){
+    const sid=await _v1FetchSkillId();
+    if(!sid) return false;
+    try{
+        const sr=await _gm('POST','https://www.duolingo.com/2017-06-30/sessions',{
+            challengeTypes:[],
+            fromLanguage:_user.fromLanguage,
+            learningLanguage:_user.learningLanguage,
+            type:'UNIT_TEST',
+            skillIds:[sid]
+        });
+        if(!sr||sr.status!==200) return false;
+        const sess=JSON.parse(sr.responseText);
+        const now=Math.floor(Date.now()/1000);
+        const ur=await _gm('PUT',`https://www.duolingo.com/2017-06-30/sessions/${sess.id}`,{
+            id:sess.id,
+            metadata:sess.metadata,
+            type:'UNIT_TEST',
+            fromLanguage:_user.fromLanguage,
+            learningLanguage:_user.learningLanguage,
+            challenges:[],
+            adaptiveChallenges:[],
+            sessionExperimentRecord:[],
+            experiments_with_treatment_contexts:[],
+            adaptiveInterleavedChallenges:[],
+            sessionStartExperiments:[],
+            trackingProperties:[],
+            ttsAnnotations:[],
+            heartsLeft:0,
+            startTime:now,
+            enableBonusPoints:true,
+            endTime:now+60,
+            failed:false,
+            maxInLessonStreak:9,
+            shouldLearnThings:true,
+            hasBoost:true,
+            happyHourBonusXp:10,
+            pathLevelSpecifics:{unitIndex:0}
+        });
+        if(ur&&ur.status===200){
+            const d=JSON.parse(ur.responseText);
+            return d?.awardedXp||d?.xpGain||110;
+        }
+    }catch{}
+    return false;
+}
+
+
+async function _v1FarmXP(){
+    _v1Earned.xp=0; _v1UpdateDisplayNow();
+    _v1SetBtnState('DH_V1_XP_Btn',_C_RED,'STOP');
+    _v1SetProg('DH_V1_XP',1);
+
+    let use499=true;
+    let cons429=0;
+    const MAX_429=2;
+    let fallbackErrors=0;
+    const MAX_FALLBACK=5;
+    let loopPct=0;
+
+
+    _v1FetchSkillId();
+
+    while(_v1Running&&_v1Task==='xp'){
+        if(use499){
+
+            let status=0;
+            try{
+                const slug=await _probeSlug();
+                if(slug){
+                    const now=Math.floor(Date.now()/1000);
+                    const dur=Math.floor(Math.random()*121+300);
+                    const r=await _gm('POST',`https://stories.duolingo.com/api2/stories/${slug}/complete`,{
+                        awardXp:true,completedBonusChallenge:true,
+                        fromLanguage:_user.fromLanguage,learningLanguage:_user.learningLanguage,
+                        hasXpBoost:false,illustrationFormat:'svg',
+                        isFeaturedStoryInPracticeHub:true,isLegendaryMode:true,
+                        isV2Redo:false,isV2Story:false,masterVersion:true,
+                        maxScore:0,score:0,happyHourBonusXp:469,
+                        startTime:now,endTime:now+dur
+                    });
+                    status=r.status;
+                }
+            }catch{}
+
+            if(status===200){
+                cons429=0; fallbackErrors=0;
+                _v1Earned.xp+=499;
+                _v1UpdateDisplayNow();
+                loopPct=(loopPct+2)%99+1;
+                _v1SetProg('DH_V1_XP',loopPct);
+            } else if(status===429){
+                cons429++;
+                if(cons429>=MAX_429){ use499=false; _workingSlug=null; }
+                await _sleep(_delay*2);
+                continue;
+            } else {
+                use499=false; _workingSlug=null;
+                continue;
+            }
+        } else {
+
+            const earned=await _v1XP110Once();
+            if(earned){
+                fallbackErrors=0;
+                _v1Earned.xp+=earned;
+                _v1UpdateDisplayNow();
+                loopPct=(loopPct+1)%99+1;
+                _v1SetProg('DH_V1_XP',loopPct);
+            } else {
+                fallbackErrors++;
+                if(fallbackErrors>=MAX_FALLBACK){
+                    _notif('❌','V1 XP','Too many errors, stopping.');
+                    break;
+                }
+                await _sleep(_delay*3);
+                continue;
+            }
+        }
+        await _sleep(_delay);
+    }
+
+    _v1ClearProg('DH_V1_XP');
+    _v1SetBtnState('DH_V1_XP_Btn',_C_BLUE,'RUN');
+    document.getElementById('DH_V1_XP_Btn').disabled=!_user;
+    _v1Running=false; _v1Task=null;
+    if(_v1Earned.xp>0){ _notif('✅','XP Farm Done!',`Farmed ${_v1Earned.xp.toLocaleString()} XP.`); setTimeout(_connect,1500); }
+}
+
+async function _v1FarmGems(){
+    _v1Earned.gems=0; _v1UpdateDisplayNow();
+    _v1SetBtnState('DH_V1_Gem_Btn',_C_RED,'STOP');
+    _v1SetProg('DH_V1_Gem',1);
+
+    const ID='SKILL_COMPLETION_BALANCED-dd2495f4_d44e_3fc3_8ac8_94e2191506f0-2-GEMS';
+    const PER=30;
+    const THREADS=2;
+
+    let loopPct=0;
+    let consecutiveErrors=0;
+    const MAX_ERRORS=5;
+
+    const _gemReq=()=>_gm('PATCH',
+        `https://www.duolingo.com/2023-05-23/users/${_sub}/rewards/${ID}`,
+        {consumed:true,learningLanguage:_user.learningLanguage,fromLanguage:_user.fromLanguage}
+    ).catch(()=>({status:0}));
+
+    const parallelBatch=async()=>{
+        const promises=[];
+        for(let i=0;i<THREADS;i++){
+            promises.push(_gemReq());
+        }
+        return Promise.allSettled(promises);
+    };
+
+    while(_v1Running&&_v1Task==='gems'){
+        const results=await parallelBatch();
+        const ok=results.filter(r=>r.status==='fulfilled'&&r.value?.status===200).length;
+
+        if(ok>0){
+            consecutiveErrors=0;
+            _v1Earned.gems+=ok*PER;
+            _v1UpdateDisplayNow();
+            loopPct=(loopPct+ok*3)%99+1;
+            _v1SetProg('DH_V1_Gem',loopPct);
+        } else {
+            consecutiveErrors++;
+            if(consecutiveErrors>=MAX_ERRORS){
+                _notif('❌','Gems','Too many errors, stopping.');
+                break;
+            }
+            await _sleep(_delay * 2);
+            continue;
+        }
+        await _sleep(Math.max(50, _delay / 2));
+    }
+
+    _v1ClearProg('DH_V1_Gem');
+    _v1SetBtnState('DH_V1_Gem_Btn',_C_BLUE,'RUN');
+    document.getElementById('DH_V1_Gem_Btn').disabled=!_user;
+    _v1Running=false; _v1Task=null;
+    if(_v1Earned.gems>0){
+        _notif('💎','Gems Farm Done!',`Farmed ${_v1Earned.gems.toLocaleString()} Gems.`);
+        setTimeout(_connect,1500);
+    }
+}
+
+
+async function _v1FarmStreak(){
+    _v1Earned.streak=0; _v1UpdateDisplayNow();
+    _v1SetBtnState('DH_V1_Streak_Btn',_C_RED,'STOP');
+    _v1SetProg('DH_V1_Streak',1);
+
+    const CH=["assist","characterIntro","characterMatch","characterPuzzle","characterSelect","characterTrace","characterWrite","completeReverseTranslation","definition","dialogue","extendedMatch","extendedListenMatch","form","freeResponse","gapFill","judge","listen","listenComplete","listenMatch","match","name","listenComprehension","listenIsolation","listenSpeak","listenTap","orderTapComplete","partialListen","partialReverseTranslate","patternTapComplete","radioBinary","radioImageSelect","radioListenMatch","radioListenRecognize","radioSelect","readComprehension","reverseAssist","sameDifferent","select","selectPronunciation","selectTranscription","svgPuzzle","syllableTap","syllableListenTap","speak","tapCloze","tapClozeTable","tapComplete","tapCompleteTable","tapDescribe","translate","transliterate","transliterationAssist","typeCloze","typeClozeTable","typeComplete","typeCompleteTable","writeComprehension"];
+    let farmStart;
+    try{
+        const s=new Date(_user.streakData?.currentStreak?.startDate||Date.now());
+        s.setDate(s.getDate()-1); farmStart=s;
+    }catch{ farmStart=new Date(); farmStart.setDate(farmStart.getDate()-1); }
+    let dayIdx=0;
+    let loopPct=0;
+
+    while(_v1Running&&_v1Task==='streak'){
+        const simDay=new Date(farmStart);
+        simDay.setDate(simDay.getDate()-dayIdx);
+        const end=Math.floor(simDay.getTime()/1000);
+        try{
+            const sr=await _gm('POST','https://www.duolingo.com/2023-05-23/sessions',{
+                challengeTypes:CH,fromLanguage:_user.fromLanguage,isFinalLevel:false,isV2:true,
+                juicy:true,learningLanguage:_user.learningLanguage,smartTipsVersion:2,type:'GLOBAL_PRACTICE'
+            });
+            if(sr.status===200){
+                const sess=JSON.parse(sr.responseText);
+                await new Promise((res,rej)=>GM_xmlhttpRequest({
+                    method:'PUT',url:`https://www.duolingo.com/2023-05-23/sessions/${sess.id}`,
+                    headers:_hdrs,
+                    data:JSON.stringify({
+                        ...sess,heartsLeft:5,startTime:end-1,endTime:end,
+                        enableBonusPoints:false,failed:false,maxInLessonStreak:9,shouldLearnThings:true
+                    }),
+                    onload:r=>res(r),onerror:()=>rej(new Error('net')),
+                    timeout:15000,ontimeout:()=>rej(new Error('timeout'))
+                }));
+                _v1Earned.streak++;
+                _v1UpdateDisplayNow();
+                loopPct=(loopPct+1)%99+1;
+                _v1SetProg('DH_V1_Streak',loopPct);
+            }
+        }catch{}
+        dayIdx++;
+        await _sleep(_delay);
+    }
+
+    _v1ClearProg('DH_V1_Streak');
+    _v1SetBtnState('DH_V1_Streak_Btn',_C_BLUE,'RUN');
+    document.getElementById('DH_V1_Streak_Btn').disabled=!_user;
+    _v1Running=false; _v1Task=null;
+    if(_v1Earned.streak>0){ _notif('🔥','Streak Farm Done!',`Farmed ${_v1Earned.streak} streak days.`); setTimeout(_connect,1500); }
+}
+
+function _v1RunToggle(task){
+    if(_v1Running&&_v1Task===task){
+        _v1Running=false; _v1Task=null; return;
+    }
+    if(_v1Running){_notif('⚠️','Busy','Stop current V1 farm first.');return;}
+    if(!_user){_notif('⚠️','Not connected','Please wait.');return;}
+    _v1Running=true; _v1Task=task;
+    if(task==='xp')     _v1FarmXP();
+    if(task==='gems')   _v1FarmGems();
+    if(task==='streak') _v1FarmStreak();
+}
+
+
 async function _run(type,val){
     if(_running){_running=false;_notif('⏹️','Stopped','Farm stopped.');return;}
     if(!_user){_notif('⚠️','Not connected','Please wait.');return;}
@@ -2545,9 +3009,35 @@ async function _claimAllMonthly(){
 }
 
 document.getElementById('DH_Hide_Btn').addEventListener('click',()=>_doHide(!_hidden));
+
+
+document.getElementById('DH_SwitchV1_Btn').addEventListener('click',()=>{
+    _v1Mode=true;
+
+    document.getElementById('DH_SwitchV1_Btn').style.display='none';
+    document.getElementById('DH_SwitchV2_Btn').style.display='';
+    _v1SyncUser();
+    _goPage('V1');
+});
+
+document.getElementById('DH_SwitchV2_Btn').addEventListener('click',()=>{
+    _v1Mode=false;
+
+    if(_v1Running){_v1Running=false;_v1Task=null;}
+
+    document.getElementById('DH_SwitchV2_Btn').style.display='none';
+    document.getElementById('DH_SwitchV1_Btn').style.display='';
+    _goPage(1);
+});
+
+
+document.getElementById('DH_V1_XP_Btn').addEventListener('click',()=>_v1RunToggle('xp'));
+document.getElementById('DH_V1_Gem_Btn').addEventListener('click',()=>_v1RunToggle('gems'));
+document.getElementById('DH_V1_Streak_Btn').addEventListener('click',()=>_v1RunToggle('streak'));
+document.getElementById('DH_V1_Settings_Btn').addEventListener('click',()=>{ _goPage(4); _initHideProfileToggle(); });
 document.getElementById('DH_Discord_Btn').addEventListener('click',()=>window.open('https://discord.gg/duohacker','_blank'));
 document.getElementById('DH_GitHub_Btn').addEventListener('click',()=>window.open('https://github.com/not2pixel/DuoHacker','_blank'));
-// ── Hide Profile ──────────────────────────────────────────────
+
 async function _getPrivacy(){
     if(!_sub||!_hdrs) return null;
     try{
@@ -2570,7 +3060,7 @@ function _applyHideProfileToggle(){
     const lbl=document.getElementById('DH_HideProfile_Status');
     if(!tog||!lbl) return;
     if(_privacy===null){ lbl.textContent='Unavailable'; tog.disabled=true; return; }
-    // bind listener once via data attr
+
     if(!tog.dataset.dhBound){
         tog.dataset.dhBound='1';
         tog.addEventListener('change',async function(){
@@ -2597,17 +3087,20 @@ function _initHideProfileToggle(){
     if(!tog||!lbl) return;
     if(!_sub||!_hdrs){ lbl.textContent='Not connected'; tog.disabled=true; return; }
     if(_privacy!==null){ _applyHideProfileToggle(); return; }
-    // fallback: not yet fetched (e.g. settings opened before connect finished)
+
     lbl.textContent='Loading\u2026'; tog.disabled=true;
     _getPrivacy().then(v=>{ _privacy=v; _applyHideProfileToggle(); });
 }
-// ─────────────────────────────────────────────────────────────
+
 document.getElementById('DH_Settings_Btn').addEventListener('click',()=>{_goPage(2);_initHideProfileToggle();});
 document.getElementById('DH_Back_Btn').addEventListener('click',()=>_goBack());
 document.getElementById('DH_Shop_Btn').addEventListener('click',()=>{_goPage(3);_loadShop();});
 document.getElementById('DH_Shop_Back_Btn').addEventListener('click',()=>_goBack());
-document.getElementById('DH_Page4_Btn').addEventListener('click',()=>_goPage(4));
-document.getElementById('DH_Settings_Back_Btn').addEventListener('click',()=>_goBack());
+document.getElementById('DH_Page4_Btn').addEventListener('click',()=>{ _goPage(4); _initHideProfileToggle(); });
+document.getElementById('DH_Settings_Back_Btn').addEventListener('click',()=>{
+    _initHideProfileToggle();
+    _goBack();
+});
 
 document.getElementById('DH_AccSettings_Btn').addEventListener('click',()=>_goPage(5));
 document.getElementById('DH_AccMgr_Back_Btn').addEventListener('click',()=>_goBack());
@@ -2786,6 +3279,13 @@ setTimeout(()=>{
     setTimeout(()=>{main.style.transition='';box.style.transition='';},800);
 },600);
 _connect();
+
+setTimeout(()=>{
+    if(!_v1Mode){
+        const sb=document.getElementById('DH_SwitchV1_Btn');
+        if(sb&&!_hidden) sb.style.display='';
+    }
+},700);
 
 _resumePracticeIfNeeded();
 
