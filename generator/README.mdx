@@ -1,0 +1,105 @@
+# DuoHacker Generator Bot
+
+A Discord bot for generating Duolingo accounts with automated setup and XP farming capabilities.
+
+## Features
+
+- Generate multiple Duolingo accounts simultaneously
+- Automatic email creation using TempMail API
+- Initial lesson completion and XP farming
+- Proxy support with automatic fallback
+- Real-time progress tracking
+- Export accounts as JSON
+
+## Requirements
+
+- Python 3.8+
+- Discord Bot Token
+- TempMail API Key
+
+## Installation
+
+1. Clone the repository
+```bash
+git clone https://github.com/not2pixel/DuoHacker.git
+```
+
+2. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+3. Create a `.env` file
+```env
+DISCORD_BOT_TOKEN=your_discord_bot_token_here
+TEMPMAIL_API_KEY=your_tempmail_api_key_here
+```
+
+4. Optional: Create `proxies.txt` for proxy support
+```
+socks5://username:password@host:port
+http://host:port
+```
+
+## Usage
+
+1. Start the bot
+```bash
+python main.py
+```
+
+2. Invite the bot to your Discord server
+
+3. Use the following commands:
+
+### Commands
+
+- `/generate [count] [password]` - Generate accounts
+  - `count`: Number of accounts (1-10)
+  - `password`: Optional password for all accounts
+
+- `/proxies` - Check loaded proxy status
+
+## Configuration
+
+### Environment Variables
+
+- `DISCORD_BOT_TOKEN` - Your Discord bot token
+- `TEMPMAIL_API_KEY` - Your TempMail API key from https://tempmail.lol
+
+### Proxy Setup
+
+Create a `proxies.txt` file in the root directory with one proxy per line:
+```
+socks5://user:pass@host:port
+http://proxy.example.com:8080
+```
+
+## Output
+
+Generated accounts are saved as JSON with the following format:
+```json
+{
+  "_id": "duolingo_user_id",
+  "email": "generated@email.com",
+  "password": "account_password",
+  "jwt_token": "authentication_token",
+  "timezone": "Asia/Saigon",
+  "username": "generated_username"
+}
+```
+
+## Notes
+
+- Maximum 10 accounts per generation to prevent rate limiting
+- 70% of accounts use proxies, 30% use direct connection
+- Each account completes initial lesson and farms XP automatically
+- Failed accounts are tracked and reported
+
+## Disclaimer
+
+This tool is for educational purposes only. Use at your own risk.
+
+## License
+
+MIT
