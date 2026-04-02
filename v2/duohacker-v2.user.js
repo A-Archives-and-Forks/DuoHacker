@@ -52,7 +52,7 @@
 // @name:ur             Duolingo DuoHacker
 
 // @namespace           https://github.com/not2pixel/DuoHacker
-// @version             2026.03.28
+// @version             2026.04.02
 
 // @description         The #1 Duolingo hack - Farm XP, Gems, Streaks and unlock Duolingo Max for free.
 // @description:vi      Công cụ hack Duolingo #1 - Farm XP, Gems, Streaks và mở khóa Duolingo Max miễn phí.
@@ -488,6 +488,38 @@ GM_addStyle(`
 #DH_AccSettings_Btn        { transform-origin: right center; }
 #DH_AccSettings_Btn:hover  { filter:brightness(0.85); transform:scale(1.1); }
 #DH_AccSettings_Btn:active { transform:scale(0.92); }
+
+/* PAGE 9: License */
+#DH_Page_9 { flex:1; min-height:0; }
+.DH_License_Scroll {
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding:14px 16px;
+    border-radius:12px;
+    outline:2px solid rgba(var(--color-eel,117,117,117),0.10);
+    outline-offset:-2px;
+    background:rgba(var(--color-eel,117,117,117),0.04);
+    align-self:stretch;
+    max-height:320px;
+}
+.DH_License_Scroll::-webkit-scrollbar { width:3px; }
+.DH_License_Scroll::-webkit-scrollbar-thumb { background:rgba(var(--color-eel,117,117,117),0.20); border-radius:2px; }
+#DH_License_Text {
+    font-size:11.5px;
+    font-weight:600;
+    line-height:1.65;
+    color:rgb(var(--color-wolf,60,60,67),0.75);
+    white-space:pre-wrap;
+    margin:0;
+    word-break:break-word;
+}
+@media (max-width:699px) {
+    .DH_License_Scroll { max-height:calc(100svh - 240px); }
+    .DH_Main { margin-bottom:80px; }
+}
+
 `);
 
 const _wrap = document.createElement('div');
@@ -670,7 +702,7 @@ _wrap.innerHTML = `
 
             <div class="DH_HStack_Auto">
                 <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">twisk.fun</p>
-                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">v2026.03.28</p>
+                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">v2026.04.02</p>
             </div>
         </div>
 
@@ -758,7 +790,7 @@ _wrap.innerHTML = `
                 <svg width="8" height="14" viewBox="0 0 9 16" fill="none"><path d="M8 1L2 8l6 7" stroke="rgb(var(--color-wolf,60,60,67))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 <p class="DH_T1">Back</p>
             </div>
-            <div style="width:100%;gap:8px;display:flex;flex-direction:column;align-items:flex-start;">
+            <div style="width:100%;gap:8px;display:flex;flex-direction:column;align-items:flex-start;overflow-y:auto;max-height:360px;padding-right:2px;" class="DH_Scroll_Inner">
 
             <!-- Loop Delay -->
             <div class="DH_VStack_8" style="align-self:stretch;">
@@ -812,12 +844,40 @@ _wrap.innerHTML = `
                 </label>
             </div>
 
+            <!-- Hide Animation toggle -->
+            <div class="DH_HStack_Auto" style="align-self:stretch;padding:4px 0;">
+                <div style="display:flex;flex-direction:column;gap:2px;">
+                    <p class="DH_T1 DH_NoSel">Hide Animation</p>
+                    <p class="DH_T2 DH_NoSel" style="font-size:11px;">Hide Duolingo images &amp; animations</p>
+                </div>
+                <label class="DH_Toggle">
+                    <input type="checkbox" id="DH_HideAnim_Toggle">
+                    <span class="DH_Toggle_Slider"></span>
+                </label>
+            </div>
+
+
 
             <div class="DH_Divider"></div>
             <div class="DH_HStack_Auto" style="align-self:stretch;padding:2px 0;">
-                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">DuoHacker V2</p>
+                <p class="DH_T2 DH_NoSel" id="DH_License_Open_Btn" style="color:rgba(var(--DH-blue),0.45);cursor:pointer;text-decoration:underline;text-underline-offset:2px;">DuoHacker V2</p>
                 <p class="DH_T2 DH_NoSel" id="DH_Credits_Btn" style="color:rgb(var(--DH-blue));cursor:pointer;font-weight:700;text-decoration:underline;text-underline-offset:2px;">View Credits</p>
             </div>
+            </div>
+        </div>
+
+        <!-- PAGE 9: License -->
+        <div class="DH_Page" id="DH_Page_9" style="flex:1;min-height:0;">
+            <div class="DH_HStack_4 DH_NoSel" id="DH_License_Back_Btn" style="align-self:flex-start;cursor:pointer;opacity:0.55;">
+                <svg width="8" height="14" viewBox="0 0 9 16" fill="none"><path d="M8 1L2 8l6 7" stroke="rgb(var(--color-wolf,60,60,67))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <p class="DH_T1">Back</p>
+            </div>
+            <div class="DH_HStack_Auto DH_NoSel" style="align-self:stretch;">
+                <p class="DH_T1" style="font-size:15px;">MIT License</p>
+                <p class="DH_T2" style="font-size:11px;color:rgba(var(--DH-blue),0.50);">DuoHacker</p>
+            </div>
+            <div class="DH_License_Scroll">
+                <p id="DH_License_Text" class="DH_NoSel">Loading…</p>
             </div>
         </div>
 
@@ -992,6 +1052,7 @@ _wrap.innerHTML = `
 </div>
 `;
 document.body.appendChild(_wrap);
+
 
 let _jwt=null, _sub=null, _hdrs=null, _user=null, _privacy=null;
 let _v1Mode=false;
@@ -1749,7 +1810,7 @@ function _setBtnDone(btnId, label){
 }
 
 const _GF_SCRIPT_URL='https://greasyfork.org/en/scripts/561041-duolingo-duohacker';
-const _CURRENT_VER='2026.03.28';
+const _CURRENT_VER='2026.04.02';
 
 function _setConn(state, label){
         if (state === 'connected' && _isOutdated) {
@@ -1852,8 +1913,10 @@ function _doHide(val){
     main.style.transition='0.8s cubic-bezier(0.16,1,0.32,1)';
     box.style.transition='0.8s cubic-bezier(0.16,1,0.32,1)';
     const switchV1Btn=document.getElementById('DH_SwitchV1_Btn');
+    const switchV2Btn=document.getElementById('DH_SwitchV2_Btn');
     if(val){
         if(switchV1Btn) switchV1Btn.style.display='none';
+        if(switchV2Btn) switchV2Btn.style.display='none';
         hideBtn.style.background=`linear-gradient(0deg,rgba(var(--DH-blue),0.10),rgba(var(--DH-blue),0.10)),rgb(var(--color-snow),0.80)`;
         hideBtn.style.outline=`2px solid rgba(var(--DH-blue),0.20)`;
         if(icoVisible) icoVisible.style.display='none';
@@ -1862,6 +1925,7 @@ function _doHide(val){
         main.style.bottom=`-${h-8}px`; box.style.filter='blur(8px)'; box.style.opacity='0';
     } else {
         if(switchV1Btn) switchV1Btn.style.display=(!_v1Mode)?'':'none';
+        if(switchV2Btn) switchV2Btn.style.display=(_v1Mode)?'':'none';
         hideBtn.style.background=`rgb(var(--DH-blue))`;
         hideBtn.style.outline=`2px solid rgba(0,0,0,0.20)`;
         if(icoHidden) icoHidden.style.display='none';
@@ -1909,6 +1973,7 @@ function _goPage(to){
         }
         if(to===5){ _renderAccounts(); }
         if(to===6){ _loadMonthlyQuests(); }
+        if(to===9){ _loadLicense(); }
         setTimeout(()=>{ box.style.height=''; box.style.transition=''; toEl.style.cssText=''; _pageBusy=false; },300);
     },350);
 }
@@ -1943,6 +2008,8 @@ async function _connect(){
         _user=JSON.parse(r.responseText);
         _setConn('connected'); _renderUser(_user);
         _getPrivacy().then(v=>{ _privacy=v; _applyHideProfileToggle(); });
+        _probeSlug();
+        _v1FetchSkillId();
         ['DH_XP_Btn','DH_Gem_Btn','DH_Streak_Btn','DH_League_Btn','DH_Quest_Btn','DH_Practice_Btn','DH_V1_XP_Btn','DH_V1_Gem_Btn','DH_V1_Streak_Btn'].forEach(id=>{
             const b=document.getElementById(id); if(b) b.disabled=false;
         });
@@ -1984,11 +2051,17 @@ async function _farmXP(txp){
     const total=loops+(rem>=MIN?1:0);
     let cur=0,earned=0;
     _setBtnRunning('DH_XP_Btn');
+    // Pre-warm slug probe so first loop has no blocking wait
+    await _probeSlug();
     for(let i=0;i<loops;i++){
         if(!_running) break;
         const ok=await _storyXP(469);
         if(ok){earned+=MAX;cur++;}
-        else{await _sleep(2000);i--;continue;}
+        else{
+            _workingSlug=null;_workingSlugFrom=null;_workingSlugLearn=null;_probingSlugPromise=null;
+            await _sleep(1500);
+            i--;continue;
+        }
         _setBtnProgress('DH_XP_Btn',Math.floor((cur/total)*100));
         await _sleep(_delay);
     }
@@ -2004,35 +2077,56 @@ async function _farmXP(txp){
     }
 }
 
-let _workingSlug=null;
+let _workingSlug=null,_workingSlugFrom=null,_workingSlugLearn=null;
+let _probingSlugPromise=null;
+const _SLUG_CANDIDATES=()=>[
+    ['vi-en-le-passeport','vi','en'],
+    ['fr-en-le-passeport','fr','en'],
+    ['en-fr-le-passeport','en','fr'],
+    ['es-en-le-passeport','es','en'],
+    ['de-en-le-passeport','de','en'],
+    ['pt-en-le-passeport','pt','en'],
+    ['it-en-le-passeport','it','en'],
+];
 async function _probeSlug(){
     if(_workingSlug) return _workingSlug;
-    const candidates=[
-        `${_user.fromLanguage}-${_user.learningLanguage}-le-passeport`,
-        `fr-en-le-passeport`,
-        `en-fr-le-passeport`,
-        `es-en-le-passeport`,
-        `de-en-le-passeport`,
-        `pt-en-le-passeport`,
-        `it-en-le-passeport`,
-    ];
-    for(const slug of candidates){
-        try{
+    if(_probingSlugPromise) return _probingSlugPromise;
+    _probingSlugPromise=(async()=>{
+        const now=Math.floor(Date.now()/1000);
+        const tryCandidate=([slug,from,learn])=>_gm('POST',`https://stories.duolingo.com/api2/stories/${slug}/complete`,{
+            awardXp:false,completedBonusChallenge:false,
+            fromLanguage:from,learningLanguage:learn,
+            hasXpBoost:false,illustrationFormat:'svg',
+            isFeaturedStoryInPracticeHub:true,isLegendaryMode:true,
+            isV2Redo:false,isV2Story:false,masterVersion:true,
+            maxScore:0,score:0,happyHourBonusXp:0,
+            startTime:now,endTime:now+300
+        }).then(r=>{
+            if(r.status===200||r.status===429) return [slug,from,learn];
+            return null;
+        }).catch(()=>null);
 
-            const now=Math.floor(Date.now()/1000);
-            const r=await _gm('POST',`https://stories.duolingo.com/api2/stories/${slug}/complete`,{
-                awardXp:false,completedBonusChallenge:false,
-                fromLanguage:_user.fromLanguage,learningLanguage:_user.learningLanguage,
-                hasXpBoost:false,illustrationFormat:'svg',
-                isFeaturedStoryInPracticeHub:true,isLegendaryMode:true,
-                isV2Redo:false,isV2Story:false,masterVersion:true,
-                maxScore:0,score:0,happyHourBonusXp:0,
-                startTime:now,endTime:now+300
+        const winner=await new Promise(resolve=>{
+            let settled=false;
+            let pending=_SLUG_CANDIDATES().length;
+            _SLUG_CANDIDATES().forEach(c=>{
+                tryCandidate(c).then(result=>{
+                    pending--;
+                    if(result&&!settled){settled=true;resolve(result);}
+                    else if(pending===0&&!settled) resolve(null);
+                });
             });
-            if(r.status===200){_workingSlug=slug;return slug;}
-        }catch{}
-    }
-    return null;
+        });
+
+        if(winner){
+            _workingSlug=winner[0];
+            _workingSlugFrom=winner[1];
+            _workingSlugLearn=winner[2];
+        }
+        _probingSlugPromise=null;
+        return winner?winner[0]:null;
+    })();
+    return _probingSlugPromise;
 }
 
 async function _storyXP(hh){
@@ -2580,62 +2674,75 @@ async function _v1FarmXP(){
     _v1SetBtnState('DH_V1_XP_Btn',_C_RED,'STOP');
     _v1SetProg('DH_V1_XP',1);
 
-    let use499=true;
-    let cons429=0;
-    const MAX_429=2;
-    let fallbackErrors=0;
-    const MAX_FALLBACK=5;
-    let loopPct=0;
+    // Always start with story API (499 XP), silently fallback to global API (110 XP) on failure
+    let use499 = true;
 
+    let cons429 = 0;
+    const MAX_429 = 2;
+    let fallbackErrors = 0;
+    const MAX_FALLBACK = 5;
+    let loopPct = 0;
+    let fallbackLoops = 0; // count loops in fallback mode, re-probe every 10
 
+    // Block until slug is found before starting (eliminates first-loop delay)
+    await _probeSlug();
     _v1FetchSkillId();
 
-    while(_v1Running&&_v1Task==='xp'){
+    while(_v1Running && _v1Task==='xp'){
         if(use499){
-
-            let status=0;
+            let status = 0;
             try{
-                const slug=await _probeSlug();
+                const slug = await _probeSlug();
                 if(slug){
-                    const now=Math.floor(Date.now()/1000);
-                    const dur=Math.floor(Math.random()*121+300);
-                    const r=await _gm('POST',`https://stories.duolingo.com/api2/stories/${slug}/complete`,{
-                        awardXp:true,completedBonusChallenge:true,
-                        fromLanguage:_user.fromLanguage,learningLanguage:_user.learningLanguage,
-                        hasXpBoost:false,illustrationFormat:'svg',
-                        isFeaturedStoryInPracticeHub:true,isLegendaryMode:true,
-                        isV2Redo:false,isV2Story:false,masterVersion:true,
-                        maxScore:0,score:0,happyHourBonusXp:469,
-                        startTime:now,endTime:now+dur
+                    const now = Math.floor(Date.now()/1000);
+                    const dur = Math.floor(Math.random()*121+300);
+                    const r = await _gm('POST',`https://stories.duolingo.com/api2/stories/${slug}/complete`,{
+                        awardXp:true, completedBonusChallenge:true,
+                        fromLanguage:_user.fromLanguage, learningLanguage:_user.learningLanguage,
+                        hasXpBoost:false, illustrationFormat:'svg',
+                        isFeaturedStoryInPracticeHub:true, isLegendaryMode:true,
+                        isV2Redo:false, isV2Story:false, masterVersion:true,
+                        maxScore:0, score:0, happyHourBonusXp:469,
+                        startTime:now, endTime:now+dur
                     });
-                    status=r.status;
+                    status = r.status;
                 }
             }catch{}
 
             if(status===200){
                 cons429=0; fallbackErrors=0;
-                _v1Earned.xp+=499;
+                _v1Earned.xp += 499;
                 _v1UpdateDisplayNow();
-                loopPct=(loopPct+2)%99+1;
-                _v1SetProg('DH_V1_XP',loopPct);
+                loopPct = (loopPct+2)%99+1;
+                _v1SetProg('DH_V1_XP', loopPct);
             } else if(status===429){
                 cons429++;
-                if(cons429>=MAX_429){ use499=false; _workingSlug=null; }
+                if(cons429>=MAX_429){
+                    use499=false; fallbackLoops=0;
+                    _workingSlug=null; _workingSlugFrom=null; _workingSlugLearn=null; _probingSlugPromise=null;
+                }
                 await _sleep(_delay*2);
                 continue;
             } else {
-                use499=false; _workingSlug=null;
+                use499=false; fallbackLoops=0;
+                _workingSlug=null; _workingSlugFrom=null; _workingSlugLearn=null; _probingSlugPromise=null;
                 continue;
             }
         } else {
-
-            const earned=await _v1XP110Once();
+            // Global API — DuoFarmer-style UNIT_TEST session (110 XP)
+            // Every 10 fallback loops, silently re-probe slug in background
+            if(fallbackLoops>0 && fallbackLoops%10===0){
+                _workingSlug=null; _workingSlugFrom=null; _workingSlugLearn=null; _probingSlugPromise=null;
+                _probeSlug().then(s=>{ if(s){ use499=true; cons429=0; } });
+            }
+            fallbackLoops++;
+            const earned = await _v1XP110Once();
             if(earned){
                 fallbackErrors=0;
-                _v1Earned.xp+=earned;
+                _v1Earned.xp += earned;
                 _v1UpdateDisplayNow();
-                loopPct=(loopPct+1)%99+1;
-                _v1SetProg('DH_V1_XP',loopPct);
+                loopPct = (loopPct+1)%99+1;
+                _v1SetProg('DH_V1_XP', loopPct);
             } else {
                 fallbackErrors++;
                 if(fallbackErrors>=MAX_FALLBACK){
@@ -3248,6 +3355,50 @@ document.getElementById('DH_Shop_Search').addEventListener('input',e=>{
     _renderShop(_allShopItems,e.target.value);
 });
 
+let _hideAnimObserver=null;
+const _HIDE_ANIM_STYLE_ID='DH_HideAnim_Style';
+const _HIDE_ANIM_KEY='duohacker_hide_animation';
+const _HIDE_PROTECT=['#DH_Root','#DH_Root *'];
+
+function _applyHideAnim(){
+    if(document.getElementById(_HIDE_ANIM_STYLE_ID)) return;
+    const s=document.createElement('style');
+    s.id=_HIDE_ANIM_STYLE_ID;
+    s.textContent=`
+body img:not(#DH_Root img),
+body svg:not(#DH_Root svg),
+body [role="img"]:not(#DH_Root [role="img"]),
+body canvas:not(#DH_Root canvas),
+body video:not(#DH_Root video),
+body lottie-player {
+    visibility:hidden!important;
+    animation:none!important;
+    transition:none!important;
+}
+body * {
+    animation-play-state:paused!important;
+    transition:none!important;
+}
+#DH_Root,#DH_Root *{
+    animation-play-state:running!important;
+    transition:revert!important;
+    visibility:visible!important;
+}`;
+    document.head.appendChild(s);
+}
+
+function _removeHideAnim(){
+    document.getElementById(_HIDE_ANIM_STYLE_ID)?.remove();
+}
+
+const _hideAnimT=document.getElementById('DH_HideAnim_Toggle');
+_hideAnimT.checked=localStorage.getItem(_HIDE_ANIM_KEY)==='true';
+if(_hideAnimT.checked) _applyHideAnim();
+_hideAnimT.addEventListener('change',()=>{
+    localStorage.setItem(_HIDE_ANIM_KEY,_hideAnimT.checked?'true':'false');
+    _hideAnimT.checked?_applyHideAnim():_removeHideAnim();
+});
+
 const CREDITS = [
     {
         script: 'DuoHacker V1',
@@ -3278,6 +3429,29 @@ setTimeout(()=>{
     main.style.bottom='16px'; box.style.opacity=''; box.style.filter='';
     setTimeout(()=>{main.style.transition='';box.style.transition='';},800);
 },600);
+let _licenseLoaded=false;
+function _loadLicense(){
+    if(_licenseLoaded) return;
+    const txt=document.getElementById('DH_License_Text');
+    if(!txt) return;
+    GM_xmlhttpRequest({
+        method:'GET',
+        url:'https://raw.githubusercontent.com/not2pixel/DuoHacker/refs/heads/main/LICENSE',
+        onload:r=>{
+            if(!document.getElementById('DH_License_Text')) return;
+            document.getElementById('DH_License_Text').textContent=
+                r.status===200?r.responseText:'Could not load license. Please check your connection.';
+            _licenseLoaded=true;
+        },
+        onerror:()=>{
+            const t=document.getElementById('DH_License_Text');
+            if(t) t.textContent='Could not load license. Please check your connection.';
+        }
+    });
+}
+document.getElementById('DH_License_Open_Btn').addEventListener('click',()=>_goPage(9));
+document.getElementById('DH_License_Back_Btn').addEventListener('click',()=>_goBack());
+
 _connect();
 
 setTimeout(()=>{
