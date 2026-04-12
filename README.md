@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/not2pixel/DuoHacker/refs/heads/main/images/DuoHacker_Logo_NoBG_PNG.png" width="120" height="120" alt="DuoHacker Logo">
 </p>
-<h1>DuoHacker — The #1 Duolingo Auto Tool</h1>
+<h1>DuoHacker — The Best Duolingo Auto Tool</h1>
 
 <p align="center">
   <a href="https://github.com/not2pixel/DuoHacker/raw/main/DuoHacker.user.js">
