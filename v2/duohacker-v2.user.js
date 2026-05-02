@@ -52,7 +52,8 @@
 // @name:ur             Duolingo DuoHacker
 
 // @namespace           https://github.com/not2pixel/DuoHacker
-// @version             2026.04.04
+// @version             2026.05.01
+// @antifeature        tracking The "Activate Free Super Duolingo" feature sends your Duolingo JWT token to a third-party server (duolingo-super.vercel.app). You will be asked to confirm before anything is sent.
 
 // @description         The #1 Duolingo hack - Farm XP, Gems, Streaks and unlock Duolingo Max for free.
 // @description:vi      Công cụ hack Duolingo #1 - Farm XP, Gems, Streaks và mở khóa Duolingo Max miễn phí.
@@ -111,7 +112,7 @@
 // @match               https://*.duolingo.com/*
 // @match               https://*.duolingo.cn/*
 
-// @icon                https://raw.githubusercontent.com/not2pixel/DuoHacker/refs/heads/main/images/DuoHacker_Logo_NoBG_PNG.png
+// @icon                https://assets.twisk.fun/images/DuoHacker_Logo_NoBG_PNG.png
 // @run-at              document-end
 
 // @grant               GM_xmlhttpRequest
@@ -134,7 +135,7 @@
 // @homepageURL         https://github.com/not2pixel/DuoHacker
 // @supportURL          https://discord.com/invite/Gvmd7deFtS
 // @copyright           2026, DuoHacker (https://github.com/not2pixel)
-// @license             MIT
+// @license             BY-NC-ND 4.0
 // @downloadURL https://update.greasyfork.org/scripts/561041/Duolingo%20DuoHacker.user.js
 // @updateURL https://update.greasyfork.org/scripts/561041/Duolingo%20DuoHacker.meta.js
 // ==/UserScript==
@@ -631,8 +632,33 @@ _wrap.innerHTML = `
                 <div class="DH_Prog_Wrap" id="DH_XP_Prog"><div class="DH_Prog_Fill" id="DH_XP_Fill"></div></div>
             </div>
 
-
             <div class="DH_VStack_8">
+                <p class="DH_T1 DH_NoSel" style="align-self:stretch;">How many Streak days to restore?</p>
+                <div class="DH_HStack_8">
+                    <div class="DH_Input_Wrap">
+                        <p class="DH_T1 DH_NoSel" style="color:rgba(var(--DH-blue),0.38);font-size:14px;flex-shrink:0;">#</p>
+                        <input type="number" class="DH_Input DH_NoSel" id="DH_Streak_Input" placeholder="0" min="1" max="3650">
+                    </div>
+                    <button class="DH_Input_Btn DH_NoSel" id="DH_Streak_Btn" disabled>
+                        <span class="DH_Btn_Label" id="DH_Streak_Lbl" style="color:#fff;">RUN</span>
+                    </button>
+                </div>
+                <div class="DH_Prog_Wrap" id="DH_Streak_Prog"><div class="DH_Prog_Fill" id="DH_Streak_Fill"></div></div>
+            </div>
+
+            <!-- Activate Free Super Duolingo -->
+            <div class="DH_VStack_8" id="DH_FreeSuperSection">
+                <p class="DH_T1 DH_NoSel" style="align-self:stretch;">Would you like to activate Free Super Duolingo?</p>
+                <div class="DH_HStack_8">
+                    <button class="DH_Input_Btn DH_NoSel" id="DH_Super_Activate_Btn" style="flex:1 0 0;" disabled>
+                        <span class="DH_Btn_Label" id="DH_Super_Activate_Lbl" style="color:#fff;">ACTIVATE</span>
+                    </button>
+                </div>
+                <div class="DH_Prog_Wrap" id="DH_Super_Prog"><div class="DH_Prog_Fill" id="DH_Super_Fill"></div></div>
+            </div>
+
+            <!-- Gems Farm (showGems=false) -->
+            <div class="DH_VStack_8" id="DH_Gem_Section" style="display:none;">
                 <p class="DH_T1 DH_NoSel" style="align-self:stretch;">How many Gems would you like to gain?</p>
                 <div class="DH_HStack_8">
                     <div class="DH_Input_Wrap">
@@ -649,21 +675,6 @@ _wrap.innerHTML = `
                     </button>
                 </div>
                 <div class="DH_Prog_Wrap" id="DH_Gem_Prog"><div class="DH_Prog_Fill" id="DH_Gem_Fill"></div></div>
-            </div>
-
-
-            <div class="DH_VStack_8">
-                <p class="DH_T1 DH_NoSel" style="align-self:stretch;">How many Streak days to restore?</p>
-                <div class="DH_HStack_8">
-                    <div class="DH_Input_Wrap">
-                        <p class="DH_T1 DH_NoSel" style="color:rgba(var(--DH-blue),0.38);font-size:14px;flex-shrink:0;">#</p>
-                        <input type="number" class="DH_Input DH_NoSel" id="DH_Streak_Input" placeholder="0" min="1" max="3650">
-                    </div>
-                    <button class="DH_Input_Btn DH_NoSel" id="DH_Streak_Btn" disabled>
-                        <span class="DH_Btn_Label" id="DH_Streak_Lbl" style="color:#fff;">RUN</span>
-                    </button>
-                </div>
-                <div class="DH_Prog_Wrap" id="DH_Streak_Prog"><div class="DH_Prog_Fill" id="DH_Streak_Fill"></div></div>
             </div>
 
             <div class="DH_Divider"></div>
@@ -702,7 +713,7 @@ _wrap.innerHTML = `
 
             <div class="DH_HStack_Auto">
                 <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">twisk.fun</p>
-                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">v2026.04.04</p>
+                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">v2026.05.01</p>
             </div>
         </div>
 
@@ -873,7 +884,7 @@ _wrap.innerHTML = `
                 <p class="DH_T1">Back</p>
             </div>
             <div class="DH_HStack_Auto DH_NoSel" style="align-self:stretch;">
-                <p class="DH_T1" style="font-size:15px;">MIT License</p>
+                <p class="DH_T1" style="font-size:15px;">BY-NC-ND 4.0 License</p>
                 <p class="DH_T2" style="font-size:11px;color:rgba(var(--DH-blue),0.50);">DuoHacker</p>
             </div>
             <div class="DH_License_Scroll">
@@ -994,8 +1005,8 @@ _wrap.innerHTML = `
                 <div class="DH_Prog_Wrap" id="DH_V1_XP_Prog"><div class="DH_Prog_Fill" id="DH_V1_XP_Fill"></div></div>
             </div>
 
-            <!-- Gems Farm -->
-            <div class="DH_VStack_8" style="align-self:stretch;">
+            <!-- Gems Farm (showGems=false) -->
+            <div class="DH_VStack_8" id="DH_V1_Gem_Section" style="display:none; align-self:stretch;">
                 <p class="DH_T1 DH_NoSel" style="align-self:stretch;">Gems Farming</p>
                 <div class="DH_HStack_8">
                     <div class="DH_Input_Wrap">
@@ -1022,6 +1033,17 @@ _wrap.innerHTML = `
                     </button>
                 </div>
                 <div class="DH_Prog_Wrap" id="DH_V1_Streak_Prog"><div class="DH_Prog_Fill" id="DH_V1_Streak_Fill"></div></div>
+            </div>
+
+            <!-- Activate Free Super Duolingo V1 -->
+            <div class="DH_VStack_8" style="align-self:stretch;">
+                <p class="DH_T1 DH_NoSel" style="align-self:stretch;">Would you like to activate Free Super Duolingo?</p>
+                <div class="DH_HStack_8">
+                    <button class="DH_Input_Btn DH_NoSel" id="DH_V1_Super_Activate_Btn" style="flex:1 0 0;" disabled>
+                        <span class="DH_Btn_Label" id="DH_V1_Super_Activate_Lbl" style="color:#fff;">ACTIVATE</span>
+                    </button>
+                </div>
+                <div class="DH_Prog_Wrap" id="DH_V1_Super_Prog"><div class="DH_Prog_Fill" id="DH_V1_Super_Fill"></div></div>
             </div>
 
             <div class="DH_Divider"></div>
@@ -1152,6 +1174,8 @@ const _autoSolver = {
             if (t === 'typeCompleteTable')   return 'Type Complete Table';
             if (t === 'tapCompleteTable')    return 'Tap Complete Table';
             if (t === 'patternTapComplete')  return 'Pattern Tap Complete';
+            if (t === 'syllableTap')         return 'Syllable Tap';
+            if (t === 'syllableListenTap')   return 'Syllable Listen Tap';
 
             if (t === 'listenTap') return 'Listen Tap';
 
@@ -1162,6 +1186,12 @@ const _autoSolver = {
             if (t === 'completeReverseTranslation') return 'Complete Reverse';
 
             if (document.querySelectorAll('[data-test*="challenge-partialReverseTranslate"]').length > 0) return 'Partial Reverse';
+
+            if (document.querySelectorAll('[data-test="challenge challenge-characterWrite"]').length > 0) {
+                if (document.querySelector('g._25Ktp')) return 'Character Write Drag';
+                if (document.querySelectorAll('path._1e5Zt').length > 0) return 'Character Write Draw';
+                return 'Character Write Freehand';
+            }
 
             if (t === 'judge') return 'Judge';
 
@@ -1194,6 +1224,10 @@ const _autoSolver = {
 
             if (document.querySelectorAll('[data-test="challenge-text-input"]').length > 0) return 'Challenge Text Input';
             if (document.querySelectorAll('textarea[data-test="challenge-translate-input"]').length > 0) return 'Challenge Translate Input';
+
+            if (document.querySelectorAll('[data-test="daily-quest-progress-slide"]').length > 0) return 'Daily Quest Progress';
+            if (document.querySelectorAll('[data-test="streak-slide"]').length > 0)               return 'Streak Slide';
+            if (document.querySelectorAll('[data-test="leaderboard-slide"]').length > 0)          return 'Leaderboard Slide';
 
             return false;
         } catch (error) {
@@ -1406,10 +1440,21 @@ const _autoSolver = {
                 }
 
                 case 'Complete Reverse': {
-                    const blank = window.sol.displayTokens?.find(t => t.isBlank);
-                    const answer = blank?.text || window.sol.correctSolutions?.[0] || '';
-                    const input = document.querySelector('[data-test="challenge-text-input"]');
-                    if (input) _autoSolver.setInputValue(input, answer);
+                    const blankTokens = window.sol.displayTokens?.filter(t => t.isBlank);
+                    const inputFields = document.querySelectorAll('[data-test="challenge-text-input"]');
+                    if (blankTokens && blankTokens.length > 1 && inputFields.length > 1) {
+                        // Multi-blank support
+                        inputFields.forEach((input, index) => {
+                            if (blankTokens[index]) {
+                                _autoSolver.setInputValue(input, blankTokens[index].text);
+                            }
+                        });
+                    } else {
+                        // Single blank (fallback)
+                        const answer = blankTokens?.[0]?.text || window.sol.correctSolutions?.[0] || '';
+                        const input = document.querySelector('[data-test="challenge-text-input"]');
+                        if (input) _autoSolver.setInputValue(input, answer);
+                    }
                     break;
                 }
 
@@ -1583,6 +1628,135 @@ const _autoSolver = {
                 case 'Tap Complete Table':
                     await _autoSolver.handleTapCompleteTable();
                     break;
+
+                case 'Syllable Tap':
+                case 'Syllable Listen Tap': {
+                    const correctIndices = window.sol.correctIndices;
+                    const choicesData = window.sol.choices;
+                    const domButtons = Array.from(document.querySelectorAll('[data-test="word-bank"] [data-test$="challenge-tap-token"]'));
+                    correctIndices.forEach(index => {
+                        const correctText = choicesData[index].text;
+                        const matchingButton = domButtons.find(btn => btn.innerText.trim() === correctText);
+                        if (matchingButton) matchingButton.click();
+                    });
+                    break;
+                }
+
+                case 'Character Write Drag': {
+                    const sleep = ms => new Promise(r => setTimeout(r, ms));
+                    const createEvent = (type, x, y, buttons) => new MouseEvent(type, { bubbles: true, clientX: x, clientY: y, buttons, button: 0 });
+                    const normalize = str => str ? str.replace(/\s/g, '') : '';
+                    const strokes = window.sol.strokes;
+                    for (let i = 0; i < strokes.length; i++) {
+                        const targetPathData = normalize(strokes[i].path);
+                        let path, handle;
+                        while (!path || !handle) {
+                            const candidates = document.querySelectorAll('path._1e5Zt');
+                            path = Array.from(candidates).find(p => normalize(p.getAttribute('d')) === targetPathData);
+                            handle = document.querySelector('g._25Ktp');
+                            if (!path || !handle) await sleep(10);
+                        }
+                        const matrix = path.getScreenCTM();
+                        const len = path.getTotalLength();
+                        const start = path.getPointAtLength(0).matrixTransform(matrix);
+                        const end = path.getPointAtLength(len).matrixTransform(matrix);
+                        handle.dispatchEvent(createEvent('mousedown', start.x, start.y, 1));
+                        const steps = 10;
+                        for (let s = 1; s <= steps; s++) {
+                            const p = path.getPointAtLength((s / steps) * len).matrixTransform(matrix);
+                            const move = createEvent('mousemove', p.x, p.y, 1);
+                            handle.dispatchEvent(move);
+                            document.dispatchEvent(move);
+                        }
+                        const finalMove = createEvent('mousemove', end.x, end.y, 1);
+                        handle.dispatchEvent(finalMove);
+                        document.dispatchEvent(finalMove);
+                        await sleep(5);
+                        handle.dispatchEvent(createEvent('mouseup', end.x, end.y, 0));
+                        document.dispatchEvent(createEvent('mouseup', end.x, end.y, 0));
+                    }
+                    break;
+                }
+
+                case 'Character Write Draw': {
+                    const sleep = ms => new Promise(r => setTimeout(r, ms));
+                    const createEvent = (type, x, y, buttons) => new MouseEvent(type, { bubbles: true, clientX: x, clientY: y, buttons, button: 0 });
+                    const normalize = str => str ? str.replace(/\s/g, '') : '';
+                    const strokes = window.sol.strokes;
+                    for (let i = 0; i < strokes.length; i++) {
+                        const targetPathData = normalize(strokes[i].path);
+                        let path, cursor;
+                        while (!path || !cursor) {
+                            const candidates = document.querySelectorAll('path._1e5Zt');
+                            path = Array.from(candidates).find(p => normalize(p.getAttribute('d')) === targetPathData);
+                            cursor = document.querySelector('g._1h31R:not(._25Ktp)');
+                            if (!path || !cursor) await sleep(10);
+                        }
+                        const matrix = path.getScreenCTM();
+                        const len = path.getTotalLength();
+                        const start = path.getPointAtLength(0).matrixTransform(matrix);
+                        const end = path.getPointAtLength(len).matrixTransform(matrix);
+                        cursor.dispatchEvent(createEvent('mousedown', start.x, start.y, 1));
+                        document.dispatchEvent(createEvent('mousedown', start.x, start.y, 1));
+                        const steps = 10;
+                        for (let s = 1; s <= steps; s++) {
+                            const p = path.getPointAtLength((s / steps) * len).matrixTransform(matrix);
+                            const move = createEvent('mousemove', p.x, p.y, 1);
+                            cursor.dispatchEvent(move);
+                            document.dispatchEvent(move);
+                        }
+                        const finalMove = createEvent('mousemove', end.x, end.y, 1);
+                        cursor.dispatchEvent(finalMove);
+                        document.dispatchEvent(finalMove);
+                        await sleep(5);
+                        cursor.dispatchEvent(createEvent('mouseup', end.x, end.y, 0));
+                        document.dispatchEvent(createEvent('mouseup', end.x, end.y, 0));
+                    }
+                    break;
+                }
+
+                case 'Character Write Freehand': {
+                    const sleep = ms => new Promise(r => setTimeout(r, ms));
+                    const createEvent = (type, x, y, buttons) => new MouseEvent(type, { bubbles: true, clientX: x, clientY: y, buttons, button: 0 });
+                    const normalize = str => str ? str.replace(/\s/g, '') : '';
+                    const freehandStrokes = window.sol.strokes.filter(s => s.strokeDrawMode === 'FREEHAND');
+                    for (let i = 0; i < freehandStrokes.length; i++) {
+                        const targetPathData = normalize(freehandStrokes[i].path);
+                        let path, svg;
+                        while (!path || !svg) {
+                            const candidates = document.querySelectorAll('path._22UPm');
+                            path = Array.from(candidates).find(p => normalize(p.getAttribute('d')) === targetPathData);
+                            svg = document.querySelector('svg.o1rqi');
+                            if (!path || !svg) await sleep(10);
+                        }
+                        const matrix = path.getScreenCTM();
+                        const len = path.getTotalLength();
+                        const start = path.getPointAtLength(0).matrixTransform(matrix);
+                        const end = path.getPointAtLength(len).matrixTransform(matrix);
+                        svg.dispatchEvent(createEvent('mousedown', start.x, start.y, 1));
+                        document.dispatchEvent(createEvent('mousedown', start.x, start.y, 1));
+                        const steps = 10;
+                        for (let s = 1; s <= steps; s++) {
+                            const p = path.getPointAtLength((s / steps) * len).matrixTransform(matrix);
+                            const move = createEvent('mousemove', p.x, p.y, 1);
+                            svg.dispatchEvent(move);
+                            document.dispatchEvent(move);
+                        }
+                        const finalMove = createEvent('mousemove', end.x, end.y, 1);
+                        svg.dispatchEvent(finalMove);
+                        document.dispatchEvent(finalMove);
+                        await sleep(5);
+                        svg.dispatchEvent(createEvent('mouseup', end.x, end.y, 0));
+                        document.dispatchEvent(createEvent('mouseup', end.x, end.y, 0));
+                    }
+                    break;
+                }
+
+                case 'Daily Quest Progress':
+                case 'Streak Slide':
+                case 'Leaderboard Slide':
+                    document.querySelector('[data-test="player-next"]')?.click();
+                    break;
             }
         } catch (error) {
 
@@ -1600,7 +1774,19 @@ const _autoSolver = {
         if (_autoSolver._isBusy) return;
         _autoSolver._isBusy = true;
         const sleep = ms => new Promise(r => setTimeout(r, ms));
-        const skipSelectors = ['[data-test="practice-hub-ad-no-thanks-button"]', '[data-test="plus-no-thanks"]', '[data-test="story-start"]', '.vpDIE', '._1N-oo._36Vd3._16r-S._1ZBYz._23KDq._1S2uf.HakPM'];
+        const skipSelectors = [
+            '[data-test="practice-hub-ad-no-thanks-button"]',
+            '[data-test="plus-no-thanks"]',
+            '[data-test="story-start"]',
+            '.vpDIE',                                                                    // "Đọc câu này sau" / "Tôi không thể nói lúc này"
+            '._1N-oo._36Vd3._16r-S._1ZBYz._23KDq._1S2uf.HakPM',
+            '._8AMBh._2vfJy._3Qy5R._28UWu._3h0lA._1S2uf._1E9sc',                       // Cant speak modal button variant 1
+            '._1Qh5D._36g4N._2YF0P._28UWu._3h0lA._1S2uf._1E9sc',                       // Cant speak modal button variant 2
+            '._3bBpU._1x5JY._1M9iF._36g4N._2YF0P.T7I0c._2EnxW.MYehf',
+            '._2V6ug._1ursp._7jW2t._28UWu._3h0lA._1S2uf._1E9sc',                       // No Thanks Legendary
+            '._1rcV8._1VYyp._1ursp._7jW2t._1gKir',                                     // Language Score
+            '._2V6ug._1ursp._7jW2t._3zgLG',                                            // Create Profile Later
+        ];
         skipSelectors.forEach(sel => document.querySelector(sel)?.click());
         try {
             let mainElement = document.querySelector('._3yE3H');
@@ -1624,6 +1810,21 @@ const _autoSolver = {
                     new Promise(r => setTimeout(r, 2000))
                 ]);
                 await sleep(80);
+            } else if (challengeType === 'Challenge Speak' || challengeType === 'Listen Match' || challengeType === 'Listen Speak') {
+                // Dismiss "Đọc câu này sau" / "Tôi không thể nói lúc này" modal trước
+                const speakModalSelectors = ['.vpDIE', '._8AMBh._2vfJy._3Qy5R._28UWu._3h0lA._1S2uf._1E9sc', '._1Qh5D._36g4N._2YF0P._28UWu._3h0lA._1S2uf._1E9sc'];
+                for (const sel of speakModalSelectors) {
+                    const btn = document.querySelector(sel);
+                    if (btn) { btn.click(); await sleep(300); break; }
+                }
+                // Chờ player-skip xuất hiện rồi click
+                let skipBtn = document.querySelector('button[data-test="player-skip"]');
+                if (!skipBtn) {
+                    await sleep(500);
+                    skipBtn = document.querySelector('button[data-test="player-skip"]');
+                }
+                skipBtn?.click();
+                await sleep(150);
             }
             _autoSolver.clickNext();
             await sleep(120);
@@ -1810,7 +2011,7 @@ function _setBtnDone(btnId, label){
 }
 
 const _GF_SCRIPT_URL='https://greasyfork.org/en/scripts/561041-duolingo-duohacker';
-const _CURRENT_VER='2026.04.04';
+const _CURRENT_VER='2026.05.01';
 
 function _setConn(state, label){
         if (state === 'connected' && _isOutdated) {
@@ -2139,43 +2340,12 @@ async function _probeSlug(){
 }
 
 async function _farmGems(tgt){
-    const ID='SKILL_COMPLETION_BALANCED-dd2495f4_d44e_3fc3_8ac8_94e2191506f0-2-GEMS';
-    const PER=10;
-
-    const maxThreads = tgt >= 30 ? 3 : tgt >= 20 ? 2 : 1;
-
-    const schedule=[];
-    let remaining=tgt;
-    while(remaining>0){
-        const t=Math.min(maxThreads, Math.ceil(remaining/PER));
-        schedule.push(t);
-        remaining-=t*PER;
-    }
-    const loops=schedule.length;
-    let earned=0, cur=0;
-    _setBtnRunning('DH_Gem_Btn');
-
-    const _gemReq=()=>_gm('PATCH',
-        `https://www.duolingo.com/2023-05-23/users/${_sub}/rewards/${ID}`,
-        {consumed:true,learningLanguage:_user.learningLanguage,fromLanguage:_user.fromLanguage}
-    );
-
-    for(let i=0;i<loops;i++){
-        if(!_running) break;
-        const t=schedule[i];
-        try{
-            const results=await Promise.all(Array.from({length:t},_gemReq));
-            results.forEach(r=>{if(r.status===200) earned+=PER;});
-        }catch{}
-        cur++;
-        _setBtnProgress('DH_Gem_Btn',Math.floor((cur/loops)*100));
-        await _sleep(_delay);
-    }
-    if(_running){
-        _setBtnDone('DH_Gem_Btn','DONE ✓');
-        _notif('💎','Gem Farm Done!',`Farmed ${earned} Gems.`);
-        setTimeout(_connect,1500);
-    }
+    // [PATCHED 2026.04.21] Farm Gems method is currently unavailable.
+    _running=false; _task=null;
+    _resetBtn('DH_Gem_Btn','GET');
+    document.getElementById('DH_Gem_Btn').disabled=true;
+    document.getElementById('DH_Gem_Input').disabled=true;
+    _notif('🔒','Farm Gems method patched','Please wait until our developers fixed that.',6);
 }
 
 async function _farmStreak(days){
@@ -2751,61 +2921,12 @@ async function _v1FarmXP(){
 }
 
 async function _v1FarmGems(){
-    _v1Earned.gems=0; _v1UpdateDisplayNow();
-    _v1SetBtnState('DH_V1_Gem_Btn',_C_RED,'STOP');
-    _v1SetProg('DH_V1_Gem',1);
-
-    const ID='SKILL_COMPLETION_BALANCED-dd2495f4_d44e_3fc3_8ac8_94e2191506f0-2-GEMS';
-    const PER=30;
-    const THREADS=2;
-
-    let loopPct=0;
-    let consecutiveErrors=0;
-    const MAX_ERRORS=5;
-
-    const _gemReq=()=>_gm('PATCH',
-        `https://www.duolingo.com/2023-05-23/users/${_sub}/rewards/${ID}`,
-        {consumed:true,learningLanguage:_user.learningLanguage,fromLanguage:_user.fromLanguage}
-    ).catch(()=>({status:0}));
-
-    const parallelBatch=async()=>{
-        const promises=[];
-        for(let i=0;i<THREADS;i++){
-            promises.push(_gemReq());
-        }
-        return Promise.allSettled(promises);
-    };
-
-    while(_v1Running&&_v1Task==='gems'){
-        const results=await parallelBatch();
-        const ok=results.filter(r=>r.status==='fulfilled'&&r.value?.status===200).length;
-
-        if(ok>0){
-            consecutiveErrors=0;
-            _v1Earned.gems+=ok*PER;
-            _v1UpdateDisplayNow();
-            loopPct=(loopPct+ok*3)%99+1;
-            _v1SetProg('DH_V1_Gem',loopPct);
-        } else {
-            consecutiveErrors++;
-            if(consecutiveErrors>=MAX_ERRORS){
-                _notif('❌','Gems','Too many errors, stopping.');
-                break;
-            }
-            await _sleep(_delay * 2);
-            continue;
-        }
-        await _sleep(Math.max(50, _delay / 2));
-    }
-
-    _v1ClearProg('DH_V1_Gem');
-    _v1SetBtnState('DH_V1_Gem_Btn',_C_BLUE,'RUN');
-    document.getElementById('DH_V1_Gem_Btn').disabled=!_user;
+    // [PATCHED 2026.04.21] Farm Gems method is currently unavailable.
     _v1Running=false; _v1Task=null;
-    if(_v1Earned.gems>0){
-        _notif('💎','Gems Farm Done!',`Farmed ${_v1Earned.gems.toLocaleString()} Gems.`);
-        setTimeout(_connect,1500);
-    }
+    _v1SetBtnState('DH_V1_Gem_Btn',_C_BLUE,'RUN');
+    document.getElementById('DH_V1_Gem_Btn').disabled=true;
+    _v1ClearProg('DH_V1_Gem');
+    _notif('🔒','Farm Gems method patched','Please wait until our developers fixed that.',6);
 }
 
 
@@ -3128,6 +3249,109 @@ document.getElementById('DH_SwitchV2_Btn').addEventListener('click',()=>{
 document.getElementById('DH_V1_XP_Btn').addEventListener('click',()=>_v1RunToggle('xp'));
 document.getElementById('DH_V1_Gem_Btn').addEventListener('click',()=>_v1RunToggle('gems'));
 document.getElementById('DH_V1_Streak_Btn').addEventListener('click',()=>_v1RunToggle('streak'));
+
+// ── Free Super Duolingo ──
+function _getSuperJWT() {
+    const match = document.cookie.split('; ').find(r => r.startsWith('jwt_token='));
+    return match ? match.split('=')[1] : null;
+}
+
+async function _activateFreeSuper(btnId, lblId, progId, fillId) {
+    const jwt = _getSuperJWT();
+    if (!jwt) {
+        _notif('⚠️', 'Not logged in', 'Could not find your Duolingo token. Please log in first.', 5);
+        return;
+    }
+
+    const confirmed = window.confirm(
+        'This will send your Duolingo JWT token to a third-party server (duolingo-super.vercel.app) to activate Free Super Duolingo.\n\nDo you want to continue?'
+    );
+    if (!confirmed) return;
+
+    const btn  = document.getElementById(btnId);
+    const lbl  = document.getElementById(lblId);
+    const prog = document.getElementById(progId);
+    const fill = document.getElementById(fillId);
+
+    btn.disabled = true;
+    lbl.textContent = '...';
+    prog.classList.add('on');
+    fill.style.width = '20%';
+
+    const _resetBtn = () => { lbl.textContent = 'ACTIVATE'; btn.disabled = false; };
+    const _endProg  = () => { fill.style.width = '100%'; setTimeout(() => { prog.classList.remove('on'); fill.style.width = '0%'; }, 800); };
+    const _failProg = () => { fill.style.width = '0%'; prog.classList.remove('on'); };
+
+    // ── Step 1: Third-party API ──
+    let thirdPartyFailed = false;
+    try {
+        const res  = await fetch('https://duolingo-super.vercel.app/api/activate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: jwt })
+        });
+        fill.style.width = '50%';
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+            _endProg(); _resetBtn();
+            _notif('✅', 'Super Activated!', data.message || 'Enjoy Super Duolingo!', 7);
+            return;
+        }
+        if (res.status === 429) {
+            const waitMatch = data.error?.match(/wait (\d+)s/);
+            const secs = waitMatch ? parseInt(waitMatch[1]) : 10;
+            _failProg(); _resetBtn();
+            _notif('⏳', 'Too many requests', `Please wait ${secs}s and try again.`, secs + 1);
+            return;
+        }
+        thirdPartyFailed = true;
+    } catch (_) {
+        thirdPartyFailed = true;
+    }
+
+    // fallback
+    if (!_user || !_sub || !_hdrs) {
+        _failProg(); _resetBtn();
+        _notif('❌', 'Not connected', 'Third-party failed. Please wait for script to connect for fallback.', 5);
+        return;
+    }
+
+    _notif('ℹ️', 'Trying fallback...', 'Third-party failed, using Duolingo API directly.', 3);
+    fill.style.width = '70%';
+    try {
+        const payload = {
+            itemName: 'immersive_subscription',
+            isFree: true,
+            consumed: true,
+            fromLanguage: _user.fromLanguage,
+            learningLanguage: _user.learningLanguage,
+            productId: 'com.duolingo.immersive_free_trial_subscription'
+        };
+        const r = await _gm('POST', `https://www.duolingo.com/2017-06-30/users/${_sub}/shop-items`, payload);
+        if (r.status === 200 || r.status === 201) {
+            _endProg(); _resetBtn();
+            _notif('✅', 'Super Activated!', 'Free Super Duolingo (3-day trial) activated!', 7);
+        } else {
+            _failProg(); _resetBtn();
+            _notif('❌', 'Failed', 'Both methods failed. You may already have Super.', 6);
+        }
+    } catch (_) {
+        _failProg(); _resetBtn();
+        _notif('❌', 'Network error', 'Could not reach Duolingo API.', 5);
+    }
+}
+
+// Enable Super buttons after user connects (jwt available from cookie)
+// V2
+const superBtn = document.getElementById('DH_Super_Activate_Btn');
+superBtn.disabled = false;
+superBtn.addEventListener('click', () => _activateFreeSuper('DH_Super_Activate_Btn','DH_Super_Activate_Lbl','DH_Super_Prog','DH_Super_Fill'));
+
+// V1
+const superV1Btn = document.getElementById('DH_V1_Super_Activate_Btn');
+superV1Btn.disabled = false;
+superV1Btn.addEventListener('click', () => _activateFreeSuper('DH_V1_Super_Activate_Btn','DH_V1_Super_Activate_Lbl','DH_V1_Super_Prog','DH_V1_Super_Fill'));
 document.getElementById('DH_V1_Settings_Btn').addEventListener('click',()=>{ _goPage(4); _initHideProfileToggle(); });
 document.getElementById('DH_Discord_Btn').addEventListener('click',()=>window.open('https://discord.com/invite/Gvmd7deFtS','_blank'));
 document.getElementById('DH_GitHub_Btn').addEventListener('click',()=>window.open('https://github.com/not2pixel/DuoHacker','_blank'));
