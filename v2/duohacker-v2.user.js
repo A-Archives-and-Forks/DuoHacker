@@ -52,9 +52,7 @@
 // @name:ur             Duolingo DuoHacker
 
 // @namespace           https://github.com/not2pixel/DuoHacker
-// @version             2026.05.01
-// @antifeature        tracking The "Activate Free Super Duolingo" feature sends your Duolingo JWT token to a third-party server (duolingo-super.vercel.app). You will be asked to confirm before anything is sent.
-
+// @version             2026.05.03
 // @description         The #1 Duolingo hack - Farm XP, Gems, Streaks and unlock Duolingo Max for free.
 // @description:vi      Công cụ hack Duolingo #1 - Farm XP, Gems, Streaks và mở khóa Duolingo Max miễn phí.
 // @description:zh-CN   最强 Duolingo 辅助工具 - 自动刷 XP、宝石、连胜，免费解锁 Duolingo Max。
@@ -632,6 +630,25 @@ _wrap.innerHTML = `
                 <div class="DH_Prog_Wrap" id="DH_XP_Prog"><div class="DH_Prog_Fill" id="DH_XP_Fill"></div></div>
             </div>
 
+            <!-- Gems Farm -->
+            <div class="DH_VStack_8" id="DH_Gem_Section">
+                <p class="DH_T1 DH_NoSel" style="align-self:stretch;">Click "RUN" to Farm Gems</p>
+                <div class="DH_HStack_8">
+                    <div class="DH_Input_Wrap">
+                        <svg class="DH_Shimmer" width="120" height="48" viewBox="0 0 120 48" fill="none">
+                            <path opacity="0.4" d="M72 0H96L72 48H48L72 0Z" fill="rgb(var(--DH-blue))"/>
+                            <path opacity="0.4" d="M24 0H60L36 48H0L24 0Z" fill="rgb(var(--DH-blue))"/>
+                            <path opacity="0.4" d="M108 0H120L96 48H84L108 0Z" fill="rgb(var(--DH-blue))"/>
+                        </svg>
+                        <p class="DH_T1 DH_NoSel" style="color:rgba(var(--DH-blue),0.38);font-size:14px;flex-shrink:0;">#</p>
+                        <input type="number" class="DH_Input DH_NoSel" id="DH_Gem_Input" placeholder="0" readonly style="pointer-events:none;">
+                    </div>
+                    <button class="DH_Input_Btn DH_NoSel" id="DH_Gem_Btn" disabled>
+                        <span class="DH_Btn_Label" id="DH_Gem_Lbl" style="color:#fff;">RUN</span>
+                    </button>
+                </div>
+            </div>
+
             <div class="DH_VStack_8">
                 <p class="DH_T1 DH_NoSel" style="align-self:stretch;">How many Streak days to restore?</p>
                 <div class="DH_HStack_8">
@@ -644,37 +661,6 @@ _wrap.innerHTML = `
                     </button>
                 </div>
                 <div class="DH_Prog_Wrap" id="DH_Streak_Prog"><div class="DH_Prog_Fill" id="DH_Streak_Fill"></div></div>
-            </div>
-
-            <!-- Activate Free Super Duolingo -->
-            <div class="DH_VStack_8" id="DH_FreeSuperSection">
-                <p class="DH_T1 DH_NoSel" style="align-self:stretch;">Would you like to activate Free Super Duolingo?</p>
-                <div class="DH_HStack_8">
-                    <button class="DH_Input_Btn DH_NoSel" id="DH_Super_Activate_Btn" style="flex:1 0 0;" disabled>
-                        <span class="DH_Btn_Label" id="DH_Super_Activate_Lbl" style="color:#fff;">ACTIVATE</span>
-                    </button>
-                </div>
-                <div class="DH_Prog_Wrap" id="DH_Super_Prog"><div class="DH_Prog_Fill" id="DH_Super_Fill"></div></div>
-            </div>
-
-            <!-- Gems Farm (showGems=false) -->
-            <div class="DH_VStack_8" id="DH_Gem_Section" style="display:none;">
-                <p class="DH_T1 DH_NoSel" style="align-self:stretch;">How many Gems would you like to gain?</p>
-                <div class="DH_HStack_8">
-                    <div class="DH_Input_Wrap">
-                        <svg class="DH_Shimmer" width="120" height="48" viewBox="0 0 120 48" fill="none">
-                            <path opacity="0.4" d="M72 0H96L72 48H48L72 0Z" fill="rgb(var(--DH-blue))"/>
-                            <path opacity="0.4" d="M24 0H60L36 48H0L24 0Z" fill="rgb(var(--DH-blue))"/>
-                            <path opacity="0.4" d="M108 0H120L96 48H84L108 0Z" fill="rgb(var(--DH-blue))"/>
-                        </svg>
-                        <p class="DH_T1 DH_NoSel" style="color:rgba(var(--DH-blue),0.38);font-size:14px;flex-shrink:0;">#</p>
-                        <input type="number" class="DH_Input DH_NoSel" id="DH_Gem_Input" placeholder="0" min="1" max="500000">
-                    </div>
-                    <button class="DH_Input_Btn DH_NoSel" id="DH_Gem_Btn" disabled>
-                        <span class="DH_Btn_Label" id="DH_Gem_Lbl" style="color:#fff;">GET</span>
-                    </button>
-                </div>
-                <div class="DH_Prog_Wrap" id="DH_Gem_Prog"><div class="DH_Prog_Fill" id="DH_Gem_Fill"></div></div>
             </div>
 
             <div class="DH_Divider"></div>
@@ -713,7 +699,7 @@ _wrap.innerHTML = `
 
             <div class="DH_HStack_Auto">
                 <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">twisk.fun</p>
-                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">v2026.05.01</p>
+                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">v2026.05.03</p>
             </div>
         </div>
 
@@ -792,10 +778,20 @@ _wrap.innerHTML = `
                 </button>
             </div>
 
+            <!-- Activate Free Super Duolingo -->
+            <div class="DH_HStack_Auto" style="align-self:stretch;">
+                <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;">
+                    <p class="DH_T1 DH_NoSel">Free Super Duolingo</p>
+                    <p class="DH_T2 DH_NoSel" style="font-size:11px;">Activate Super Duolingo for free</p>
+                </div>
+                <button class="DH_Sm_Btn DH_NoSel" id="DH_Super_Activate_Btn" disabled>
+                    <span class="DH_Sm_Btn_Label" id="DH_Super_Activate_Lbl" style="color:#fff;">ACTIVATE</span>
+                </button>
+            </div>
+            <div class="DH_Prog_Wrap" id="DH_Super_Prog" style="align-self:stretch;"><div class="DH_Prog_Fill" id="DH_Super_Fill"></div></div>
+
             <div class="DH_Divider"></div>
         </div>
-
-        <!-- PAGE 4: Settings -->
         <div class="DH_Page" id="DH_Page_4">
             <div class="DH_HStack_4 DH_NoSel" id="DH_Settings_Back_Btn" style="align-self:flex-start;cursor:pointer;opacity:0.55;">
                 <svg width="8" height="14" viewBox="0 0 9 16" fill="none"><path d="M8 1L2 8l6 7" stroke="rgb(var(--color-wolf,60,60,67))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1005,9 +1001,9 @@ _wrap.innerHTML = `
                 <div class="DH_Prog_Wrap" id="DH_V1_XP_Prog"><div class="DH_Prog_Fill" id="DH_V1_XP_Fill"></div></div>
             </div>
 
-            <!-- Gems Farm (showGems=false) -->
-            <div class="DH_VStack_8" id="DH_V1_Gem_Section" style="display:none; align-self:stretch;">
-                <p class="DH_T1 DH_NoSel" style="align-self:stretch;">Gems Farming</p>
+            <!-- Gems Farm -->
+            <div class="DH_VStack_8" id="DH_V1_Gem_Section" style="align-self:stretch;">
+                <p class="DH_T1 DH_NoSel" style="align-self:stretch;">Farm Gems</p>
                 <div class="DH_HStack_8">
                     <div class="DH_Input_Wrap">
                         <img class="DH_Stat_Ico" src="https://d35aaqx5ub95lt.cloudfront.net/images/gems/45c14e05be9c1af1d7d0b54c6eed7eee.svg" style="flex-shrink:0;">
@@ -2011,7 +2007,7 @@ function _setBtnDone(btnId, label){
 }
 
 const _GF_SCRIPT_URL='https://greasyfork.org/en/scripts/561041-duolingo-duohacker';
-const _CURRENT_VER='2026.05.01';
+const _CURRENT_VER='2026.05.03';
 
 function _setConn(state, label){
         if (state === 'connected' && _isOutdated) {
@@ -2210,7 +2206,7 @@ async function _connect(){
         _setConn('connected'); _renderUser(_user);
         _getPrivacy().then(v=>{ _privacy=v; _applyHideProfileToggle(); });
         _v1FetchSkillId();
-        ['DH_XP_Btn','DH_Gem_Btn','DH_Streak_Btn','DH_League_Btn','DH_Quest_Btn','DH_Practice_Btn','DH_V1_XP_Btn','DH_V1_Gem_Btn','DH_V1_Streak_Btn'].forEach(id=>{
+        ['DH_XP_Btn','DH_Gem_Btn','DH_Streak_Btn','DH_League_Btn','DH_Quest_Btn','DH_Practice_Btn','DH_V1_XP_Btn','DH_V1_Gem_Btn','DH_V1_Streak_Btn','DH_Super_Activate_Btn','DH_V1_Super_Activate_Btn'].forEach(id=>{
             const b=document.getElementById(id); if(b) b.disabled=false;
         });
 
@@ -2267,6 +2263,7 @@ async function _farmXP(txp){
         _setBtnDone('DH_XP_Btn','DONE ✓');
         _notif('✅','XP Farm Done!',`Farmed ${earned} XP in ${cur} loops.`);
         setTimeout(_connect,1500);
+        setTimeout(()=>_resetBtn('DH_XP_Btn','GET'), 3000);
     }
 }
 
@@ -2339,14 +2336,143 @@ async function _probeSlug(){
     return _probingSlugPromise;
 }
 
-async function _farmGems(tgt){
-    // [PATCHED 2026.04.21] Farm Gems method is currently unavailable.
-    _running=false; _task=null;
-    _resetBtn('DH_Gem_Btn','GET');
-    document.getElementById('DH_Gem_Btn').disabled=true;
-    document.getElementById('DH_Gem_Input').disabled=true;
-    _notif('🔒','Farm Gems method patched','Please wait until our developers fixed that.',6);
+// ── Gem Farm Helpers (ported from GemHelper) ──────────────────────────────
+async function _fetchGemRewards(){
+    try{
+        const response = await fetch(`https://www.duolingo.com/2023-05-23/users/${_sub}?fields=rewardBundles`, {
+            headers: {
+                'authorization': `Bearer ${_jwt}`,
+                'content-type': 'application/json'
+            }
+        });
+
+        if(!response.ok) return [];
+
+        const data = await response.json();
+        const bundles=data.rewardBundles||[];
+
+        const gemRewards=[];
+        for(const bundle of bundles){
+            for(const reward of bundle.rewards||[]){
+                if(!reward.consumed&&(reward.id.includes('GEMS')||reward.currency==='GEMS')){
+                    gemRewards.push({id:reward.id,amount:reward.amount||0});
+                }
+            }
+        }
+
+        return gemRewards;
+    }catch(e){
+        return [];
+    }
 }
+
+async function _exploitGemReward(rewardId){
+    const body={
+        consumed:true,
+        fromLanguage:_user.fromLanguage,
+        learningLanguage:_user.learningLanguage,
+        pathLevelSpecifics:{
+            anchorSkillId:'f22fd38157eea63965dc39eeac3c40c1',
+            indexSinceAnchorSkill:0,
+            treeId:'14b1a2672c1bb3b250ebaa31b86c343e',
+            nodeState:'active'
+        }
+    };
+    try{
+        // Use native fetch like Gem Helper instead of _gm wrapper
+        const response = await fetch(`https://www.duolingo.com/2023-05-23/users/${_sub}/rewards/${rewardId}`, {
+            method: 'PATCH',
+            headers: {
+                'authorization': `Bearer ${_jwt}`,
+                'content-type': 'application/json',
+                'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36',
+                'x-amzn-trace-id': `User=${_sub}`,
+                'x-requested-with': 'XMLHttpRequest',
+                'referer': 'https://www.duolingo.com/learn',
+                'origin': 'https://www.duolingo.com'
+            },
+            body: JSON.stringify(body)
+        });
+
+        return response.ok;
+    }catch(e){
+        return false;
+    }
+}
+
+async function _getGemCount(){
+    try{
+        const response = await fetch(`https://www.duolingo.com/2023-05-23/users/${_sub}?fields=gemsConfig`, {
+            headers: {
+                'authorization': `Bearer ${_jwt}`,
+                'content-type': 'application/json'
+            }
+        });
+
+        if(!response.ok) return null;
+
+        const data = await response.json();
+        return data.gemsConfig?.gems??null;
+    }catch(e){
+        return null;
+    }
+}
+
+const THREADS=3;
+
+async function _farmGems(){
+    _setBtnState('DH_Gem_Btn', _C_RED, 'STOP');
+    const btn = document.getElementById('DH_Gem_Btn');
+    if(btn) btn.disabled = false;
+
+    const gemInput = document.getElementById('DH_Gem_Input');
+    if(gemInput) gemInput.value = '';
+
+    let totalGained = 0;
+
+    outer:
+    while(_running && _task==='gem'){
+        const rewards = await _fetchGemRewards();
+
+        if(rewards.length === 0){
+            await _sleep(_delay * 2);
+            continue;
+        }
+
+        let gemsBefore = await _getGemCount() ?? (_user?.gems ?? 0);
+
+        for(let i = 0; i < rewards.length; i += THREADS){
+            if(!_running || _task !== 'gem') break outer;
+
+            const batch = rewards.slice(i, i + THREADS);
+            await Promise.all(batch.map(r => _exploitGemReward(r.id)));
+            await _sleep(200);
+
+            const now = await _getGemCount();
+            if(now !== null){
+                const gained = Math.max(0, now - gemsBefore);
+                totalGained += gained;
+                gemsBefore = now;
+                if(gemInput) gemInput.value = String(totalGained);
+                if(_user){ _user.gems = now; _renderUser(_user); }
+            }
+
+            await _sleep(Math.max(100, _delay));
+        }
+
+        // Pass done — loop back to fetch fresh rewards (runs until user stops)
+        await _sleep(_delay);
+    }
+
+    // Always reset button after farm ends (stopped or done)
+    _setBtnState('DH_Gem_Btn', _C_BLUE, 'RUN');
+    if(btn) btn.disabled = !_user;
+    if(totalGained > 0){
+        _notif('✅','Gem Farm Done!',`+${totalGained} gems gained.`);
+        setTimeout(_connect, 1500);
+    }
+}
+
 
 async function _farmStreak(days){
     const CH=["assist","characterIntro","characterMatch","characterPuzzle","characterSelect","characterTrace","characterWrite","completeReverseTranslation","definition","dialogue","extendedMatch","extendedListenMatch","form","freeResponse","gapFill","judge","listen","listenComplete","listenMatch","match","name","listenComprehension","listenIsolation","listenSpeak","listenTap","orderTapComplete","partialListen","partialReverseTranslate","patternTapComplete","radioBinary","radioImageSelect","radioListenMatch","radioListenRecognize","radioSelect","readComprehension","reverseAssist","sameDifferent","select","selectPronunciation","selectTranscription","svgPuzzle","syllableTap","syllableListenTap","speak","tapCloze","tapClozeTable","tapComplete","tapCompleteTable","tapDescribe","translate","transliterate","transliterationAssist","typeCloze","typeClozeTable","typeComplete","typeCompleteTable","writeComprehension"];
@@ -2385,6 +2511,7 @@ async function _farmStreak(days){
         _setBtnDone('DH_Streak_Btn','DONE ✓');
         _notif('🔥','Streak Farm Done!',`Restored ${days} streak days.`);
         setTimeout(_connect,1500);
+        setTimeout(()=>_resetBtn('DH_Streak_Btn','RUN'), 3000);
     }
 }
 
@@ -2513,8 +2640,7 @@ async function _farmLeague(){
             await _sleep(_delay);
         }catch{await _sleep(5000);}
     }
-    if(prog) setTimeout(()=>prog.classList.remove('on'),2000);
-    if(fill) fill.style.width='0%';
+    _resetLeague();
 }
 
 function _getQuestTimestamp(goalId){
@@ -2921,12 +3047,50 @@ async function _v1FarmXP(){
 }
 
 async function _v1FarmGems(){
-    // [PATCHED 2026.04.21] Farm Gems method is currently unavailable.
-    _v1Running=false; _v1Task=null;
-    _v1SetBtnState('DH_V1_Gem_Btn',_C_BLUE,'RUN');
-    document.getElementById('DH_V1_Gem_Btn').disabled=true;
+    _v1Earned.gems = 0; _v1UpdateDisplayNow();
+    _v1SetBtnState('DH_V1_Gem_Btn', _C_RED, 'STOP');
+    _v1SetProg('DH_V1_Gem', 1);
+
+    let loopPct = 0;
+
+    outer:
+    while(_v1Running && _v1Task === 'gems'){
+        const rewards = await _fetchGemRewards();
+
+        if(rewards.length === 0){
+            _notif('⚠️','Gem Farm','No rewards available. Retrying…',3);
+            await _sleep(_delay * 2);
+            continue;
+        }
+
+        const gemsBefore = await _getGemCount() ?? (_user?.gems ?? 0);
+
+        // Process in parallel batches of 3 threads
+        for(let i = 0; i < rewards.length; i += THREADS){
+            if(!_v1Running || _v1Task !== 'gems') break outer;
+            const batch = rewards.slice(i, i + THREADS);
+            await Promise.all(batch.map(r => _exploitGemReward(r.id)));
+            await _sleep(300);
+
+            const now = await _getGemCount();
+            if(now !== null){
+                const cycle = Math.max(0, now - gemsBefore);
+                _v1Earned.gems += cycle;
+                _v1UpdateDisplayNow();
+                loopPct = (loopPct + 1) % 99 + 1;
+                _v1SetProg('DH_V1_Gem', loopPct);
+                if(_user){ _user.gems = now; _v1SyncUser(); }
+            }
+        }
+
+        await _sleep(_delay);
+    }
+
     _v1ClearProg('DH_V1_Gem');
-    _notif('🔒','Farm Gems method patched','Please wait until our developers fixed that.',6);
+    _v1SetBtnState('DH_V1_Gem_Btn', _C_BLUE, 'RUN');
+    document.getElementById('DH_V1_Gem_Btn').disabled = !_user;
+    _v1Running = false; _v1Task = null;
+    if(_v1Earned.gems > 0){ _notif('✅','Gem Farm Done!',`+${_v1Earned.gems.toLocaleString()} gems gained.`); setTimeout(_connect, 1500); }
 }
 
 
@@ -2990,7 +3154,7 @@ function _v1RunToggle(task){
     if(!_user){_notif('⚠️','Not connected','Please wait.');return;}
     _v1Running=true; _v1Task=task;
     if(task==='xp')     _v1FarmXP();
-    if(task==='gems')   _v1FarmGems();
+    if(task==='gems') _v1FarmGems();
     if(task==='streak') _v1FarmStreak();
 }
 
@@ -3001,15 +3165,16 @@ async function _run(type,val){
     _running=true; _task=type;
     try{
         if(type==='xp')     await _farmXP(val);
-        if(type==='gem')    await _farmGems(val);
+        if(type==='gem')    await _farmGems();
         if(type==='streak') await _farmStreak(val);
         if(type==='league') await _farmLeague();
     }catch(e){_notif('❌','Error',e.message);}
+    // If stopped mid-farm, reset XP/Streak buttons (Gem and League reset themselves)
+    if(!_running){
+        if(type==='xp')     _resetBtn('DH_XP_Btn','GET');
+        if(type==='streak') _resetBtn('DH_Streak_Btn','RUN');
+    }
     _running=false; _task=null;
-    if(type==='xp')     _resetBtn('DH_XP_Btn','GET');
-    if(type==='gem')    _resetBtn('DH_Gem_Btn','GET');
-    if(type==='streak') _resetBtn('DH_Streak_Btn','RUN');
-    if(type==='league') _resetLeague();
 }
 
 function _accGetAll(){ try{return JSON.parse(localStorage.getItem('dh2_accounts')||'[]');}catch{return [];} }
@@ -3263,11 +3428,6 @@ async function _activateFreeSuper(btnId, lblId, progId, fillId) {
         return;
     }
 
-    const confirmed = window.confirm(
-        'This will send your Duolingo JWT token to a third-party server (duolingo-super.vercel.app) to activate Free Super Duolingo.\n\nDo you want to continue?'
-    );
-    if (!confirmed) return;
-
     const btn  = document.getElementById(btnId);
     const lbl  = document.getElementById(lblId);
     const prog = document.getElementById(progId);
@@ -3276,49 +3436,19 @@ async function _activateFreeSuper(btnId, lblId, progId, fillId) {
     btn.disabled = true;
     lbl.textContent = '...';
     prog.classList.add('on');
-    fill.style.width = '20%';
+    fill.style.width = '30%';
 
     const _resetBtn = () => { lbl.textContent = 'ACTIVATE'; btn.disabled = false; };
     const _endProg  = () => { fill.style.width = '100%'; setTimeout(() => { prog.classList.remove('on'); fill.style.width = '0%'; }, 800); };
     const _failProg = () => { fill.style.width = '0%'; prog.classList.remove('on'); };
 
-    // ── Step 1: Third-party API ──
-    let thirdPartyFailed = false;
-    try {
-        const res  = await fetch('https://duolingo-super.vercel.app/api/activate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token: jwt })
-        });
-        fill.style.width = '50%';
-        const data = await res.json();
-
-        if (res.ok && data.success) {
-            _endProg(); _resetBtn();
-            _notif('✅', 'Super Activated!', data.message || 'Enjoy Super Duolingo!', 7);
-            return;
-        }
-        if (res.status === 429) {
-            const waitMatch = data.error?.match(/wait (\d+)s/);
-            const secs = waitMatch ? parseInt(waitMatch[1]) : 10;
-            _failProg(); _resetBtn();
-            _notif('⏳', 'Too many requests', `Please wait ${secs}s and try again.`, secs + 1);
-            return;
-        }
-        thirdPartyFailed = true;
-    } catch (_) {
-        thirdPartyFailed = true;
-    }
-
-    // fallback
     if (!_user || !_sub || !_hdrs) {
         _failProg(); _resetBtn();
-        _notif('❌', 'Not connected', 'Third-party failed. Please wait for script to connect for fallback.', 5);
+        _notif('⚠️', 'Not connected', 'Please wait for connection and try again.', 5);
         return;
     }
 
-    _notif('ℹ️', 'Trying fallback...', 'Third-party failed, using Duolingo API directly.', 3);
-    fill.style.width = '70%';
+    fill.style.width = '60%';
     try {
         const payload = {
             itemName: 'immersive_subscription',
@@ -3331,10 +3461,10 @@ async function _activateFreeSuper(btnId, lblId, progId, fillId) {
         const r = await _gm('POST', `https://www.duolingo.com/2017-06-30/users/${_sub}/shop-items`, payload);
         if (r.status === 200 || r.status === 201) {
             _endProg(); _resetBtn();
-            _notif('✅', 'Super Activated!', 'Free Super Duolingo (3-day trial) activated!', 7);
+            _notif('✅', 'Super Activated!', 'Free Super Duolingo activated!', 7);
         } else {
             _failProg(); _resetBtn();
-            _notif('❌', 'Failed', 'Both methods failed. You may already have Super.', 6);
+            _notif('❌', 'Failed', 'Activation failed. You may already have Super.', 6);
         }
     } catch (_) {
         _failProg(); _resetBtn();
@@ -3343,7 +3473,7 @@ async function _activateFreeSuper(btnId, lblId, progId, fillId) {
 }
 
 // Enable Super buttons after user connects (jwt available from cookie)
-// V2
+// V2 Extra Features (page 2)
 const superBtn = document.getElementById('DH_Super_Activate_Btn');
 superBtn.disabled = false;
 superBtn.addEventListener('click', () => _activateFreeSuper('DH_Super_Activate_Btn','DH_Super_Activate_Lbl','DH_Super_Prog','DH_Super_Fill'));
@@ -3485,14 +3615,12 @@ xpB.addEventListener('click',()=>{
 });
 xpI.addEventListener('keydown',e=>{if(e.key==='Enter'&&!xpB.disabled)xpB.click();});
 
-const gmI=document.getElementById('DH_Gem_Input'),gmB=document.getElementById('DH_Gem_Btn');
-gmI.addEventListener('input',()=>{gmB.disabled=!_user||!gmI.value||+gmI.value<1;});
+const gmB=document.getElementById('DH_Gem_Btn');
 gmB.addEventListener('click',()=>{
     if(_running&&_task==='gem'){_run('gem',0);return;}
     if(_running){_notif('⚠️','Busy','Stop current farm first.');return;}
-    const v=+gmI.value;if(v<1)return;_run('gem',v);
+    _run('gem',0);
 });
-gmI.addEventListener('keydown',e=>{if(e.key==='Enter'&&!gmB.disabled)gmB.click();});
 
 const stI=document.getElementById('DH_Streak_Input'),stB=document.getElementById('DH_Streak_Btn');
 stI.addEventListener('input',()=>{stB.disabled=!_user||!stI.value||+stI.value<1;});
