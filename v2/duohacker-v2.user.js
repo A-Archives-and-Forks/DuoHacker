@@ -52,7 +52,7 @@
 // @name:ur             Duolingo DuoHacker
 
 // @namespace           https://github.com/not2pixel/DuoHacker
-// @version             2026.05.10
+// @version             2026.05.23
 // @description         The #1 Duolingo hack - Farm XP, Gems, Streaks and unlock Duolingo Max for free.
 // @description:vi      Công cụ hack Duolingo #1 - Farm XP, Gems, Streaks và mở khóa Duolingo Max miễn phí.
 // @description:zh-CN   最强 Duolingo 辅助工具 - 自动刷 XP、宝石、连胜，免费解锁 Duolingo Max。
@@ -123,6 +123,7 @@
 // @connect             avatars.githubusercontent.com
 // @connect             fonts.googleapis.com
 // @connect             greasyfork.org
+// @connect             api.twisk.fun
 
 // @compatible          chrome   Tested on Chrome 120+ with Tampermonkey
 // @compatible          firefox  Tested on Firefox 120+ with Tampermonkey / Violentmonkey
@@ -519,6 +520,136 @@ GM_addStyle(`
     .DH_Main { margin-bottom:80px; }
 }
 
+/* PAGE 8: Support Chat */
+#DH_Page_8 { flex:1; min-height:0; }
+.DH_Chat_Header {
+    display:flex; align-items:center; gap:10px; align-self:stretch;
+    padding-bottom:8px;
+    border-bottom:1px solid rgb(var(--color-eel,117,117,117),0.10);
+}
+.DH_Chat_Agent_Avatar {
+    width:34px; height:34px; border-radius:50%; flex-shrink:0;
+    background:rgba(var(--DH-blue),0.10); overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+}
+.DH_Chat_Agent_Info { display:none; }
+.DH_Chat_Scroll {
+    flex:1; min-height:0; overflow-y:auto; overflow-x:hidden;
+    display:flex; flex-direction:column; gap:10px;
+    padding:4px 2px 4px 0; align-self:stretch;
+    max-height:300px;
+}
+.DH_Chat_Attach_Btn {
+    width:38px; height:38px; flex-shrink:0; border-radius:10px; border:none;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    background:rgb(var(--color-eel,117,117,117),0.10);
+    outline:2px solid rgb(var(--color-eel,117,117,117),0.15); outline-offset:-2px;
+    transition:filter 0.3s, transform 0.3s;
+}
+.DH_Chat_Attach_Btn:hover  { filter:brightness(0.88); transform:scale(1.06); }
+.DH_Chat_Attach_Btn:active { transform:scale(0.94); }
+.DH_Chat_Attach_Btn:disabled { opacity:0.35; pointer-events:none; }
+.DH_Chat_Img_Preview {
+    display:flex; align-items:center; gap:6px; align-self:stretch;
+    padding:6px 8px; border-radius:8px;
+    background:rgba(var(--DH-blue),0.07);
+    outline:1.5px solid rgba(var(--DH-blue),0.15); outline-offset:-1px;
+}
+.DH_Chat_Img_Thumb {
+    width:32px; height:32px; border-radius:6px; object-fit:cover; flex-shrink:0;
+}
+.DH_Chat_Img_Name {
+    flex:1; font-size:11px!important; font-weight:700!important;
+    color:rgb(var(--color-wolf,60,60,67),0.65)!important;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.DH_Chat_Img_Remove {
+    width:18px; height:18px; border-radius:50%; border:none; cursor:pointer;
+    background:rgb(var(--color-eel,117,117,117),0.15);
+    display:flex; align-items:center; justify-content:center;
+    font-size:10px; color:rgb(var(--color-wolf,60,60,67),0.55);
+    flex-shrink:0; transition:background 0.2s;
+}
+.DH_Chat_Img_Remove:hover { background:rgba(var(--DH-red),0.15); color:rgb(var(--DH-red)); }
+.DH_Chat_Bubble img.DH_Chat_Sent_Img {
+    max-width:100%; max-height:180px; border-radius:8px;
+    display:block; margin-top:4px; object-fit:contain;
+}
+.DH_Chat_Scroll::-webkit-scrollbar { width:3px; }
+.DH_Chat_Scroll::-webkit-scrollbar-thumb { background:rgba(var(--DH-blue),0.15); border-radius:3px; }
+.DH_Chat_Scroll { scrollbar-width:thin; scrollbar-color:rgba(var(--DH-blue),0.15) transparent; }
+.DH_Chat_Row { display:flex; align-items:flex-end; gap:7px; }
+.DH_Chat_Row.user { flex-direction:row-reverse; }
+.DH_Chat_Bubble_Avatar {
+    width:26px; height:26px; border-radius:50%; flex-shrink:0;
+    background:rgba(var(--DH-blue),0.10); overflow:hidden;
+    display:flex; align-items:center; justify-content:center; font-size:13px;
+}
+.DH_Chat_Bubble {
+    max-width:76%; padding:9px 12px; border-radius:14px;
+    font-size:12.5px!important; font-weight:600!important;
+    line-height:1.45; word-break:break-word;
+}
+.DH_Chat_Bubble.agent {
+    background:rgb(var(--color-eel,117,117,117),0.09);
+    color:rgb(var(--color-wolf,60,60,67),0.85)!important;
+    border-bottom-left-radius:4px;
+}
+.DH_Chat_Bubble.user {
+    background:rgb(var(--DH-blue));
+    color:#fff!important;
+    border-bottom-right-radius:4px;
+}
+.DH_Chat_Name_Tag {
+    font-size:10px!important; font-weight:700!important;
+    color:rgb(var(--color-wolf,60,60,67),0.38)!important;
+    margin-bottom:3px; padding:0 2px;
+}
+.DH_Chat_Bubble_Wrap { display:flex; flex-direction:column; }
+.DH_Chat_Row.user .DH_Chat_Bubble_Wrap { align-items:flex-end; }
+.DH_Chat_Input_Row {
+    display:flex; gap:8px; align-self:stretch; align-items:flex-end;
+}
+.DH_Chat_Input {
+    flex:1; min-height:38px; max-height:80px;
+    padding:10px 12px; border-radius:10px; border:none; resize:none;
+    outline:2px solid rgb(var(--color-eel,117,117,117),0.15); outline-offset:-2px;
+    background:rgb(var(--color-eel,117,117,117),0.06);
+    font-size:13px!important; font-weight:600!important;
+    color:rgb(var(--color-wolf,60,60,67),0.85)!important;
+    font-family:inherit!important; line-height:1.4;
+    transition:outline-color 0.2s;
+    overflow-y:auto;
+}
+.DH_Chat_Input:focus { outline-color:rgba(var(--DH-blue),0.35); }
+.DH_Chat_Input::placeholder { color:rgb(var(--color-wolf,60,60,67),0.32)!important; }
+.DH_Chat_Send_Btn {
+    width:38px; height:38px; flex-shrink:0; border-radius:10px; border:none;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    background:rgb(var(--DH-blue));
+    outline:2px solid rgba(0,0,0,0.18); outline-offset:-2px;
+    transition:filter 0.3s, transform 0.3s;
+}
+.DH_Chat_Send_Btn:hover  { filter:brightness(0.88); transform:scale(1.06); }
+.DH_Chat_Send_Btn:active { transform:scale(0.94); }
+.DH_Chat_Typing {
+    display:flex; align-items:center; gap:4px; padding:2px 4px;
+}
+.DH_Chat_Typing span {
+    width:6px; height:6px; border-radius:50%;
+    background:rgb(var(--color-eel,117,117,117),0.35);
+    display:inline-block;
+    animation:DH_TypingDot 1.2s ease-in-out infinite;
+}
+.DH_Chat_Typing span:nth-child(2) { animation-delay:0.2s; }
+.DH_Chat_Typing span:nth-child(3) { animation-delay:0.4s; }
+@keyframes DH_TypingDot {
+    0%,60%,100% { transform:translateY(0); opacity:0.4; }
+    30% { transform:translateY(-4px); opacity:1; }
+}
+
+
+
 `);
 
 const _wrap = document.createElement('div');
@@ -575,10 +706,29 @@ _wrap.innerHTML = `
 
         <div class="DH_Page active" id="DH_Page_1">
 
+            <!-- Row 1: Connection btn + Settings icon -->
             <div class="DH_HStack_8">
                 <div class="DH_Btn DH_Btn_Eel DH_NoSel" id="DH_Conn_Btn" style="padding:10px 0 10px 10px; transition:background 0.8s cubic-bezier(0.16,1,0.32,1), outline 0.8s cubic-bezier(0.16,1,0.32,1), filter 0.4s cubic-bezier(0.16,1,0.32,1), transform 0.4s cubic-bezier(0.16,1,0.32,1);">
-                    <p class="DH_T1 DH_NoSel DH_Spin_Ico" id="DH_Conn_Ico" style="color:rgb(var(--color-eel,117,117,117),0.70);">⟳</p>
+                    <span id="DH_Conn_Ico" style="display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg class="DH_Spin_Ico" width="16" height="16" viewBox="0 0 297 297" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M294.853 178.121c-1.814-1.671-4.404-2.203-6.729-1.382l-25.97 9.168c17.558-70.878-24.569-143.07-94.69-161.569-34.475-9.094-70.423-4.215-101.225 13.737C35.438 56.028 13.475 84.901 4.397 119.377c-8.083 30.698-4.951 63.329 8.819 91.883 13.616 28.234 36.767 50.846 65.186 63.669 3.256 1.47 6.737 2.203 10.214 2.203 3.647 0 7.293-.807 10.672-2.418 6.59-3.141 11.435-8.99 13.293-16.047 3.086-11.721-2.756-23.89-13.893-28.937-37.335-16.923-56.844-58.027-46.387-97.737 5.7-21.65 19.508-39.794 38.878-51.089 19.372-11.295 41.963-14.378 63.611-8.675 44.273 11.659 70.99 56.813 60.113 101.108l-17.584-20.48c-1.612-1.878-4.135-2.705-6.544-2.152-2.412.555-4.318 2.401-4.948 4.794l-11.478 43.588c-.566 2.153-.02 4.447 1.457 6.112l40.428 45.603c1.785 2.012 4.604 2.752 7.144 1.882l57.644-19.78c2.106-.723 3.711-2.45 4.279-4.603l11.479-43.587c.635-2.412-.106-4.949-1.92-6.62z" fill="currentColor"/></svg></span>
                     <p class="DH_T1 DH_NoSel" id="DH_Conn_Txt" style="color:rgb(var(--color-eel,117,117,117),0.70);">Connecting</p>
+                </div>
+                <div class="DH_Btn DH_Btn_Icon DH_NoSel" id="DH_TopSettings_Btn" style="outline:2px solid rgba(var(--DH-blue),0.20);outline-offset:-2px;background:linear-gradient(0deg,rgba(var(--DH-blue),0.10),rgba(var(--DH-blue),0.10)),rgb(var(--color-snow),0.80);backdrop-filter:blur(16px);" title="Settings">
+                    <svg width="18" height="18" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18.1,11c-3.9,0-7,3.1-7,7s3.1,7,7,7c3.9,0,7-3.1,7-7S22,11,18.1,11z M18.1,23c-2.8,0-5-2.2-5-5s2.2-5,5-5c2.8,0,5,2.2,5,5S20.9,23,18.1,23z" fill="rgb(var(--DH-blue))" stroke="rgb(var(--DH-blue))" stroke-width="1.2" stroke-linejoin="round" paint-order="stroke fill"/>
+                        <path d="M32.8,14.7L30,13.8l-0.6-1.5l1.4-2.6c0.3-0.6,0.2-1.4-0.3-1.9l-2.4-2.4c-0.5-0.5-1.3-0.6-1.9-0.3l-2.6,1.4l-1.5-0.6l-0.9-2.8C21,2.5,20.4,2,19.7,2h-3.4c-0.7,0-1.3,0.5-1.4,1.2L14,6c-0.6,0.1-1.1,0.3-1.6,0.6L9.8,5.2C9.2,4.9,8.4,5,7.9,5.5L5.5,7.9C5,8.4,4.9,9.2,5.2,9.8l1.3,2.5c-0.2,0.5-0.4,1.1-0.6,1.6l-2.8,0.9C2.5,15,2,15.6,2,16.3v3.4c0,0.7,0.5,1.3,1.2,1.5L6,22.1l0.6,1.5l-1.4,2.6c-0.3,0.6-0.2,1.4,0.3,1.9l2.4,2.4c0.5,0.5,1.3,0.6,1.9,0.3l2.6-1.4l1.5,0.6l0.9,2.9c0.2,0.6,0.8,1.1,1.5,1.1h3.4c0.7,0,1.3-0.5,1.5-1.1l0.9-2.9l1.5-0.6l2.6,1.4c0.6,0.3,1.4,0.2,1.9-0.3l2.4-2.4c0.5-0.5,0.6-1.3,0.3-1.9l-1.4-2.6l0.6-1.5l2.9-0.9c0.6-0.2,1.1-0.8,1.1-1.5v-3.4C34,15.6,33.5,14.9,32.8,14.7z M32,19.4l-3.6,1.1L28.3,21c-0.3,0.7-0.6,1.4-0.9,2.1l-0.3,0.5l1.8,3.3l-2,2l-3.3-1.8l-0.5,0.3c-0.7,0.4-1.4,0.7-2.1,0.9l-0.5,0.1L19.4,32h-2.8l-1.1-3.6L15,28.3c-0.7-0.3-1.4-0.6-2.1-0.9l-0.5-0.3l-3.3,1.8l-2-2l1.8-3.3l-0.3-0.5c-0.4-0.7-0.7-1.4-0.9-2.1l-0.1-0.5L4,19.4v-2.8l3.4-1l0.2-0.5c0.2-0.8,0.5-1.5,0.9-2.2l0.3-0.5L7.1,9.1l2-2l3.2,1.8l0.5-0.3c0.7-0.4,1.4-0.7,2.2-0.9l0.5-0.2L16.6,4h2.8l1.1,3.5L21,7.7c0.7,0.2,1.4,0.5,2.1,0.9l0.5,0.3l3.3-1.8l2,2l-1.8,3.3l0.3,0.5c0.4,0.7,0.7,1.4,0.9,2.1l0.1,0.5l3.6,1.1V19.4z" fill="rgb(var(--DH-blue))" stroke="rgb(var(--DH-blue))" stroke-width="1.2" stroke-linejoin="round" paint-order="stroke fill"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- Row 2: Support + YouTube + Discord + GitHub -->
+            <div class="DH_HStack_8">
+                <div class="DH_Btn DH_Btn_Blue_Ghost DH_NoSel" id="DH_Support_Btn" style="padding:10px 0 10px 10px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M8.35078106,18 L3.62469505,21.7808688 C2.9699317,22.3046795 2,21.8385062 2,21 L2,5 C2,3.34314575 3.34314575,2 5,2 L19,2 C20.6568542,2 22,3.34314575 22,5 L22,15 C22,16.6568542 20.6568542,18 19,18 L8.35078106,18 Z M4,18.9193752 L7.37530495,16.2191312 C7.552618,16.0772808 7.7729285,16 8,16 L19,16 C19.5522847,16 20,15.5522847 20,15 L20,5 C20,4.44771525 19.5522847,4 19,4 L5,4 C4.44771525,4 4,4.44771525 4,5 L4,18.9193752 Z" fill="rgb(var(--DH-blue))"/>
+                    </svg>
+                    <p class="DH_T1 DH_NoSel" style="color:rgb(var(--DH-blue));font-size:15px;font-weight:700;">Support</p>
+                </div>
+                <div class="DH_Btn DH_Btn_Icon DH_NoSel" id="DH_YouTube_Btn" style="background:#FF0000;outline:2px solid rgba(0,0,0,.18);outline-offset:-2px;">
+                    <svg width="18" height="13" viewBox="0 0 22 16" fill="#FFF"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.2043 1.0885C20.1084 1.33051 20.8189 2.041 21.0609 2.9451C21.4982 4.58216 21.5 7.99976 21.5 7.99976C21.5 7.99976 21.5 11.4174 21.0609 13.0544C20.8189 13.9585 20.1084 14.669 19.2043 14.911C17.5673 15.3501 11 15.3501 11 15.3501C11 15.3501 4.43274 15.3501 2.79568 14.911C1.89159 14.669 1.1811 13.9585 0.939084 13.0544C0.5 11.4174 0.5 7.99976 0.5 7.99976C0.5 7.99976 0.5 4.58216 0.939084 2.9451C1.1811 2.041 1.89159 1.33051 2.79568 1.0885C4.43274 0.649414 11 0.649414 11 0.649414C11 0.649414 17.5673 0.649414 19.2043 1.0885ZM14.3541 8.00005L8.89834 11.1497V4.85038L14.3541 8.00005Z"/></svg>
                 </div>
                 <div class="DH_Btn DH_Btn_Icon DH_NoSel" id="DH_Discord_Btn" style="background:rgb(88,101,242);outline:2px solid rgba(0,0,0,.18);outline-offset:-2px;">
                     <svg width="18" height="14" viewBox="0 0 22 16" fill="#FFF"><path d="M18.289 1.34C16.9296.714 15.4761.259 13.9565 0c-.1866.332-.4046.779-.5549 1.134-1.6154-.239-3.2159-.239-4.8016 0C8.4497.779 8.2267.332 8.0384 0 6.5172.259 5.062.716 3.7027 1.343.9608 5.421.2175 9.398.5892 13.318c1.8185 1.337 3.5809 2.149 5.3136 2.68.4278-.579.8093-1.195 1.138-1.845-.6259-.234-1.2255-.523-1.7921-.858.1503-.11.2973-.225.4393-.307 3.4554 1.591 7.2098 1.591 10.624 0 .1437.118.2907.233.4393.342-.6262.337-1.2274.626-1.8534.86.3287.648.7086 1.265 1.138 1.845 1.7343-.531 3.4983-1.343 5.3168-2.681.4361-4.545-.7449-8.484-3.121-11.978ZM7.5115 10.908c-1.0373 0-1.8879-.954-1.8879-2.114 0-1.161.8325-2.115 1.8879-2.115 1.0555 0 1.9061.954 1.8879 2.115.0016 1.16-.8325 2.114-1.8879 2.114Zm6.9769 0c-1.0373 0-1.8879-.954-1.8879-2.114 0-1.161.8324-2.115 1.8879-2.115 1.0554 0 1.9061.954 1.8879 2.115 0 1.16-.8325 2.114-1.8879 2.114Z"/></svg>
@@ -669,8 +819,9 @@ _wrap.innerHTML = `
             <div class="DH_Btn DH_Btn_Blue_Ghost DH_NoSel" id="DH_Settings_Btn" style="align-self:stretch; justify-content:space-between; padding:10px 12px;">
                 <div style="display:flex; align-items:center; gap:8px;">
                     <div class="DH_Btn_Ico">
-                        <svg width="18" height="18" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="rgb(var(--DH-blue))" d="M39,15c0-2.2-1.8-4-4-4h-6c-0.7,0-1.1-0.8-0.7-1.4c0.6-1,0.9-2.2,0.6-3.5c-0.4-2-1.9-3.6-3.8-4C21.8,1.4,19,3.9,19,7c0,1,0.3,1.8,0.7,2.6c0.4,0.6,0,1.4-0.8,1.4h-6c-2.2,0-4,1.8-4,4v7c0,0.7,0.8,1.1,1.4,0.7c1-0.6,2.2-0.9,3.5-0.6c2,0.4,3.6,1.9,4,3.8c0.7,3.2-1.8,6.1-4.9,6.1c-1,0-1.8-0.3-2.6-0.7C9.8,30.9,9,31.3,9,32v6c0,2.2,1.8,4,4,4h22c2.2,0,4-1.8,4-4V15z"/>
+                        <svg width="19" height="19" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="rgb(var(--DH-blue))" d="M11.1206 1.02129C12.109 1.0067 12.9592 1.54344 13.7096 2.29199L13.7104 2.29285L14.9707 3.5531C15.1118 3.34249 15.2753 3.14257 15.461 2.95679C17.0025 1.4153 19.5018 1.4153 21.0433 2.9568C22.5848 4.49829 22.5848 6.99754 21.0433 8.53904C20.8575 8.72481 20.6576 8.88828 20.447 9.02939L21.7072 10.2896L21.708 10.2905C22.4565 11.0408 22.9932 11.891 22.9787 12.8794C22.9642 13.8602 22.41 14.6797 21.7058 15.3789C21.7054 15.3793 21.7049 15.3798 21.7045 15.3802L20.4287 16.656C19.9519 17.1327 19.3279 17.0824 18.9512 16.9234C18.5783 16.7659 18.1803 16.4041 18.0897 15.8508C18.0262 15.4628 17.8456 15.0914 17.5452 14.791C16.7847 14.0306 15.5518 14.0306 14.7914 14.791C14.0309 15.5515 14.0309 16.7844 14.7914 17.5448C15.0917 17.8452 15.4631 18.0259 15.8511 18.0894C16.4044 18.18 16.7663 18.5779 16.9237 18.9509C17.0827 19.3276 17.1331 19.9516 16.6564 20.4283L15.377 21.7077C15.3766 21.7081 15.3762 21.7085 15.3757 21.709C14.6777 22.412 13.8591 22.965 12.8794 22.9795C11.8922 22.994 11.0429 22.4585 10.2938 21.7112L10.2929 21.7103L9.0295 20.4469C8.88841 20.6575 8.72496 20.8573 8.53922 21.0431C6.99773 22.5846 4.49847 22.5846 2.95698 21.0431C1.41549 19.5016 1.41549 17.0023 2.95698 15.4608C3.14272 15.2751 3.3426 15.1116 3.55317 14.9706L2.29294 13.7103L2.29208 13.7095C1.54353 12.9591 1.00681 12.1089 1.02141 11.1205C1.03589 10.1397 1.59009 9.32029 2.29424 8.62107C2.29469 8.62062 2.29515 8.62017 2.2956 8.61972L3.57165 7.34366C4.0484 6.86691 4.67249 6.9173 5.04916 7.07633C5.4221 7.23378 5.82003 7.59563 5.91062 8.14898C5.97414 8.53701 6.15479 8.90842 6.45519 9.20882C7.21563 9.96926 8.44856 9.96926 9.209 9.20882C9.96945 8.44837 9.96945 7.21545 9.20901 6.455C8.90861 6.1546 8.53719 5.97396 8.14917 5.91043C7.59581 5.81984 7.23397 5.42191 7.07652 5.04897C6.91749 4.6723 6.86709 4.04821 7.34384 3.57146L8.61978 2.29553C8.62025 2.29506 8.62071 2.29459 8.62118 2.29413C9.32039 1.58996 10.1398 1.03576 11.1206 1.02129Z"/>
+                            <path fill="rgb(var(--DH-blue))" d="M11.1501 3.02107C10.9456 3.02409 10.6003 3.13919 10.0393 3.70438L10.0367 3.70706L9.49334 4.25039C9.90279 4.44025 10.2863 4.70387 10.6232 5.04079C12.1647 6.58228 12.1647 9.08154 10.6232 10.623C9.08173 12.1645 6.58247 12.1645 5.04098 10.623C4.70406 10.2861 4.44044 9.9026 4.25058 9.49315L3.70715 10.0366L3.70449 10.0392C3.13933 10.6002 3.02421 10.9455 3.02119 11.1501C3.01827 11.3476 3.11651 11.7039 3.70773 12.2967C3.70782 12.2968 3.70792 12.2969 3.70801 12.297L6.03813 14.6271C6.30605 14.895 6.39954 15.2913 6.2796 15.6508C6.15966 16.0102 5.8469 16.2709 5.47177 16.3243C5.06894 16.3815 4.68196 16.5643 4.37119 16.8751C3.61075 17.6355 3.61075 18.8684 4.3712 19.6289C5.13164 20.3893 6.36456 20.3893 7.12501 19.6289C7.43577 19.3181 7.61854 18.9311 7.67581 18.5283C7.72914 18.1532 7.9899 17.8404 8.34931 17.7205C8.70872 17.6005 9.10505 17.694 9.37296 17.9619L11.7063 20.2953C11.7066 20.2955 11.7068 20.2958 11.7071 20.296C11.7071 20.2961 11.7071 20.2961 11.7072 20.2961C12.2975 20.8848 12.6529 20.9826 12.8499 20.9797C13.0539 20.9767 13.3986 20.8619 13.9575 20.2988L13.9601 20.2961L14.5069 19.7494C14.0975 19.5595 13.714 19.2959 13.3772 18.9591C11.8357 17.4176 11.8357 14.9183 13.3772 13.3768C14.9186 11.8353 17.4179 11.8353 18.9594 13.3768C19.2963 13.7137 19.5599 14.0972 19.7497 14.5065L20.2929 13.9633L20.2956 13.9607C20.8608 13.3998 20.9759 13.0544 20.9789 12.8499C20.9818 12.6524 20.8836 12.2961 20.2928 11.7036C20.2925 11.7034 20.2923 11.7031 20.2921 11.7029L17.9619 9.3728C17.694 9.10487 17.6005 8.70853 17.7205 8.34912C17.8404 7.9897 18.1532 7.72895 18.5284 7.67564C18.9312 7.61839 19.3183 7.43561 19.6291 7.12482C20.3895 6.36438 20.3895 5.13145 19.6291 4.37101C18.8686 3.61056 17.6357 3.61056 16.8752 4.37101C16.5644 4.6818 16.3817 5.06882 16.3244 5.4717C16.2711 5.84683 16.0104 6.15962 15.6509 6.27957C15.2915 6.39953 14.8952 6.30604 14.6273 6.03812L12.2971 3.70792C12.2969 3.70779 12.2968 3.70767 12.2967 3.70754C11.704 3.11638 11.3476 3.01815 11.1501 3.02107Z"/>
                         </svg>
                     </div>
                     <p class="DH_T1 DH_NoSel" style="color:rgb(var(--DH-blue));">Extra Features</p>
@@ -681,25 +832,9 @@ _wrap.innerHTML = `
             </div>
 
 
-            <div class="DH_Btn DH_Btn_Blue_Ghost DH_NoSel" id="DH_Page4_Btn" style="align-self:stretch; justify-content:space-between; padding:10px 12px;">
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <div class="DH_Btn_Ico">
-
-                        <svg width="16" height="16" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M18.1,11c-3.9,0-7,3.1-7,7s3.1,7,7,7c3.9,0,7-3.1,7-7S22,11,18.1,11z M18.1,23c-2.8,0-5-2.2-5-5s2.2-5,5-5c2.8,0,5,2.2,5,5S20.9,23,18.1,23z" fill="rgb(var(--DH-blue))" stroke="rgb(var(--DH-blue))" stroke-width="1.2" stroke-linejoin="round" paint-order="stroke fill"/>
-                            <path d="M32.8,14.7L30,13.8l-0.6-1.5l1.4-2.6c0.3-0.6,0.2-1.4-0.3-1.9l-2.4-2.4c-0.5-0.5-1.3-0.6-1.9-0.3l-2.6,1.4l-1.5-0.6l-0.9-2.8C21,2.5,20.4,2,19.7,2h-3.4c-0.7,0-1.3,0.5-1.4,1.2L14,6c-0.6,0.1-1.1,0.3-1.6,0.6L9.8,5.2C9.2,4.9,8.4,5,7.9,5.5L5.5,7.9C5,8.4,4.9,9.2,5.2,9.8l1.3,2.5c-0.2,0.5-0.4,1.1-0.6,1.6l-2.8,0.9C2.5,15,2,15.6,2,16.3v3.4c0,0.7,0.5,1.3,1.2,1.5L6,22.1l0.6,1.5l-1.4,2.6c-0.3,0.6-0.2,1.4,0.3,1.9l2.4,2.4c0.5,0.5,1.3,0.6,1.9,0.3l2.6-1.4l1.5,0.6l0.9,2.9c0.2,0.6,0.8,1.1,1.5,1.1h3.4c0.7,0,1.3-0.5,1.5-1.1l0.9-2.9l1.5-0.6l2.6,1.4c0.6,0.3,1.4,0.2,1.9-0.3l2.4-2.4c0.5-0.5,0.6-1.3,0.3-1.9l-1.4-2.6l0.6-1.5l2.9-0.9c0.6-0.2,1.1-0.8,1.1-1.5v-3.4C34,15.6,33.5,14.9,32.8,14.7z M32,19.4l-3.6,1.1L28.3,21c-0.3,0.7-0.6,1.4-0.9,2.1l-0.3,0.5l1.8,3.3l-2,2l-3.3-1.8l-0.5,0.3c-0.7,0.4-1.4,0.7-2.1,0.9l-0.5,0.1L19.4,32h-2.8l-1.1-3.6L15,28.3c-0.7-0.3-1.4-0.6-2.1-0.9l-0.5-0.3l-3.3,1.8l-2-2l1.8-3.3l-0.3-0.5c-0.4-0.7-0.7-1.4-0.9-2.1l-0.1-0.5L4,19.4v-2.8l3.4-1l0.2-0.5c0.2-0.8,0.5-1.5,0.9-2.2l0.3-0.5L7.1,9.1l2-2l3.2,1.8l0.5-0.3c0.7-0.4,1.4-0.7,2.2-0.9l0.5-0.2L16.6,4h2.8l1.1,3.5L21,7.7c0.7,0.2,1.4,0.5,2.1,0.9l0.5,0.3l3.3-1.8l2,2l-1.8,3.3l0.3,0.5c0.4,0.7,0.7,1.4,0.9,2.1l0.1,0.5l3.6,1.1V19.4z" fill="rgb(var(--DH-blue))" stroke="rgb(var(--DH-blue))" stroke-width="1.2" stroke-linejoin="round" paint-order="stroke fill"/>
-                        </svg>
-                    </div>
-                    <p class="DH_T1 DH_NoSel" style="color:rgb(var(--DH-blue));">Settings</p>
-                </div>
-                <svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 1l6 5.5L1 12" stroke="rgb(var(--DH-blue))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
-
             <div class="DH_HStack_Auto">
                 <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">twisk.fun</p>
-                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">v2026.05.10</p>
+                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">v2026.05.23</p>
             </div>
         </div>
 
@@ -957,7 +1092,39 @@ _wrap.innerHTML = `
             </div>
         </div>
 
-        <!-- PAGE 8: V1 Mode — simple farm with live counters, no extra features -->
+        <!-- PAGE 8: Support Chat -->
+        <div class="DH_Page" id="DH_Page_8" style="flex:1;min-height:0;">
+            <div class="DH_HStack_4 DH_NoSel" id="DH_Support_Back_Btn" style="align-self:flex-start;cursor:pointer;opacity:0.55;">
+                <svg width="8" height="14" viewBox="0 0 9 16" fill="none"><path d="M8 1L2 8l6 7" stroke="rgb(var(--color-wolf,60,60,67))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <p class="DH_T1">Back</p>
+            </div>
+
+            <!-- Messages scroll -->
+            <div class="DH_Chat_Scroll" id="DH_Chat_Scroll"></div>
+            <!-- Input row -->
+            <div id="DH_Chat_Img_Preview_Row" style="display:none;" class="DH_Chat_Img_Preview">
+                <img class="DH_Chat_Img_Thumb" id="DH_Chat_Img_Thumb" src="" alt="">
+                <span class="DH_Chat_Img_Name DH_NoSel" id="DH_Chat_Img_Name"></span>
+                <button class="DH_Chat_Img_Remove" id="DH_Chat_Img_Remove_Btn" title="Remove">✕</button>
+            </div>
+            <div class="DH_Chat_Input_Row">
+                <input type="file" id="DH_Chat_File_Input" accept="image/png,image/jpeg,image/jpg" style="display:none;">
+                <button class="DH_Chat_Attach_Btn" id="DH_Chat_Attach_Btn" title="Attach image">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" stroke="rgb(var(--color-wolf,60,60,67),0.55)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <textarea class="DH_Chat_Input DH_NoSel" id="DH_Chat_Input" placeholder="Type a message…" rows="1" maxlength="2000"></textarea>
+                <button class="DH_Chat_Send_Btn" id="DH_Chat_Send_Btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22 2L11 13" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- PAGE V1: V1 Mode — simple farm with live counters, no extra features -->
         <div class="DH_Page" id="DH_Page_V1">
 
             <div class="DH_Divider"></div>
@@ -2007,7 +2174,7 @@ function _setBtnDone(btnId, label){
 }
 
 const _GF_SCRIPT_URL='https://greasyfork.org/en/scripts/561041-duolingo-duohacker';
-const _CURRENT_VER='2026.05.10';
+const _CURRENT_VER='2026.05.23';
 
 function _setConn(state, label){
         if (state === 'connected' && _isOutdated) {
@@ -2045,7 +2212,8 @@ if(state==='outdated'){
         ni.style.alignItems='center';
         ni.style.justifyContent='center';
 
-        ni.innerHTML=`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0; display:block;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" fill="rgba(var(--DH-orange),0.18)" stroke="rgb(var(--DH-orange))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="9" x2="12" y2="13" stroke="rgb(var(--DH-orange))" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="rgb(var(--DH-orange))"/></svg>`;
+        ni.style.color=`rgb(var(--DH-orange))`;
+        ni.innerHTML=`<svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;display:block;"><path fill="currentColor" d="M21.171 15.398l-5.912-9.854c-.776-1.293-1.963-2.033-3.259-2.033s-2.483.74-3.259 2.031l-5.912 9.856c-.786 1.309-.872 2.705-.235 3.83.636 1.126 1.878 1.772 3.406 1.772h12c1.528 0 2.77-.646 3.406-1.771.637-1.125.551-2.521-.235-3.831zm-9.171 2.151c-.854 0-1.55-.695-1.55-1.549 0-.855.695-1.551 1.55-1.551s1.55.696 1.55 1.551c0 .854-.696 1.549-1.55 1.549zm1.633-7.424c-.011.031-1.401 3.468-1.401 3.468-.038.094-.13.156-.231.156s-.193-.062-.231-.156l-1.391-3.438c-.09-.233-.129-.443-.129-.655 0-.965.785-1.75 1.75-1.75s1.75.785 1.75 1.75c0 .212-.039.422-.117.625z"/></svg>`;
 
         nb.title=label;
         nb.onclick = () => window.open(_GF_SCRIPT_URL, '_blank');
@@ -2053,15 +2221,17 @@ if(state==='outdated'){
         return;
     }
 
+    const _SVG_CONNECTING=`<svg class="DH_Spin_Ico" width="16" height="16" viewBox="0 0 297 297" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M294.853 178.121c-1.814-1.671-4.404-2.203-6.729-1.382l-25.97 9.168c17.558-70.878-24.569-143.07-94.69-161.569-34.475-9.094-70.423-4.215-101.225 13.737C35.438 56.028 13.475 84.901 4.397 119.377c-8.083 30.698-4.951 63.329 8.819 91.883 13.616 28.234 36.767 50.846 65.186 63.669 3.256 1.47 6.737 2.203 10.214 2.203 3.647 0 7.293-.807 10.672-2.418 6.59-3.141 11.435-8.99 13.293-16.047 3.086-11.721-2.756-23.89-13.893-28.937-37.335-16.923-56.844-58.027-46.387-97.737 5.7-21.65 19.508-39.794 38.878-51.089 19.372-11.295 41.963-14.378 63.611-8.675 44.273 11.659 70.99 56.813 60.113 101.108l-17.584-20.48c-1.612-1.878-4.135-2.705-6.544-2.152-2.412.555-4.318 2.401-4.948 4.794l-11.478 43.588c-.566 2.153-.02 4.447 1.457 6.112l40.428 45.603c1.785 2.012 4.604 2.752 7.144 1.882l57.644-19.78c2.106-.723 3.711-2.45 4.279-4.603l11.479-43.587c.635-2.412-.106-4.949-1.92-6.62z" fill="currentColor"/></svg>`;
+    const _SVG_CONNECTED=`<svg width="16" height="16" viewBox="0 0 921 921" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M648.5 794.6c-23.5 44.5-51.2 79.5-82.1 104.2-6.8 5.5-13.7 10.3-20.8 14.7 98.5-18.4 186-68.1 251.7-138.4-6.1-3.7-12.5-7.3-19.1-10.8-29.8-15.8-63.1-29.1-99.1-39.6-8.9 24.8-19.1 48.2-30.6 69.9zm-170.5-134.6c62.4 1.2 122.7 8.8 178.3 22.3C674.9 620.5 685.4 550.8 686.8 478H478V660zm0 242.5c22.8-3.5 45.1-13.9 66.6-31 27.2-21.7 51.7-53.1 73-93.3 10.3-19.4 19.5-40.4 27.6-62.6C593.1 703.2 536.6 696.2 478 695v207.5zM231 229.6c-37.8-11.2-73-25.2-104.5-41.9-9-4.8-17.7-9.7-26-14.9C40.8 247.4 3.8 340.9 0 443h199.2C200.7 367.2 211.6 294.5 231 229.6zm589.5-56.8c-8.3 5.1-16.9 10.1-26 14.9-31.5 16.7-66.7 30.7-104.5 41.9 19.4 64.9 30.3 137.6 31.8 213.4H921C917.2 340.9 880.2 247.4 820.5 172.8zM376.4 871.5c21.4 17.1 43.8 27.5 66.6 31V695c-58.6 1.2-115.1 8.2-167.2 20.6 8.1 22.2 17.3 43.1 27.6 62.6 21.3 40.2 45.9 71.6 73 93.3zM443 660V478H234.2c1.5 72.8 12 142.5 30.5 204.3C320.3 668.9 380.6 661.2 443 660zm-208.8-217H443V261c-62.4-1.2-122.7-8.8-178.3-22.3C246.2 300.5 235.6 370.2 234.2 443zm487.6 35c-1.5 75.8-12.4 148.5-31.8 213.4 37.8 11.2 73 25.2 104.5 41.9 9 4.8 17.7 9.7 26 14.9C880.2 673.6 917.2 580 921 478H721.8zM478 443h208.8c-1.5-72.8-12-142.5-30.5-204.3C600.7 252.2 540.4 259.8 478 261v182zm0-424.5V226c58.6-1.2 115.1-8.2 167.2-20.6-8.1-22.2-17.3-43.1-27.6-62.6-21.3-40.2-45.8-71.6-73-93.3C523.1 32.4 500.8 22 478 18.5zM123.7 145.9c6.1 3.7 12.5 7.3 19.1 10.8 29.8 15.8 63.1 29.1 99.1 39.6 8.9-24.8 19.1-48.2 30.6-69.9 23.5-44.5 51.2-79.5 82.1-104.2 6.8-5.5 13.7-10.3 20.8-14.7C276.9 25.9 189.4 75.6 123.7 145.9zM443 18.5c-22.8 3.5-45.1 13.9-66.6 31-27.2 21.7-51.7 53.1-73 93.3-10.3 19.4-19.5 40.4-27.6 62.6C327.9 217.8 384.4 224.8 443 226V18.5zm-316.6 714.8c31.5-16.7 66.7-30.7 104.5-41.9C211.5 626.5 200.6 553.8 199.1 478H0c3.8 102.1 40.8 195.6 100.5 270.2 8.2-5.1 16.8-10.1 25.9-14.9zm-2.7 41.8C189.4 845.1 276.9 894.8 375.4 913.2c-7-4.3-13.9-9.2-20.8-14.7C323.7 874.1 296 839 272.5 794.6c-11.5-21.7-21.7-45.1-30.6-69.9-35.9 10.6-69.2 23.9-99.1 39.6-6.6 3.5-13 7.1-19.1 10.8zm525.1-651.7c11.5 21.7 21.7 45.1 30.6 69.9 35.9-10.6 69.2-23.9 99.1-39.6 6.6-3.5 13-7.1 19.1-10.8C731.6 75.6 644.1 25.9 545.6 7.5c7 4.3 13.9 9.2 20.8 14.7 30.9 24.7 58.6 59.7 82.1 104.2z"/></svg>`;
+    const _SVG_ERROR=`<svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M21.171 15.398l-5.912-9.854c-.776-1.293-1.963-2.033-3.259-2.033s-2.483.74-3.259 2.031l-5.912 9.856c-.786 1.309-.872 2.705-.235 3.83.636 1.126 1.878 1.772 3.406 1.772h12c1.528 0 2.77-.646 3.406-1.771.637-1.125.551-2.521-.235-3.831zm-9.171 2.151c-.854 0-1.55-.695-1.55-1.549 0-.855.695-1.551 1.55-1.551s1.55.696 1.55 1.551c0 .854-.696 1.549-1.55 1.549zm1.633-7.424c-.011.031-1.401 3.468-1.401 3.468-.038.094-.13.156-.231.156s-.193-.062-.231-.156l-1.391-3.438c-.09-.233-.129-.443-.129-.655 0-.965.785-1.75 1.75-1.75s1.75.785 1.75 1.75c0 .212-.039.422-.117.625z"/></svg>`;
     const S={
-        connecting:{bg:`rgb(var(--color-eel,117,117,117),0.10)`,outline:`rgb(var(--color-eel,117,117,117),0.20)`,tc:`rgb(var(--color-eel,117,117,117),0.70)`,t:'Connecting',i:'⟳',spin:true},
-        connected:  {bg:`linear-gradient(0deg,rgba(var(--DH-green),0.10),rgba(var(--DH-green),0.10)),rgb(var(--color-snow),0.90)`,outline:`rgba(var(--DH-green),0.22)`,tc:`rgb(var(--DH-green))`,t:'Connected',i:'✓',spin:false},
-        error:      {bg:`rgba(var(--DH-red),0.08)`,outline:`rgba(var(--DH-red),0.20)`,tc:`rgb(var(--DH-red))`,t:label||'Error',i:'✕',spin:false},
+        connecting:{bg:`rgb(var(--color-eel,117,117,117),0.10)`,outline:`rgb(var(--color-eel,117,117,117),0.20)`,tc:`rgb(var(--color-eel,117,117,117),0.70)`,t:'Connecting',svg:_SVG_CONNECTING},
+        connected:  {bg:`linear-gradient(0deg,rgba(var(--DH-green),0.10),rgba(var(--DH-green),0.10)),rgb(var(--color-snow),0.90)`,outline:`rgba(var(--DH-green),0.22)`,tc:`rgb(var(--DH-green))`,t:'Connected',svg:_SVG_CONNECTED},
+        error:      {bg:`rgba(var(--DH-red),0.08)`,outline:`rgba(var(--DH-red),0.20)`,tc:`rgb(var(--DH-red))`,t:label||'Error',svg:_SVG_ERROR},
     }[state];
     btn.style.background=S.bg; btn.style.outline=`2px solid ${S.outline}`; btn.style.outlineOffset='-2px';
     txt.textContent=S.t; txt.style.color=S.tc;
-    ico.textContent=S.i; ico.style.color=S.tc;
-    if(S.spin) ico.classList.add('DH_Spin_Ico');
+    ico.innerHTML=S.svg; ico.style.color=S.tc; ico.style.display='flex'; ico.style.alignItems='center'; ico.style.justifyContent='center';
     if(state==='connected') document.getElementById('DH_User_Row').style.display='flex';
 }
 
@@ -2141,9 +2311,9 @@ function _goPage(to){
     const toEl=document.getElementById(`DH_Page_${to}`);
     if(!fromEl||!toEl){_pageBusy=false;return;}
     const oldH=box.offsetHeight;
-    fromEl.style.display='none'; toEl.style.display='flex';
+    fromEl.style.display='none'; toEl.classList.add('active'); toEl.style.opacity='0';
     const newH=box.offsetHeight;
-    fromEl.style.display='flex'; toEl.style.display='none';
+    toEl.classList.remove('active'); toEl.style.opacity=''; fromEl.style.display='';
     box.style.height=oldH+'px'; box.style.transition='height 0.8s cubic-bezier(0.16,1,0.32,1)';
     fromEl.style.transition='opacity 0.3s,filter 0.3s';
     fromEl.style.opacity='0'; fromEl.style.filter='blur(4px)';
@@ -3485,6 +3655,9 @@ superV1Btn.addEventListener('click', () => _activateFreeSuper('DH_V1_Super_Activ
 document.getElementById('DH_V1_Settings_Btn').addEventListener('click',()=>{ _goPage(4); _initHideProfileToggle(); });
 document.getElementById('DH_Discord_Btn').addEventListener('click',()=>window.open('https://discord.com/invite/Gvmd7deFtS','_blank'));
 document.getElementById('DH_GitHub_Btn').addEventListener('click',()=>window.open('https://github.com/not2pixel/DuoHacker','_blank'));
+document.getElementById('DH_YouTube_Btn').addEventListener('click',()=>window.open('https://www.youtube.com/@duohacker-hack-cheat','_blank'));
+document.getElementById('DH_TopSettings_Btn').addEventListener('click',()=>{ _goPage(4); _initHideProfileToggle(); });
+document.getElementById('DH_Support_Btn').addEventListener('click',()=>{ _goPage(8); _initSupportChat(); });
 
 async function _getPrivacy(){
     if(!_sub||!_hdrs) return null;
@@ -3544,7 +3717,6 @@ document.getElementById('DH_Settings_Btn').addEventListener('click',()=>{_goPage
 document.getElementById('DH_Back_Btn').addEventListener('click',()=>_goBack());
 document.getElementById('DH_Shop_Btn').addEventListener('click',()=>{_goPage(3);_loadShop();});
 document.getElementById('DH_Shop_Back_Btn').addEventListener('click',()=>_goBack());
-document.getElementById('DH_Page4_Btn').addEventListener('click',()=>{ _goPage(4); _initHideProfileToggle(); });
 document.getElementById('DH_Settings_Back_Btn').addEventListener('click',()=>{
     _initHideProfileToggle();
     _goBack();
@@ -3793,6 +3965,457 @@ function _loadLicense(){
 }
 document.getElementById('DH_License_Open_Btn').addEventListener('click',()=>_goPage(9));
 document.getElementById('DH_License_Back_Btn').addEventListener('click',()=>_goBack());
+document.getElementById('DH_Support_Back_Btn').addEventListener('click',()=>_goBack());
+
+// ── Support Chat ──────────────────────────────────────────────────────────
+const _SUPPORT_API   = 'https://api.twisk.fun/support';
+const _SUPPORT_SK_KEY = 'dh2_support_session';
+
+let _chatInited     = false;
+let _chatIsClosed   = false;
+let _chatSessionId  = localStorage.getItem(_SUPPORT_SK_KEY) || null;
+let _chatLastMsgId  = null;
+let _chatPollTimer  = null;
+let _chatInputBound = false;
+let _chatPendingImg = null;
+
+// ── simple markdown → text/html (agent bubbles only) ────────────────────
+function _mdToHtml(text) {
+    // 1. escape entire raw input first — neutralises all raw HTML/XSS
+    text = _htmlEsc(text);
+    // 2. code blocks (content already escaped above)
+    text = text.replace(/```([\s\S]*?)```/g, (_,c) =>
+        `<pre><code>${c.trim()}</code></pre>`);
+    // 3. inline code
+    text = text.replace(/`([^`]+)`/g, (_,c) => `<code>${c}</code>`);
+    // 4. bold
+    text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    // 5. italic
+    text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    // 6. links — only http/https allowed
+    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => {
+        const safeHref = /^https?:\/\//i.test(href) ? href : '#';
+        return `<a href="${_attrEsc(safeHref)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+    });
+    // 7. unordered list lines
+    text = text.replace(/^[ \t]*[-*] (.+)$/gm, '<li>$1</li>');
+    text = text.replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>');
+    // 8. line breaks
+    text = text.replace(/\n/g, '<br>');
+    return text;
+}
+// escape for text content
+function _htmlEsc(s) {
+    return String(s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
+}
+// escape for attribute values (href, src)
+function _attrEsc(s) {
+    return String(s)
+        .replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;')
+        .replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// strip all HTML tags from a string (used to sanitize server m.html before re-rendering)
+function _stripHtml(html) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+}
+
+// ── API helpers (use GM_xmlhttpRequest so CORS is bypassed by Tampermonkey) ─
+function _supportPost(path, body) {
+    return new Promise((res, rej) => GM_xmlhttpRequest({
+        method: 'POST',
+        url: _SUPPORT_API + path,
+        headers: { 'Content-Type': 'application/json' },
+        data: JSON.stringify(body),
+        onload: r => res(r),
+        onerror: () => rej(new Error('Network')),
+        timeout: 10000, ontimeout: () => rej(new Error('Timeout'))
+    }));
+}
+function _supportGet(path) {
+    return new Promise((res, rej) => GM_xmlhttpRequest({
+        method: 'GET',
+        url: _SUPPORT_API + path,
+        onload: r => res(r),
+        onerror: () => rej(new Error('Network')),
+        timeout: 10000, ontimeout: () => rej(new Error('Timeout'))
+    }));
+}
+
+// ── init — called when user opens the chat page ──────────────────────────
+async function _initSupportChat() {
+    const scroll = document.getElementById('DH_Chat_Scroll');
+    if (!scroll) return;
+
+    if (!_chatInputBound) {
+        _chatInputBound = true;
+        const input = document.getElementById('DH_Chat_Input');
+        if (input) {
+            input.addEventListener('input', () => {
+                input.style.height = 'auto';
+                input.style.height = Math.min(input.scrollHeight, 80) + 'px';
+            });
+            input.addEventListener('keydown', e => {
+                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); _chatSend(); }
+            });
+        }
+        document.getElementById('DH_Chat_Send_Btn').addEventListener('click', _chatSend);
+
+        // attach button → trigger hidden file input
+        const attachBtn  = document.getElementById('DH_Chat_Attach_Btn');
+        const fileInput  = document.getElementById('DH_Chat_File_Input');
+        const removeBtn  = document.getElementById('DH_Chat_Img_Remove_Btn');
+        if (attachBtn && fileInput) {
+            attachBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', () => {
+                const file = fileInput.files && fileInput.files[0];
+                fileInput.value = '';
+                if (!file) return;
+                if (!['image/png','image/jpeg','image/jpg'].includes(file.type)) {
+                    _chatAppendSystem('⚠️ Only PNG and JPEG images are supported.');
+                    return;
+                }
+                if (file.size > 5 * 1024 * 1024) {
+                    _chatAppendSystem('⚠️ Image must be under 5 MB.');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = e => {
+                    _chatPendingImg = { dataUrl: e.target.result, name: file.name };
+                    const thumb = document.getElementById('DH_Chat_Img_Thumb');
+                    const nameEl = document.getElementById('DH_Chat_Img_Name');
+                    const previewRow = document.getElementById('DH_Chat_Img_Preview_Row');
+                    if (thumb) thumb.src = _chatPendingImg.dataUrl;
+                    if (nameEl) nameEl.textContent = file.name;
+                    if (previewRow) previewRow.style.display = 'flex';
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        if (removeBtn) {
+            removeBtn.addEventListener('click', _chatClearImg);
+        }
+    }
+
+    if (_chatInited) {
+        scroll.scrollTop = scroll.scrollHeight;
+        // f
+        if (!_chatIsClosed) {
+            _chatStartPoll();
+        }
+        return;
+    }
+    _chatInited = true;
+
+    // show loading state
+    _chatAppendSystem('Connecting to support…');
+
+    try {
+        const body = {
+            sessionId:  _chatSessionId || undefined,
+            userId:     _user ? String(_user.id || _sub || '') : 'anonymous',
+            username:   _user ? (_user.username || 'User') : 'User',
+            avatarUrl:  _user && _user.picture
+                ? ((_p => { let hq = _p.replace(/\/(medium|large|small)$/, '/xlarge'); if (!hq.endsWith('/xlarge') && hq.includes('duolingo.com/ssr-avatars')) hq += '/xlarge'; return hq; })(_user.picture))
+                : '',
+        };
+        const r = await _supportPost('/session', body);
+        const data = JSON.parse(r.responseText);
+
+        if (r.status === 503) {
+            scroll.innerHTML = '';
+            _chatAppendSystem(`⚠️ ${data.error || 'Support is currently full.'}`);
+            _chatInited = false;
+            return;
+        }
+        if (r.status !== 200) throw new Error('status ' + r.status);
+
+        _chatSessionId = data.sessionId;
+        localStorage.setItem(_SUPPORT_SK_KEY, _chatSessionId);
+
+        // fix
+        const input = document.getElementById('DH_Chat_Input');
+        const btn = document.getElementById('DH_Chat_Send_Btn');
+        const attachBtn = document.getElementById('DH_Chat_Attach_Btn');
+
+        if (input) {
+            input.disabled = false;
+            input.placeholder = 'Type a message…';
+        }
+        if (btn) btn.disabled = false;
+        if (attachBtn) attachBtn.disabled = false;
+
+        // c
+        scroll.innerHTML = '';
+
+        for (const m of (data.messages || [])) {
+            _chatRenderMsg(m);
+            _chatLastMsgId = m.id;
+        }
+        scroll.scrollTop = scroll.scrollHeight;
+    } catch(e) {
+        scroll.innerHTML = '';
+        _chatAppendSystem('⚠️ Could not connect. Check your connection and try again.');
+        _chatInited = false;
+        return;
+    }
+
+    _chatStartPoll();
+}
+
+// ── long-poll for new agent messages ─────────────────────────────────────
+function _chatStartPoll() {
+    if (_chatPollTimer) return;
+    _chatPollTimer = setInterval(_chatPoll, 4000);
+}
+function _chatStopPoll() {
+    clearInterval(_chatPollTimer);
+    _chatPollTimer = null;
+}
+async function _chatPoll() {
+    if (!_chatSessionId) return;
+    try {
+        const after = _chatLastMsgId ? `?after=${_chatLastMsgId}` : '';
+        const r = await _supportGet(`/messages/${_chatSessionId}${after}`);
+        if (r.status !== 200) return;
+        const { messages, status } = JSON.parse(r.responseText);
+        for (const m of (messages || [])) {
+            _chatRenderMsg(m);
+            _chatLastMsgId = m.id;
+        }
+        const scroll = document.getElementById('DH_Chat_Scroll');
+        if (scroll && messages && messages.length) scroll.scrollTop = scroll.scrollHeight;
+
+        // closed ui sync
+        if (status === 'closed') {
+            const input = document.getElementById('DH_Chat_Input');
+            const btn   = document.getElementById('DH_Chat_Send_Btn');
+            const attachBtn = document.getElementById('DH_Chat_Attach_Btn');
+
+            if (input && !input.disabled) {
+                input.disabled = true;
+                input.placeholder = 'Closed by admin.';
+                if (btn) btn.disabled = true;
+                if (attachBtn) attachBtn.disabled = true;
+
+                _chatAppendSystem('This conversation closed by admin.');
+
+                _chatStopPoll();
+                localStorage.removeItem(_SUPPORT_SK_KEY);
+
+                // reset
+                // _chatSessionId = null;
+                // _chatInited    = false;
+                // _chatLastMsgId = null;
+
+                _chatIsClosed = true;
+            }
+        }
+    } catch (e) {
+        // c re
+    }
+}
+
+// ── send user message ─────────────────────────────────────────────────────
+function _chatClearImg() {
+    _chatPendingImg = null;
+    const thumb = document.getElementById('DH_Chat_Img_Thumb');
+    const previewRow = document.getElementById('DH_Chat_Img_Preview_Row');
+    if (thumb) thumb.src = '';
+    if (previewRow) previewRow.style.display = 'none';
+}
+
+async function _chatSend() {
+    const input = document.getElementById('DH_Chat_Input');
+    if (!input) return;
+    const text = input.value.trim();
+    const img  = _chatPendingImg;
+
+    if (text.length > 2000) {
+        _chatAppendSystem('⚠️ The message exceeds 2000 characters.');
+        return;
+    }
+
+    if (!text && !img) return;
+
+    if (!_chatSessionId) {
+        input.disabled = true;
+        await _initSupportChat();
+        input.disabled = false;
+        if (!_chatSessionId) return;
+    }
+
+    input.value = '';
+    input.style.height = 'auto';
+    _chatClearImg();
+
+    const optId = 'opt_' + Date.now();
+    _chatRenderMsg({ id: optId, role: 'user', text: text || '', imageDataUrl: img ? img.dataUrl : null, ts: new Date().toISOString() });
+
+    const payload = { sessionId: _chatSessionId };
+    if (text) payload.text = text;
+    if (img) {
+        payload.imageDataUrl = img.dataUrl;
+        payload.imageName    = img.name;
+        if (!payload.text) payload.text = '[image]';
+    }
+
+    const typing = _chatShowTyping();
+
+    try {
+        const r = await _supportPost('/message', payload);
+        if (typing && typing.parentNode) typing.parentNode.removeChild(typing);
+
+        // ratelimits
+        if (r.status === 429 || r.status === 400 || r.status === 403) {
+            const data = JSON.parse(r.responseText);
+            _chatAppendSystem(`⚠️ ${data.error || 'Failed to send message.'}`);
+            const optBubble = document.getElementById('dh-msg-' + optId);
+            if (optBubble) optBubble.remove(); // del err msg
+            return;
+        }
+
+        if (r.status !== 200) {
+            _chatAppendSystem('⚠️ Failed to send message.');
+            const optBubble = document.getElementById('dh-msg-' + optId);
+            if (optBubble) optBubble.remove();
+        } else {
+            const data = JSON.parse(r.responseText);
+            _chatLastMsgId = data.message.id;
+        }
+    } catch {
+        if (typing && typing.parentNode) typing.parentNode.removeChild(typing);
+        _chatAppendSystem('⚠️ Network error — message may not have been sent.');
+    }
+}
+
+// ── render helpers ────────────────────────────────────────────────────────
+function _chatRenderMsg(m) {
+    const scroll = document.getElementById('DH_Chat_Scroll');
+    if (!scroll) return;
+
+    // don't render duplicate IDs
+    if (m.id && document.getElementById('dh-msg-' + m.id)) return;
+
+    const isUser = m.role === 'user';
+    const row = document.createElement('div');
+    row.className = 'DH_Chat_Row' + (isUser ? ' user' : '');
+    if (m.id) row.id = 'dh-msg-' + m.id;
+
+    const av = document.createElement('div');
+    av.className = 'DH_Chat_Bubble_Avatar';
+    if (isUser) {
+        // _chatUserAvatar() returns safe DOM string (src attr-escaped, no JS)
+        av.innerHTML = _chatUserAvatar();
+    } else {
+        const agentImg = document.createElement('img');
+        agentImg.src = 'https://assets.twisk.fun/images/DuoHacker_Logo_NoBG_PNG.png';
+        agentImg.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
+        agentImg.onerror = function(){ this.parentNode.textContent = '🦉'; };
+        av.appendChild(agentImg);
+    }
+
+    const wrap = document.createElement('div');
+    wrap.className = 'DH_Chat_Bubble_Wrap';
+
+    const nameTag = document.createElement('p');
+    nameTag.className = 'DH_Chat_Name_Tag DH_NoSel';
+    nameTag.textContent = isUser ? _chatUserName() : 'DuoHacker Support';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'DH_Chat_Bubble ' + (isUser ? 'user' : 'agent');
+    if (!isUser) {
+        // m.html comes from our own server (marked.parse) — use directly.
+        // Only run _mdToHtml on raw m.text when m.html is absent (e.g. optimistic local msgs).
+        const html = m.html ? m.html : _mdToHtml(m.text);
+        bubble.innerHTML = html;
+    } else {
+        if (m.imageDataUrl) {
+            const img = document.createElement('img');
+            img.className = 'DH_Chat_Sent_Img';
+            img.src = m.imageDataUrl;
+            img.alt = 'image';
+            bubble.appendChild(img);
+            if (m.text && m.text !== '[image]') {
+                const t = document.createElement('span');
+                t.style.cssText = 'display:block;margin-top:4px;';
+                t.textContent = m.text;
+                bubble.appendChild(t);
+            }
+        } else {
+            bubble.textContent = m.text;
+        }
+    }
+
+    wrap.appendChild(nameTag);
+    wrap.appendChild(bubble);
+    row.appendChild(av);
+    row.appendChild(wrap);
+    scroll.appendChild(row);
+    scroll.scrollTop = scroll.scrollHeight;
+    if (m.id) _chatLastMsgId = m.id;
+}
+
+function _chatAppendSystem(text) {
+    const scroll = document.getElementById('DH_Chat_Scroll');
+    if (!scroll) return;
+    const p = document.createElement('p');
+    p.className = 'DH_T2 DH_NoSel';
+    p.style.cssText = 'text-align:center;padding:6px 0;font-size:11px;opacity:0.5;';
+    p.textContent = text;
+    scroll.appendChild(p);
+}
+
+function _chatShowTyping() {
+    const scroll = document.getElementById('DH_Chat_Scroll');
+    if (!scroll) return null;
+    const row = document.createElement('div');
+    row.className = 'DH_Chat_Row';
+    row.id = 'DH_Chat_Typing_Row';
+    const av = document.createElement('div');
+    av.className = 'DH_Chat_Bubble_Avatar';
+    const typingImg = document.createElement('img');
+    typingImg.src = 'https://assets.twisk.fun/images/DuoHacker_Logo_NoBG_PNG.png';
+    typingImg.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
+    typingImg.onerror = function(){ this.parentNode.textContent = '🦉'; };
+    av.appendChild(typingImg);
+    const bubble = document.createElement('div');
+    bubble.className = 'DH_Chat_Bubble agent';
+    const typingDots = document.createElement('div');
+    typingDots.className = 'DH_Chat_Typing';
+    typingDots.appendChild(document.createElement('span'));
+    typingDots.appendChild(document.createElement('span'));
+    typingDots.appendChild(document.createElement('span'));
+    bubble.appendChild(typingDots);
+    row.appendChild(av);
+    row.appendChild(bubble);
+    scroll.appendChild(row);
+    scroll.scrollTop = scroll.scrollHeight;
+    return row;
+}
+
+function _chatUserAvatar() {
+    if (_user && _user.picture) {
+        let hq = _user.picture.replace(/\/(medium|large|small)$/, '/xlarge');
+        if (!hq.endsWith('/xlarge') && hq.includes('duolingo.com/ssr-avatars')) hq += '/xlarge';
+        // _attrEsc prevents quote-breakout in src attribute
+        return `<img src="${_attrEsc(hq)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" onerror="this.parentNode.textContent='👤'">`;
+    }
+    return '👤';
+}
+function _chatUserName() {
+    return (_user && _user.username) ? _user.username : 'You';
+}
+
+// stop poll when user leaves the support page
+document.getElementById('DH_Support_Back_Btn').addEventListener('click', () => {
+    _chatStopPoll();
+    _goBack();
+});
 
 _connect();
 
