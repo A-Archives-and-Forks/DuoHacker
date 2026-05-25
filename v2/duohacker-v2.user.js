@@ -52,7 +52,7 @@
 // @name:ur             Duolingo DuoHacker
 
 // @namespace           https://github.com/not2pixel/DuoHacker
-// @version             2026.05.23
+// @version             2026.05.25
 // @description         The #1 Duolingo hack - Farm XP, Gems, Streaks and unlock Duolingo Max for free.
 // @description:vi      Công cụ hack Duolingo #1 - Farm XP, Gems, Streaks và mở khóa Duolingo Max miễn phí.
 // @description:zh-CN   最强 Duolingo 辅助工具 - 自动刷 XP、宝石、连胜，免费解锁 Duolingo Max。
@@ -132,7 +132,7 @@
 // @compatible          safari   Supported via Userscripts app
 // @compatible          brave    Supported via Tampermonkey
 // @homepageURL         https://github.com/not2pixel/DuoHacker
-// @supportURL          https://discord.com/invite/Gvmd7deFtS
+// @supportURL          https://discord.gg/VjxjT47UFv
 // @copyright           2026, DuoHacker (https://github.com/not2pixel)
 // @license             BY-NC-ND 4.0
 // @downloadURL https://update.greasyfork.org/scripts/561041/Duolingo%20DuoHacker.user.js
@@ -834,7 +834,7 @@ _wrap.innerHTML = `
 
             <div class="DH_HStack_Auto">
                 <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">twisk.fun</p>
-                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">v2026.05.23</p>
+                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">v2026.05.25</p>
             </div>
         </div>
 
@@ -2174,7 +2174,7 @@ function _setBtnDone(btnId, label){
 }
 
 const _GF_SCRIPT_URL='https://greasyfork.org/en/scripts/561041-duolingo-duohacker';
-const _CURRENT_VER='2026.05.23';
+const _CURRENT_VER='2026.05.25';
 
 function _setConn(state, label){
         if (state === 'connected' && _isOutdated) {
@@ -3653,7 +3653,7 @@ const superV1Btn = document.getElementById('DH_V1_Super_Activate_Btn');
 superV1Btn.disabled = false;
 superV1Btn.addEventListener('click', () => _activateFreeSuper('DH_V1_Super_Activate_Btn','DH_V1_Super_Activate_Lbl','DH_V1_Super_Prog','DH_V1_Super_Fill'));
 document.getElementById('DH_V1_Settings_Btn').addEventListener('click',()=>{ _goPage(4); _initHideProfileToggle(); });
-document.getElementById('DH_Discord_Btn').addEventListener('click',()=>window.open('https://discord.com/invite/Gvmd7deFtS','_blank'));
+document.getElementById('DH_Discord_Btn').addEventListener('click',()=>window.open('https://discord.gg/VjxjT47UFv','_blank'));
 document.getElementById('DH_GitHub_Btn').addEventListener('click',()=>window.open('https://github.com/not2pixel/DuoHacker','_blank'));
 document.getElementById('DH_YouTube_Btn').addEventListener('click',()=>window.open('https://www.youtube.com/@duohacker-hack-cheat','_blank'));
 document.getElementById('DH_TopSettings_Btn').addEventListener('click',()=>{ _goPage(4); _initHideProfileToggle(); });
