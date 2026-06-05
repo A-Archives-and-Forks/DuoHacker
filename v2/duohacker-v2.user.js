@@ -52,7 +52,7 @@
 // @name:ur             Duolingo DuoHacker
 
 // @namespace           https://github.com/not2pixel/DuoHacker
-// @version             2026.05.25
+// @version             2026.06.05
 // @description         The #1 Duolingo hack - Farm XP, Gems, Streaks and unlock Duolingo Max for free.
 // @description:vi      Công cụ hack Duolingo #1 - Farm XP, Gems, Streaks và mở khóa Duolingo Max miễn phí.
 // @description:zh-CN   最强 Duolingo 辅助工具 - 自动刷 XP、宝石、连胜，免费解锁 Duolingo Max。
@@ -105,12 +105,12 @@
 // @description:lo      ແຮັກ Duolingo ອັນດັບໜຶ່ງ - ຟາມ XP, ເພັດ, ສາຍຕໍ່ເນື່ອງ ແລະ ປົດລັອກ Duolingo Max ຟຣີ.
 // @description:ur      Duolingo کا بہترین ہیک - XP، Gems، Streaks فارم کریں اور Duolingo Max مفت میں انلاک کریں۔
 
-// @author              DuoHacker Team
+// @author              DuoHacker
 
 // @match               https://*.duolingo.com/*
 // @match               https://*.duolingo.cn/*
 
-// @icon                https://assets.twisk.fun/images/DuoHacker_Logo_NoBG_PNG.png
+// @icon                https://github.com/not2pixel/DuoHacker/blob/main/images/DuoHacker_Logo_NoBG_PNG.png?raw=true
 // @run-at              document-end
 
 // @grant               GM_xmlhttpRequest
@@ -121,9 +121,9 @@
 // @connect             duolingo-leaderboards-prod.duolingo.com
 // @connect             raw.githubusercontent.com
 // @connect             avatars.githubusercontent.com
-// @connect             fonts.googleapis.com
 // @connect             greasyfork.org
-// @connect             api.twisk.fun
+// @connect             assets.twisk.fun
+// @connect             font.twisk.fun
 
 // @compatible          chrome   Tested on Chrome 120+ with Tampermonkey
 // @compatible          firefox  Tested on Firefox 120+ with Tampermonkey / Violentmonkey
@@ -131,23 +131,44 @@
 // @compatible          opera    Supported via Tampermonkey / Violentmonkey
 // @compatible          safari   Supported via Userscripts app
 // @compatible          brave    Supported via Tampermonkey
-// @homepageURL         https://github.com/not2pixel/DuoHacker
-// @supportURL          https://discord.gg/VjxjT47UFv
+// @homepageURL         https://twisk.fun
+// @supportURL          https://twisk.fun/discord
 // @copyright           2026, DuoHacker (https://github.com/not2pixel)
 // @license             BY-NC-ND 4.0
 // @downloadURL https://update.greasyfork.org/scripts/561041/Duolingo%20DuoHacker.user.js
 // @updateURL https://update.greasyfork.org/scripts/561041/Duolingo%20DuoHacker.meta.js
 // ==/UserScript==
 
-(function () {
-'use strict';
+(function() {
+    'use strict';
 
-const _fontLink = document.createElement('link');
-_fontLink.rel = 'stylesheet';
-_fontLink.href = 'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap';
-document.head.appendChild(_fontLink);
+    GM_addStyle(`
 
-GM_addStyle(`
+@font-face {
+    font-family: "SF Pro Rounded";
+    src: url("https://font.twisk.fun/SF-Pro-Rounded-Regular.otf") format("opentype");
+    font-weight: 400; font-display: swap;
+}
+@font-face {
+    font-family: "SF Pro Rounded";
+    src: url("https://font.twisk.fun/SF-Pro-Rounded-Semibold.otf") format("opentype");
+    font-weight: 600; font-display: swap;
+}
+@font-face {
+    font-family: "SF Pro Rounded";
+    src: url("https://font.twisk.fun/SF-Pro-Rounded-Bold.otf") format("opentype");
+    font-weight: 700; font-display: swap;
+}
+@font-face {
+    font-family: "SF Pro Rounded";
+    src: url("https://font.twisk.funSF-Pro-Rounded-Heavy.otf") format("opentype");
+    font-weight: 800; font-display: swap;
+}
+@font-face {
+    font-family: "SF Pro Rounded";
+    src: url("https://font.twisk.fun/SF-Pro-Rounded-Black.otf") format("opentype");
+    font-weight: 900; font-display: swap;
+}
 
 :root {
     --DH-blue:   0, 122, 255;
@@ -165,7 +186,7 @@ GM_addStyle(`
 
 #DH_Root * { box-sizing: border-box; }
 #DH_Root p, #DH_Root span, #DH_Root button, #DH_Root input, #DH_Root label, #DH_Root div {
-    font-family: 'Nunito', 'din-round', -apple-system, sans-serif !important;
+    font-family: 'SF Pro Rounded', 'din-round', -apple-system, sans-serif !important;
 }
 #DH_Root p, #DH_Root span { margin: 0; padding: 0; }
 #DH_Root svg { flex-shrink: 0; }
@@ -188,6 +209,7 @@ GM_addStyle(`
     outline: 2px solid rgb(var(--color-eel, 117,117,117), 0.10); outline-offset: -2px;
     background: rgb(var(--color-snow), 0.90);
     backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .DH_HStack_Auto { display:flex; align-items:center; justify-content:space-between; align-self:stretch; }
@@ -295,15 +317,6 @@ GM_addStyle(`
     width:0%; transition:width 0.5s cubic-bezier(0.16,1,0.32,1);
     box-shadow:0 0 6px rgba(var(--DH-blue),0.35);
 }
-
-.DH_Dot {
-    width:8px; height:8px; border-radius:50%;
-    background:rgb(var(--color-eel,117,117,117),0.30); flex-shrink:0;
-    transition:background 0.4s, box-shadow 0.4s;
-}
-.DH_Dot.ok   { background:rgb(var(--DH-green)); box-shadow:0 0 7px rgba(var(--DH-green),0.5); }
-.DH_Dot.err  { background:rgb(var(--DH-red));   box-shadow:0 0 7px rgba(var(--DH-red),0.4); }
-.DH_Dot.spin { animation:DH_Spin 1.5s linear infinite; }
 
 .DH_Avatar {
     width:32px; height:32px; border-radius:50%;
@@ -420,8 +433,6 @@ GM_addStyle(`
 .DH_Search:focus { outline-color:rgba(var(--DH-blue),0.35); }
 .DH_Search::placeholder { color:rgb(var(--color-wolf,60,60,67),0.35); }
 
-#DH_Extra_Panel { overflow:hidden; }
-
 .DH_Btn_Ico {
     width:28px; height:28px; border-radius:7px; flex-shrink:0;
     background:rgba(var(--DH-blue),0.12);
@@ -520,141 +531,14 @@ GM_addStyle(`
     .DH_Main { margin-bottom:80px; }
 }
 
-/* PAGE 8: Support Chat */
-#DH_Page_8 { flex:1; min-height:0; }
-.DH_Chat_Header {
-    display:flex; align-items:center; gap:10px; align-self:stretch;
-    padding-bottom:8px;
-    border-bottom:1px solid rgb(var(--color-eel,117,117,117),0.10);
-}
-.DH_Chat_Agent_Avatar {
-    width:34px; height:34px; border-radius:50%; flex-shrink:0;
-    background:rgba(var(--DH-blue),0.10); overflow:hidden;
-    display:flex; align-items:center; justify-content:center;
-}
-.DH_Chat_Agent_Info { display:none; }
-.DH_Chat_Scroll {
-    flex:1; min-height:0; overflow-y:auto; overflow-x:hidden;
-    display:flex; flex-direction:column; gap:10px;
-    padding:4px 2px 4px 0; align-self:stretch;
-    max-height:300px;
-}
-.DH_Chat_Attach_Btn {
-    width:38px; height:38px; flex-shrink:0; border-radius:10px; border:none;
-    cursor:pointer; display:flex; align-items:center; justify-content:center;
-    background:rgb(var(--color-eel,117,117,117),0.10);
-    outline:2px solid rgb(var(--color-eel,117,117,117),0.15); outline-offset:-2px;
-    transition:filter 0.3s, transform 0.3s;
-}
-.DH_Chat_Attach_Btn:hover  { filter:brightness(0.88); transform:scale(1.06); }
-.DH_Chat_Attach_Btn:active { transform:scale(0.94); }
-.DH_Chat_Attach_Btn:disabled { opacity:0.35; pointer-events:none; }
-.DH_Chat_Img_Preview {
-    display:flex; align-items:center; gap:6px; align-self:stretch;
-    padding:6px 8px; border-radius:8px;
-    background:rgba(var(--DH-blue),0.07);
-    outline:1.5px solid rgba(var(--DH-blue),0.15); outline-offset:-1px;
-}
-.DH_Chat_Img_Thumb {
-    width:32px; height:32px; border-radius:6px; object-fit:cover; flex-shrink:0;
-}
-.DH_Chat_Img_Name {
-    flex:1; font-size:11px!important; font-weight:700!important;
-    color:rgb(var(--color-wolf,60,60,67),0.65)!important;
-    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-}
-.DH_Chat_Img_Remove {
-    width:18px; height:18px; border-radius:50%; border:none; cursor:pointer;
-    background:rgb(var(--color-eel,117,117,117),0.15);
-    display:flex; align-items:center; justify-content:center;
-    font-size:10px; color:rgb(var(--color-wolf,60,60,67),0.55);
-    flex-shrink:0; transition:background 0.2s;
-}
-.DH_Chat_Img_Remove:hover { background:rgba(var(--DH-red),0.15); color:rgb(var(--DH-red)); }
-.DH_Chat_Bubble img.DH_Chat_Sent_Img {
-    max-width:100%; max-height:180px; border-radius:8px;
-    display:block; margin-top:4px; object-fit:contain;
-}
-.DH_Chat_Scroll::-webkit-scrollbar { width:3px; }
-.DH_Chat_Scroll::-webkit-scrollbar-thumb { background:rgba(var(--DH-blue),0.15); border-radius:3px; }
-.DH_Chat_Scroll { scrollbar-width:thin; scrollbar-color:rgba(var(--DH-blue),0.15) transparent; }
-.DH_Chat_Row { display:flex; align-items:flex-end; gap:7px; }
-.DH_Chat_Row.user { flex-direction:row-reverse; }
-.DH_Chat_Bubble_Avatar {
-    width:26px; height:26px; border-radius:50%; flex-shrink:0;
-    background:rgba(var(--DH-blue),0.10); overflow:hidden;
-    display:flex; align-items:center; justify-content:center; font-size:13px;
-}
-.DH_Chat_Bubble {
-    max-width:76%; padding:9px 12px; border-radius:14px;
-    font-size:12.5px!important; font-weight:600!important;
-    line-height:1.45; word-break:break-word;
-}
-.DH_Chat_Bubble.agent {
-    background:rgb(var(--color-eel,117,117,117),0.09);
-    color:rgb(var(--color-wolf,60,60,67),0.85)!important;
-    border-bottom-left-radius:4px;
-}
-.DH_Chat_Bubble.user {
-    background:rgb(var(--DH-blue));
-    color:#fff!important;
-    border-bottom-right-radius:4px;
-}
-.DH_Chat_Name_Tag {
-    font-size:10px!important; font-weight:700!important;
-    color:rgb(var(--color-wolf,60,60,67),0.38)!important;
-    margin-bottom:3px; padding:0 2px;
-}
-.DH_Chat_Bubble_Wrap { display:flex; flex-direction:column; }
-.DH_Chat_Row.user .DH_Chat_Bubble_Wrap { align-items:flex-end; }
-.DH_Chat_Input_Row {
-    display:flex; gap:8px; align-self:stretch; align-items:flex-end;
-}
-.DH_Chat_Input {
-    flex:1; min-height:38px; max-height:80px;
-    padding:10px 12px; border-radius:10px; border:none; resize:none;
-    outline:2px solid rgb(var(--color-eel,117,117,117),0.15); outline-offset:-2px;
-    background:rgb(var(--color-eel,117,117,117),0.06);
-    font-size:13px!important; font-weight:600!important;
-    color:rgb(var(--color-wolf,60,60,67),0.85)!important;
-    font-family:inherit!important; line-height:1.4;
-    transition:outline-color 0.2s;
-    overflow-y:auto;
-}
-.DH_Chat_Input:focus { outline-color:rgba(var(--DH-blue),0.35); }
-.DH_Chat_Input::placeholder { color:rgb(var(--color-wolf,60,60,67),0.32)!important; }
-.DH_Chat_Send_Btn {
-    width:38px; height:38px; flex-shrink:0; border-radius:10px; border:none;
-    cursor:pointer; display:flex; align-items:center; justify-content:center;
-    background:rgb(var(--DH-blue));
-    outline:2px solid rgba(0,0,0,0.18); outline-offset:-2px;
-    transition:filter 0.3s, transform 0.3s;
-}
-.DH_Chat_Send_Btn:hover  { filter:brightness(0.88); transform:scale(1.06); }
-.DH_Chat_Send_Btn:active { transform:scale(0.94); }
-.DH_Chat_Typing {
-    display:flex; align-items:center; gap:4px; padding:2px 4px;
-}
-.DH_Chat_Typing span {
-    width:6px; height:6px; border-radius:50%;
-    background:rgb(var(--color-eel,117,117,117),0.35);
-    display:inline-block;
-    animation:DH_TypingDot 1.2s ease-in-out infinite;
-}
-.DH_Chat_Typing span:nth-child(2) { animation-delay:0.2s; }
-.DH_Chat_Typing span:nth-child(3) { animation-delay:0.4s; }
-@keyframes DH_TypingDot {
-    0%,60%,100% { transform:translateY(0); opacity:0.4; }
-    30% { transform:translateY(-4px); opacity:1; }
-}
 
 
 
 `);
 
-const _wrap = document.createElement('div');
-_wrap.id = 'DH_Root';
-_wrap.innerHTML = `
+    const _wrap = document.createElement('div');
+    _wrap.id = 'DH_Root';
+    _wrap.innerHTML = `
 <div class="DH_Notif_Main" id="DH_Notif_Main">
     <div class="DH_Notif_Box" id="DH_Notif_Box">
         <div class="DH_HStack_4" style="align-items:center;">
@@ -719,13 +603,13 @@ _wrap.innerHTML = `
                     </svg>
                 </div>
             </div>
-            <!-- Row 2: Support + YouTube + Discord + GitHub -->
+            <!-- Row 2: Donate + YouTube + Discord + GitHub -->
             <div class="DH_HStack_8">
-                <div class="DH_Btn DH_Btn_Blue_Ghost DH_NoSel" id="DH_Support_Btn" style="padding:10px 0 10px 10px;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M8.35078106,18 L3.62469505,21.7808688 C2.9699317,22.3046795 2,21.8385062 2,21 L2,5 C2,3.34314575 3.34314575,2 5,2 L19,2 C20.6568542,2 22,3.34314575 22,5 L22,15 C22,16.6568542 20.6568542,18 19,18 L8.35078106,18 Z M4,18.9193752 L7.37530495,16.2191312 C7.552618,16.0772808 7.7729285,16 8,16 L19,16 C19.5522847,16 20,15.5522847 20,15 L20,5 C20,4.44771525 19.5522847,4 19,4 L5,4 C4.44771525,4 4,4.44771525 4,5 L4,18.9193752 Z" fill="rgb(var(--DH-blue))"/>
+                <div class="DH_Btn DH_NoSel" id="DH_Donate_Btn" style="padding:10px 0 10px 10px;outline:2px solid rgba(0,0,0,0.20);outline-offset:-2px;background:url(https://twisk.fun/wallpaper.png) lightgray 50% / cover no-repeat;">
+                    <svg width="17" height="19" viewBox="0 0 17 19" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16.5 5.90755C16.4968 3.60922 14.6997 1.72555 12.5913 1.04588C9.97298 0.201877 6.51973 0.324211 4.01956 1.49921C0.989301 2.92355 0.0373889 6.04355 0.00191597 9.15522C-0.0271986 11.7136 0.229143 18.4517 4.04482 18.4997C6.87998 18.5356 7.30214 14.8967 8.61397 13.1442C9.5473 11.8974 10.749 11.5452 12.2284 11.1806C14.7709 10.5537 16.5037 8.55506 16.5 5.90755Z"/>
                     </svg>
-                    <p class="DH_T1 DH_NoSel" style="color:rgb(var(--DH-blue));font-size:15px;font-weight:700;">Support</p>
+                    <p class="DH_T1 DH_NoSel" style="color:#FFF;font-size:15px;font-weight:700;">Donate</p>
                 </div>
                 <div class="DH_Btn DH_Btn_Icon DH_NoSel" id="DH_YouTube_Btn" style="background:#FF0000;outline:2px solid rgba(0,0,0,.18);outline-offset:-2px;">
                     <svg width="18" height="13" viewBox="0 0 22 16" fill="#FFF"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.2043 1.0885C20.1084 1.33051 20.8189 2.041 21.0609 2.9451C21.4982 4.58216 21.5 7.99976 21.5 7.99976C21.5 7.99976 21.5 11.4174 21.0609 13.0544C20.8189 13.9585 20.1084 14.669 19.2043 14.911C17.5673 15.3501 11 15.3501 11 15.3501C11 15.3501 4.43274 15.3501 2.79568 14.911C1.89159 14.669 1.1811 13.9585 0.939084 13.0544C0.5 11.4174 0.5 7.99976 0.5 7.99976C0.5 7.99976 0.5 4.58216 0.939084 2.9451C1.1811 2.041 1.89159 1.33051 2.79568 1.0885C4.43274 0.649414 11 0.649414 11 0.649414C11 0.649414 17.5673 0.649414 19.2043 1.0885ZM14.3541 8.00005L8.89834 11.1497V4.85038L14.3541 8.00005Z"/></svg>
@@ -757,11 +641,10 @@ _wrap.innerHTML = `
                         </div>
                     </div>
                 </div>
-                <svg id="DH_AccSettings_Btn" width="24" height="24" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" title="Account Manager"
-                     style="cursor:pointer;flex-shrink:0;transition:filter 0.3s,transform 0.3s;transform-origin:center;">
-                    <path d="M18.1,11c-3.9,0-7,3.1-7,7s3.1,7,7,7c3.9,0,7-3.1,7-7S22,11,18.1,11z M18.1,23c-2.8,0-5-2.2-5-5s2.2-5,5-5c2.8,0,5,2.2,5,5S20.9,23,18.1,23z" fill="rgb(var(--DH-blue))" stroke="rgb(var(--DH-blue))" stroke-width="1.2" stroke-linejoin="round" paint-order="stroke fill"/>
-                    <path d="M32.8,14.7L30,13.8l-0.6-1.5l1.4-2.6c0.3-0.6,0.2-1.4-0.3-1.9l-2.4-2.4c-0.5-0.5-1.3-0.6-1.9-0.3l-2.6,1.4l-1.5-0.6l-0.9-2.8C21,2.5,20.4,2,19.7,2h-3.4c-0.7,0-1.3,0.5-1.4,1.2L14,6c-0.6,0.1-1.1,0.3-1.6,0.6L9.8,5.2C9.2,4.9,8.4,5,7.9,5.5L5.5,7.9C5,8.4,4.9,9.2,5.2,9.8l1.3,2.5c-0.2,0.5-0.4,1.1-0.6,1.6l-2.8,0.9C2.5,15,2,15.6,2,16.3v3.4c0,0.7,0.5,1.3,1.2,1.5L6,22.1l0.6,1.5l-1.4,2.6c-0.3,0.6-0.2,1.4,0.3,1.9l2.4,2.4c0.5,0.5,1.3,0.6,1.9,0.3l2.6-1.4l1.5,0.6l0.9,2.9c0.2,0.6,0.8,1.1,1.5,1.1h3.4c0.7,0,1.3-0.5,1.5-1.1l0.9-2.9l1.5-0.6l2.6,1.4c0.6,0.3,1.4,0.2,1.9-0.3l2.4-2.4c0.5-0.5,0.6-1.3,0.3-1.9l-1.4-2.6l0.6-1.5l2.9-0.9c0.6-0.2,1.1-0.8,1.1-1.5v-3.4C34,15.6,33.5,14.9,32.8,14.7z M32,19.4l-3.6,1.1L28.3,21c-0.3,0.7-0.6,1.4-0.9,2.1l-0.3,0.5l1.8,3.3l-2,2l-3.3-1.8l-0.5,0.3c-0.7,0.4-1.4,0.7-2.1,0.9l-0.5,0.1L19.4,32h-2.8l-1.1-3.6L15,28.3c-0.7-0.3-1.4-0.6-2.1-0.9l-0.5-0.3l-3.3,1.8l-2-2l1.8-3.3l-0.3-0.5c-0.4-0.7-0.7-1.4-0.9-2.1l-0.1-0.5L4,19.4v-2.8l3.4-1l0.2-0.5c0.2-0.8,0.5-1.5,0.9-2.2l0.3-0.5L7.1,9.1l2-2l3.2,1.8l0.5-0.3c0.7-0.4,1.4-0.7,2.2-0.9l0.5-0.2L16.6,4h2.8l1.1,3.5L21,7.7c0.7,0.2,1.4,0.5,2.1,0.9l0.5,0.3l3.3-1.8l2,2l-1.8,3.3l0.3,0.5c0.4,0.7,0.7,1.4,0.9,2.1l0.1,0.5l3.6,1.1V19.4z" fill="rgb(var(--DH-blue))" stroke="rgb(var(--DH-blue))" stroke-width="1.2" stroke-linejoin="round" paint-order="stroke fill"/>
-                </svg>
+                <svg id="DH_AccSettings_Btn" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" title="Account Manager"
+     style="cursor:pointer;flex-shrink:0;transition:filter 0.3s,transform 0.3s;transform-origin:center;">
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" fill="rgb(var(--DH-blue))"/>
+</svg>
             </div>
 
             <div class="DH_Divider"></div>
@@ -834,7 +717,7 @@ _wrap.innerHTML = `
 
             <div class="DH_HStack_Auto">
                 <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">twisk.fun</p>
-                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">v2026.05.25</p>
+                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">v2026.06.05</p>
             </div>
         </div>
 
@@ -1092,38 +975,6 @@ _wrap.innerHTML = `
             </div>
         </div>
 
-        <!-- PAGE 8: Support Chat -->
-        <div class="DH_Page" id="DH_Page_8" style="flex:1;min-height:0;">
-            <div class="DH_HStack_4 DH_NoSel" id="DH_Support_Back_Btn" style="align-self:flex-start;cursor:pointer;opacity:0.55;">
-                <svg width="8" height="14" viewBox="0 0 9 16" fill="none"><path d="M8 1L2 8l6 7" stroke="rgb(var(--color-wolf,60,60,67))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <p class="DH_T1">Back</p>
-            </div>
-
-            <!-- Messages scroll -->
-            <div class="DH_Chat_Scroll" id="DH_Chat_Scroll"></div>
-            <!-- Input row -->
-            <div id="DH_Chat_Img_Preview_Row" style="display:none;" class="DH_Chat_Img_Preview">
-                <img class="DH_Chat_Img_Thumb" id="DH_Chat_Img_Thumb" src="" alt="">
-                <span class="DH_Chat_Img_Name DH_NoSel" id="DH_Chat_Img_Name"></span>
-                <button class="DH_Chat_Img_Remove" id="DH_Chat_Img_Remove_Btn" title="Remove">✕</button>
-            </div>
-            <div class="DH_Chat_Input_Row">
-                <input type="file" id="DH_Chat_File_Input" accept="image/png,image/jpeg,image/jpg" style="display:none;">
-                <button class="DH_Chat_Attach_Btn" id="DH_Chat_Attach_Btn" title="Attach image">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" stroke="rgb(var(--color-wolf,60,60,67),0.55)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-                <textarea class="DH_Chat_Input DH_NoSel" id="DH_Chat_Input" placeholder="Type a message…" rows="1" maxlength="2000"></textarea>
-                <button class="DH_Chat_Send_Btn" id="DH_Chat_Send_Btn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M22 2L11 13" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-            </div>
-        </div>
-
         <!-- PAGE V1: V1 Mode — simple farm with live counters, no extra features -->
         <div class="DH_Page" id="DH_Page_V1">
 
@@ -1233,2171 +1084,2784 @@ _wrap.innerHTML = `
             </div>
         </div>
 
+        <!-- PAGE 10: Changelog -->
+        <div class="DH_Page" id="DH_Page_10">
+            <div class="DH_HStack_4 DH_NoSel" id="DH_Changelog_Back_Btn" style="align-self:flex-start;cursor:pointer;opacity:0.55;">
+                <svg width="8" height="14" viewBox="0 0 9 16" fill="none"><path d="M8 1L2 8l6 7" stroke="rgb(var(--color-wolf,60,60,67))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <p class="DH_T1">Back</p>
+            </div>
+            <div style="width:100%;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:360px;padding-right:2px;" class="DH_Scroll_Inner" id="DH_Changelog_List">
+                <!-- populated by JS -->
+            </div>
+        </div>
+
     </div>
 </div>
 `;
-document.body.appendChild(_wrap);
+    document.body.appendChild(_wrap);
 
 
-let _jwt=null, _sub=null, _hdrs=null, _user=null, _privacy=null;
-let _v1Mode=false;
-let _v1Running=false, _v1Task=null;
-const _v1Earned={xp:0,gems:0,streak:0};
-function _v1UpdateDisplay(){
-    requestAnimationFrame(()=>{
-        const xi=document.getElementById('DH_V1_XP_Input');
-        const gi=document.getElementById('DH_V1_Gem_Input');
-        const si=document.getElementById('DH_V1_Streak_Input');
-        if(xi) xi.value=_v1Earned.xp>0?String(_v1Earned.xp):'';
-        if(gi) gi.value=_v1Earned.gems>0?String(_v1Earned.gems):'';
-        if(si) si.value=_v1Earned.streak>0?String(_v1Earned.streak):'';
-    });
-}
-function _v1SyncUser(){
-    if(!_user) return;
-    const row=document.getElementById('DH_V1_User_Row');
-    const div=document.getElementById('DH_V1_User_Divider');
-    if(row) row.style.display='flex';
-    if(div) div.style.display='';
-    document.getElementById('DH_V1_UName').textContent=_user.username||'';
-    document.getElementById('DH_V1_UXP').textContent=(_user.totalXp||0).toLocaleString();
-    document.getElementById('DH_V1_UGems').textContent=(_user.gems||0).toLocaleString();
-    document.getElementById('DH_V1_UStreak').textContent=(_user.streak||0).toLocaleString();
-    if(_user.picture){
-        let hq=_user.picture.replace(/\/(medium|large|small)$/,'/xlarge');
-        if(!hq.endsWith('/xlarge')&&hq.includes('duolingo.com/ssr-avatars')) hq+='/xlarge';
-        const av=document.getElementById('DH_V1_Avatar');
-        const img=document.createElement('img');
-        img.src=hq;
-        img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;';
-        img.onerror=function(){av.innerHTML='👤';};
-        av.innerHTML=''; av.appendChild(img);
-    }
-}
-let _isOutdated = false, _remoteVersion = '';
-let _running=false, _task=null, _hidden=false;
-let _delay=parseInt(localStorage.getItem('dh2_delay')||'500',10);
-let _shopItems=[];
-const _sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const GOALS_API='https://goals-api.duolingo.com';
+    let _jwt = null,
+        _sub = null,
+        _hdrs = null,
+        _user = null,
+        _privacy = null;
+    let _v1Mode = false;
+    let _v1Running = false,
+        _v1Task = null;
+    const _v1Earned = {
+        xp: 0,
+        gems: 0,
+        streak: 0
+    };
 
-let _pageHistory=[1];
-
-let _questState=null;
-
-
-let _solverUI = null;
-let _isAutoMode = false;
-let _solvingIntervalId = null;
-let _isInLesson = false;
-const _SOLVE_SPEED = 0.1;
-let _INJECT_SOLVER_ENABLED = localStorage.getItem('duohacker_inject_solver') === 'true';
-
-const _autoSolver = {
-    findReact: (dom, traverseUp = 1) => {
-        const key = Object.keys(dom).find(key => {
-            return key.startsWith("__reactFiber$") || key.startsWith("__reactInternalInstance$");
+    function _v1UpdateDisplay() {
+        requestAnimationFrame(() => {
+            const xi = document.getElementById('DH_V1_XP_Input');
+            const gi = document.getElementById('DH_V1_Gem_Input');
+            const si = document.getElementById('DH_V1_Streak_Input');
+            if (xi) xi.value = _v1Earned.xp > 0 ? String(_v1Earned.xp) : '';
+            if (gi) gi.value = _v1Earned.gems > 0 ? String(_v1Earned.gems) : '';
+            if (si) si.value = _v1Earned.streak > 0 ? String(_v1Earned.streak) : '';
         });
-        const domFiber = dom[key];
-        if (!domFiber) return null;
-        const GetCompFiber = fiber => {
-            let parentFiber = fiber.return;
-            while (typeof parentFiber.type == "string") {
-                parentFiber = parentFiber.return;
-            }
-            return parentFiber;
-        };
-        let compFiber = GetCompFiber(domFiber);
-        for (let i = 0; i < traverseUp; i++) {
-            compFiber = GetCompFiber(compFiber);
-        }
-        return compFiber.stateNode;
-    },
-    determineChallengeType: () => {
-        try {
-            const t = window.sol?.type;
-            if (!t) return false;
+    }
 
-            if (t === 'speak' || t === 'listenSpeak' ||
-                document.querySelector('[data-test="challenge challenge-listenSpeak"]') ||
-                document.querySelectorAll('[data-test*="challenge-speak"]').length > 0) return 'Challenge Speak';
-
-            if (t === 'listenMatch') return 'Listen Match';
-
-            if (document.querySelector('.FmlUF')) {
-                if (t === 'arrange') return 'Story Arrange';
-                if (t === 'multiple-choice' || t === 'select-phrases') return 'Story Multiple Choice';
-                if (t === 'point-to-phrase') return 'Story Point to Phrase';
-                if (t === 'match') return 'Story Pairs';
-            }
-
-            if (t === 'typeCloze')           return 'Type Cloze';
-            if (t === 'typeClozeTable')      return 'Type Cloze Table';
-            if (t === 'tapClozeTable')       return 'Tap Cloze Table';
-            if (t === 'typeCompleteTable')   return 'Type Complete Table';
-            if (t === 'tapCompleteTable')    return 'Tap Complete Table';
-            if (t === 'patternTapComplete')  return 'Pattern Tap Complete';
-            if (t === 'syllableTap')         return 'Syllable Tap';
-            if (t === 'syllableListenTap')   return 'Syllable Listen Tap';
-
-            if (t === 'listenTap') return 'Listen Tap';
-
-            if (t === 'listen') return 'Listen Type';
-
-            if (t === 'translate') return 'Translate';
-
-            if (t === 'completeReverseTranslation') return 'Complete Reverse';
-
-            if (document.querySelectorAll('[data-test*="challenge-partialReverseTranslate"]').length > 0) return 'Partial Reverse';
-
-            if (document.querySelectorAll('[data-test="challenge challenge-characterWrite"]').length > 0) {
-                if (document.querySelector('g._25Ktp')) return 'Character Write Drag';
-                if (document.querySelectorAll('path._1e5Zt').length > 0) return 'Character Write Draw';
-                return 'Character Write Freehand';
-            }
-
-            if (t === 'judge') return 'Judge';
-
-            if (t === 'dialogue' || t === 'characterIntro' || t === 'selectTranscription') return 'Dialogue';
-
-            if (t === 'characterMatch' || t === 'match') {
-                if (document.querySelectorAll('[data-test$="challenge-tap-token"]').length > 0) return 'Pairs';
-            }
-
-            if (t === 'select' || t === 'characterSelect' || t === 'form' ||
-                t === 'readComprehension' || t === 'listenComprehension' ||
-                t === 'selectPronunciation') {
-                return 'Select Card';
-            }
-
-            if (document.querySelectorAll('[data-test*="challenge-name"]').length > 0 &&
-                document.querySelectorAll('[data-test="challenge-choice"]').length > 0) return 'Challenge Name';
-
-            if (document.querySelectorAll('[data-test="challenge-choice"]').length > 0) {
-                if (document.querySelectorAll('[data-test="challenge-text-input"]').length > 0) return 'Challenge Choice with Text Input';
-                return 'Challenge Choice';
-            }
-
-            if (document.querySelectorAll('[data-test$="challenge-tap-token"]').length > 0) {
-                if (window.sol?.pairs !== undefined) return 'Pairs';
-                if (window.sol?.correctTokens !== undefined) return 'Tokens Run';
-                if (window.sol?.correctIndices !== undefined) return 'Indices Run';
-            }
-            if (document.querySelectorAll('[data-test="challenge-tap-token-text"]').length > 0) return 'Fill in the Gap';
-
-            if (document.querySelectorAll('[data-test="challenge-text-input"]').length > 0) return 'Challenge Text Input';
-            if (document.querySelectorAll('textarea[data-test="challenge-translate-input"]').length > 0) return 'Challenge Translate Input';
-
-            if (document.querySelectorAll('[data-test="daily-quest-progress-slide"]').length > 0) return 'Daily Quest Progress';
-            if (document.querySelectorAll('[data-test="streak-slide"]').length > 0)               return 'Streak Slide';
-            if (document.querySelectorAll('[data-test="leaderboard-slide"]').length > 0)          return 'Leaderboard Slide';
-
-            return false;
-        } catch (error) {
-            return false;
-        }
-    },
-    setInputValue: (element, value) => {
-        const isTextarea = element.tagName === 'TEXTAREA';
-        const prototype = isTextarea ? window.HTMLTextAreaElement : window.HTMLInputElement;
-        const setter = Object.getOwnPropertyDescriptor(prototype.prototype, "value").set;
-        setter.call(element, value);
-        element.dispatchEvent(new Event('input', {
-            bubbles: true
-        }));
-    },
-    delay: ms => new Promise(resolve => setTimeout(resolve, ms)),
-    handleChallengeName: async () => {
-        const articles = window.sol.articles;
-        const correctSolution = window.sol.correctSolutions[0];
-        const matchingArticle = articles.find(article => correctSolution.startsWith(article));
-        if (matchingArticle !== undefined) {
-            const matchingIndex = articles.indexOf(matchingArticle);
-            const remainingValue = correctSolution.substring(matchingArticle.length).trim();
-            const selectedElement = document.querySelector(`[data-test="challenge-choice"]:nth-child(${matchingIndex + 1})`);
-            if (selectedElement) {
-                selectedElement.click();
-                await _autoSolver.delay(50);
-            }
-            const input = document.querySelector('[data-test="challenge-text-input"]');
-            if (input) _autoSolver.setInputValue(input, remainingValue);
-        }
-    },
-    handlePairs: async () => {
-        const buttons = document.querySelectorAll('[data-test*="challenge-tap-token"]:not(span)');
-        const texts = document.querySelectorAll('[data-test="challenge-tap-token-text"]');
-        if (texts.length !== buttons.length || buttons.length === 0) return;
-        for (const pair of window.sol.pairs || []) {
-            for (let i = 0; i < buttons.length; i++) {
-                const button = buttons[i];
-                if (button.disabled) continue;
-                const text = texts[i].innerText.toLowerCase().trim();
-                const matches = text === pair.transliteration?.toLowerCase().trim() ||
-                    text === pair.character?.toLowerCase().trim() ||
-                    text === pair.learningToken?.toLowerCase().trim() ||
-                    text === pair.fromToken?.toLowerCase().trim();
-                if (matches) {
-                    button.click();
-                    await _autoSolver.delay(50);
-                }
-            }
-        }
-    },
-    handleTokensRun: async () => {
-    const allTokens = document.querySelectorAll('[data-test$="challenge-tap-token"]');
-    const clickedTokens = [];
-    const tokensToClick = [];
-    for (const correctToken of window.sol.correctTokens) {
-        const matchingElements = Array.from(allTokens).filter(el => el.textContent.trim() === correctToken.trim());
-        if (matchingElements.length > 0) {
-            const matchIndex = clickedTokens.filter(token => token.textContent.trim() === correctToken.trim()).length;
-            const elementToClick = matchingElements[matchIndex] || matchingElements[0];
-            if (!elementToClick.disabled) {
-                tokensToClick.push(elementToClick);
-                clickedTokens.push(elementToClick);
-            }
+    function _v1SyncUser() {
+        if (!_user) return;
+        const row = document.getElementById('DH_V1_User_Row');
+        const div = document.getElementById('DH_V1_User_Divider');
+        if (row) row.style.display = 'flex';
+        if (div) div.style.display = '';
+        document.getElementById('DH_V1_UName').textContent = _user.username || '';
+        document.getElementById('DH_V1_UXP').textContent = (_user.totalXp || 0).toLocaleString();
+        document.getElementById('DH_V1_UGems').textContent = (_user.gems || 0).toLocaleString();
+        document.getElementById('DH_V1_UStreak').textContent = (_user.streak || 0).toLocaleString();
+        if (_user.picture) {
+            let hq = _user.picture.replace(/\/(medium|large|small)$/, '/xlarge');
+            if (!hq.endsWith('/xlarge') && hq.includes('duolingo.com/ssr-avatars')) hq += '/xlarge';
+            const av = document.getElementById('DH_V1_Avatar');
+            const img = document.createElement('img');
+            img.src = hq;
+            img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;';
+            img.onerror = function() {
+                av.innerHTML = '👤';
+            };
+            av.innerHTML = '';
+            av.appendChild(img);
         }
     }
-    tokensToClick.forEach(token => token.click());
-},
-    handleIndicesRun: async () => {
-        if (!window.sol.correctIndices) return;
-        const wordBank = document.querySelector('div[data-test="word-bank"]') || document.querySelector('.eSgkc');
-        if (!wordBank) return;
-        const bankButtons = Array.from(wordBank.querySelectorAll('button[data-test*="challenge-tap-token"]:not(span)'));
-        for (const index of window.sol.correctIndices) {
-            if (index >= 0 && index < bankButtons.length) {
-                const button = bankButtons[index];
-                if (!button.disabled && button.getAttribute('aria-disabled') !== 'true') {
-                    button.click();
+    let _isOutdated = false,
+        _remoteVersion = '';
+    let _running = false,
+        _task = null,
+        _hidden = false;
+    let _delay = parseInt(localStorage.getItem('dh2_delay') || '500', 10);
+    let _shopItems = [];
+    const _sleep = ms => new Promise(r => setTimeout(r, ms));
+    const GOALS_API = 'https://goals-api.duolingo.com';
+
+    let _pageHistory = [1];
+
+    let _questState = null;
+
+
+    let _solverUI = null;
+    let _isAutoMode = false;
+    let _solvingIntervalId = null;
+    let _isInLesson = false;
+    const _SOLVE_SPEED = 0.1;
+    let _INJECT_SOLVER_ENABLED = localStorage.getItem('duohacker_inject_solver') === 'true';
+
+    const _autoSolver = {
+        findReact: (dom, traverseUp = 1) => {
+            const key = Object.keys(dom).find(key => {
+                return key.startsWith("__reactFiber$") || key.startsWith("__reactInternalInstance$");
+            });
+            const domFiber = dom[key];
+            if (!domFiber) return null;
+            const GetCompFiber = fiber => {
+                let parentFiber = fiber.return;
+                while (typeof parentFiber.type == "string") {
+                    parentFiber = parentFiber.return;
+                }
+                return parentFiber;
+            };
+            let compFiber = GetCompFiber(domFiber);
+            for (let i = 0; i < traverseUp; i++) {
+                compFiber = GetCompFiber(compFiber);
+            }
+            return compFiber.stateNode;
+        },
+        determineChallengeType: () => {
+            try {
+                const t = window.sol?.type;
+                if (!t) return false;
+
+                if (t === 'speak' || t === 'listenSpeak' ||
+                    document.querySelector('[data-test="challenge challenge-listenSpeak"]') ||
+                    document.querySelectorAll('[data-test*="challenge-speak"]').length > 0) return 'Challenge Speak';
+
+                if (t === 'listenMatch') return 'Listen Match';
+
+                if (document.querySelector('.FmlUF')) {
+                    if (t === 'arrange') return 'Story Arrange';
+                    if (t === 'multiple-choice' || t === 'select-phrases') return 'Story Multiple Choice';
+                    if (t === 'point-to-phrase') return 'Story Point to Phrase';
+                    if (t === 'match') return 'Story Pairs';
+                }
+
+                if (t === 'typeCloze') return 'Type Cloze';
+                if (t === 'typeClozeTable') return 'Type Cloze Table';
+                if (t === 'tapClozeTable') return 'Tap Cloze Table';
+                if (t === 'typeCompleteTable') return 'Type Complete Table';
+                if (t === 'tapCompleteTable') return 'Tap Complete Table';
+                if (t === 'patternTapComplete') return 'Pattern Tap Complete';
+                if (t === 'syllableTap') return 'Syllable Tap';
+                if (t === 'syllableListenTap') return 'Syllable Listen Tap';
+
+                if (t === 'listenTap') return 'Listen Tap';
+
+                if (t === 'listen') return 'Listen Type';
+
+                if (t === 'translate') return 'Translate';
+
+                if (t === 'completeReverseTranslation') return 'Complete Reverse';
+
+                if (document.querySelectorAll('[data-test*="challenge-partialReverseTranslate"]').length > 0) return 'Partial Reverse';
+
+                if (document.querySelectorAll('[data-test="challenge challenge-characterWrite"]').length > 0) {
+                    if (document.querySelector('g._25Ktp')) return 'Character Write Drag';
+                    if (document.querySelectorAll('path._1e5Zt').length > 0) return 'Character Write Draw';
+                    return 'Character Write Freehand';
+                }
+
+                if (t === 'judge') return 'Judge';
+
+                if (t === 'dialogue' || t === 'characterIntro' || t === 'selectTranscription') return 'Dialogue';
+
+                if (t === 'characterMatch' || t === 'match') {
+                    if (document.querySelectorAll('[data-test$="challenge-tap-token"]').length > 0) return 'Pairs';
+                }
+
+                if (t === 'select' || t === 'characterSelect' || t === 'form' ||
+                    t === 'readComprehension' || t === 'listenComprehension' ||
+                    t === 'selectPronunciation') {
+                    return 'Select Card';
+                }
+
+                if (document.querySelectorAll('[data-test*="challenge-name"]').length > 0 &&
+                    document.querySelectorAll('[data-test="challenge-choice"]').length > 0) return 'Challenge Name';
+
+                if (document.querySelectorAll('[data-test="challenge-choice"]').length > 0) {
+                    if (document.querySelectorAll('[data-test="challenge-text-input"]').length > 0) return 'Challenge Choice with Text Input';
+                    return 'Challenge Choice';
+                }
+
+                if (document.querySelectorAll('[data-test$="challenge-tap-token"]').length > 0) {
+                    if (window.sol?.pairs !== undefined) return 'Pairs';
+                    if (window.sol?.correctTokens !== undefined) return 'Tokens Run';
+                    if (window.sol?.correctIndices !== undefined) return 'Indices Run';
+                }
+                if (document.querySelectorAll('[data-test="challenge-tap-token-text"]').length > 0) return 'Fill in the Gap';
+
+                if (document.querySelectorAll('[data-test="challenge-text-input"]').length > 0) return 'Challenge Text Input';
+                if (document.querySelectorAll('textarea[data-test="challenge-translate-input"]').length > 0) return 'Challenge Translate Input';
+
+                if (document.querySelectorAll('[data-test="daily-quest-progress-slide"]').length > 0) return 'Daily Quest Progress';
+                if (document.querySelectorAll('[data-test="streak-slide"]').length > 0) return 'Streak Slide';
+                if (document.querySelectorAll('[data-test="leaderboard-slide"]').length > 0) return 'Leaderboard Slide';
+
+                if (t === 'orderTapComplete') return 'Order Tap Complete';
+
+                return false;
+            } catch (error) {
+                return false;
+            }
+        },
+        setInputValue: (element, value) => {
+            const isTextarea = element.tagName === 'TEXTAREA';
+            const prototype = isTextarea ? window.HTMLTextAreaElement : window.HTMLInputElement;
+            const setter = Object.getOwnPropertyDescriptor(prototype.prototype, "value").set;
+            setter.call(element, value);
+            element.dispatchEvent(new Event('input', {
+                bubbles: true
+            }));
+        },
+        delay: ms => new Promise(resolve => setTimeout(resolve, ms)),
+        handleChallengeName: async () => {
+            const articles = window.sol.articles;
+            const correctSolution = window.sol.correctSolutions[0];
+            const matchingArticle = articles.find(article => correctSolution.startsWith(article));
+            if (matchingArticle !== undefined) {
+                const matchingIndex = articles.indexOf(matchingArticle);
+                const remainingValue = correctSolution.substring(matchingArticle.length).trim();
+                const selectedElement = document.querySelector(`[data-test="challenge-choice"]:nth-child(${matchingIndex + 1})`);
+                if (selectedElement) {
+                    selectedElement.click();
                     await _autoSolver.delay(50);
                 }
+                const input = document.querySelector('[data-test="challenge-text-input"]');
+                if (input) _autoSolver.setInputValue(input, remainingValue);
             }
-        }
-    },
-    handleTapCompleteTable: async () => {
-        const solutionRows = window.sol.displayTableTokens.slice(1);
-        const tableRowElements = document.querySelectorAll('tbody tr');
-        const wordBank = document.querySelector('div[data-test="word-bank"]');
-        const wordBankButtons = wordBank ? wordBank.querySelectorAll('button[data-test*="-challenge-tap-token"]') : [];
-        const usedWordBankIndexes = new Set();
-        for (let rowIndex = 0; rowIndex < solutionRows.length; rowIndex++) {
-            const solutionRow = solutionRows[rowIndex];
-            const answerCellData = solutionRow[1];
-            const correctToken = answerCellData.find(token => token.isBlank);
-            if (correctToken) {
-                const correctAnswerText = correctToken.text;
-                const currentRowElement = tableRowElements[rowIndex];
-                let clicked = false;
-                const buttons = currentRowElement.querySelectorAll('button[data-test*="-challenge-tap-token"]');
-                for (const button of buttons) {
-                    const buttonTextElm = button.querySelector('[data-test="challenge-tap-token-text"]');
-                    if (buttonTextElm && buttonTextElm.innerText.trim() === correctAnswerText && !button.disabled) {
+        },
+        handlePairs: async () => {
+            const buttons = document.querySelectorAll('[data-test*="challenge-tap-token"]:not(span)');
+            const texts = document.querySelectorAll('[data-test="challenge-tap-token-text"]');
+            if (texts.length !== buttons.length || buttons.length === 0) return;
+            for (const pair of window.sol.pairs || []) {
+                for (let i = 0; i < buttons.length; i++) {
+                    const button = buttons[i];
+                    if (button.disabled) continue;
+                    const text = texts[i].innerText.toLowerCase().trim();
+                    const matches = text === pair.transliteration?.toLowerCase().trim() ||
+                        text === pair.character?.toLowerCase().trim() ||
+                        text === pair.learningToken?.toLowerCase().trim() ||
+                        text === pair.fromToken?.toLowerCase().trim();
+                    if (matches) {
                         button.click();
                         await _autoSolver.delay(50);
-                        clicked = true;
-                        break;
                     }
                 }
-                if (!clicked && wordBankButtons.length > 0) {
-                    for (let i = 0; i < wordBankButtons.length; i++) {
-                        if (usedWordBankIndexes.has(i)) continue;
-                        const button = wordBankButtons[i];
+            }
+        },
+        handleTokensRun: async () => {
+            const allTokens = document.querySelectorAll('[data-test$="challenge-tap-token"]');
+            const clickedTokens = [];
+            const tokensToClick = [];
+            for (const correctToken of window.sol.correctTokens) {
+                const matchingElements = Array.from(allTokens).filter(el => el.textContent.trim() === correctToken.trim());
+                if (matchingElements.length > 0) {
+                    const matchIndex = clickedTokens.filter(token => token.textContent.trim() === correctToken.trim()).length;
+                    const elementToClick = matchingElements[matchIndex] || matchingElements[0];
+                    if (!elementToClick.disabled) {
+                        tokensToClick.push(elementToClick);
+                        clickedTokens.push(elementToClick);
+                    }
+                }
+            }
+            tokensToClick.forEach(token => token.click());
+        },
+        handleIndicesRun: async () => {
+            if (!window.sol.correctIndices) return;
+            const wordBank = document.querySelector('div[data-test="word-bank"]') || document.querySelector('.eSgkc');
+            if (!wordBank) return;
+            const bankButtons = Array.from(wordBank.querySelectorAll('button[data-test*="challenge-tap-token"]:not(span)'));
+            for (const index of window.sol.correctIndices) {
+                if (index >= 0 && index < bankButtons.length) {
+                    const button = bankButtons[index];
+                    if (!button.disabled && button.getAttribute('aria-disabled') !== 'true') {
+                        button.click();
+                        await _autoSolver.delay(50);
+                    }
+                }
+            }
+        },
+        handleTapCompleteTable: async () => {
+            const solutionRows = window.sol.displayTableTokens.slice(1);
+            const tableRowElements = document.querySelectorAll('tbody tr');
+            const wordBank = document.querySelector('div[data-test="word-bank"]');
+            const wordBankButtons = wordBank ? wordBank.querySelectorAll('button[data-test*="-challenge-tap-token"]') : [];
+            const usedWordBankIndexes = new Set();
+            for (let rowIndex = 0; rowIndex < solutionRows.length; rowIndex++) {
+                const solutionRow = solutionRows[rowIndex];
+                const answerCellData = solutionRow[1];
+                const correctToken = answerCellData.find(token => token.isBlank);
+                if (correctToken) {
+                    const correctAnswerText = correctToken.text;
+                    const currentRowElement = tableRowElements[rowIndex];
+                    let clicked = false;
+                    const buttons = currentRowElement.querySelectorAll('button[data-test*="-challenge-tap-token"]');
+                    for (const button of buttons) {
                         const buttonTextElm = button.querySelector('[data-test="challenge-tap-token-text"]');
                         if (buttonTextElm && buttonTextElm.innerText.trim() === correctAnswerText && !button.disabled) {
                             button.click();
                             await _autoSolver.delay(50);
-                            usedWordBankIndexes.add(i);
+                            clicked = true;
                             break;
+                        }
+                    }
+                    if (!clicked && wordBankButtons.length > 0) {
+                        for (let i = 0; i < wordBankButtons.length; i++) {
+                            if (usedWordBankIndexes.has(i)) continue;
+                            const button = wordBankButtons[i];
+                            const buttonTextElm = button.querySelector('[data-test="challenge-tap-token-text"]');
+                            if (buttonTextElm && buttonTextElm.innerText.trim() === correctAnswerText && !button.disabled) {
+                                button.click();
+                                await _autoSolver.delay(50);
+                                usedWordBankIndexes.add(i);
+                                break;
+                            }
                         }
                     }
                 }
             }
-        }
-    },
-    handleChallenge: async (type) => {
-        try {
-            switch (type) {
-                case 'Challenge Speak':
-                case 'Listen Match':
-                case 'Listen Speak':
-                    document.querySelector('button[data-test="player-skip"]')?.click();
-                    break;
-
-                case 'Select Card': {
-                    const idx = window.sol.correctIndex ?? 0;
-
-                    const cards = document.querySelectorAll('[data-test="challenge-choice-card"]');
-                    if (cards.length > 0) {
-                        cards[idx]?.click();
-                    } else {
-                        document.querySelectorAll('[data-test="challenge-choice"]')[idx]?.click();
+        },
+        handleChallenge: async (type) => {
+            try {
+                switch (type) {
+                    case 'Order Tap Complete': {
+                        const blanks = window.sol.displayTokens?.filter(t => t.isBlank);
+                        if (!blanks || blanks.length === 0) break;
+                        const buttons = document.querySelectorAll('[data-test*="challenge-tap-token"]:not(span):not(:disabled)');
+                        for (const blank of blanks) {
+                            for (const btn of buttons) {
+                                const txt = btn.querySelector('[data-test="challenge-tap-token-text"]');
+                                if (txt && txt.innerText.trim() === blank.text.trim() && !btn.disabled) {
+                                    btn.click();
+                                    await _autoSolver.delay(50);
+                                    break;
+                                }
+                            }
+                        }
+                        break;
                     }
-                    break;
-                }
+                    case 'Challenge Speak':
+                    case 'Listen Match':
+                    case 'Listen Speak':
+                        document.querySelector('button[data-test="player-skip"]')?.click();
+                        break;
 
-                case 'Judge': {
-                    const ci = window.sol.correctIndices?.[0] ?? 0;
-                    document.querySelectorAll('[data-test="challenge-judge-text"]')[ci]?.click();
-                    break;
-                }
+                    case 'Select Card': {
+                        const idx = window.sol.correctIndex ?? 0;
 
-                case 'Dialogue': {
-                    const idx = window.sol.correctIndex ?? 0;
-
-                    const judgeItems = document.querySelectorAll('[data-test="challenge-judge-text"]');
-                    if (judgeItems.length > 0) {
-                        judgeItems[idx]?.click();
-                    } else {
-                        document.querySelectorAll('[data-test="challenge-choice"]')[idx]?.click();
+                        const cards = document.querySelectorAll('[data-test="challenge-choice-card"]');
+                        if (cards.length > 0) {
+                            cards[idx]?.click();
+                        } else {
+                            document.querySelectorAll('[data-test="challenge-choice"]')[idx]?.click();
+                        }
+                        break;
                     }
-                    break;
-                }
 
-                case 'Translate': {
-                    const { correctTokens, correctSolutions } = window.sol;
-                    if (correctTokens && correctTokens.length > 0) {
+                    case 'Judge': {
+                        const ci = window.sol.correctIndices?.[0] ?? 0;
+                        document.querySelectorAll('[data-test="challenge-judge-text"]')[ci]?.click();
+                        break;
+                    }
+
+                    case 'Dialogue': {
+                        const idx = window.sol.correctIndex ?? 0;
+
+                        const judgeItems = document.querySelectorAll('[data-test="challenge-judge-text"]');
+                        if (judgeItems.length > 0) {
+                            judgeItems[idx]?.click();
+                        } else {
+                            document.querySelectorAll('[data-test="challenge-choice"]')[idx]?.click();
+                        }
+                        break;
+                    }
+
+                    case 'Translate': {
+                        const {
+                            correctTokens,
+                            correctSolutions
+                        } = window.sol;
+                        if (correctTokens && correctTokens.length > 0) {
+                            const tokens = document.querySelectorAll('[data-test$="challenge-tap-token"]');
+                            const usedIndexes = [];
+                            for (const word of correctTokens) {
+                                for (let i = 0; i < tokens.length; i++) {
+                                    if (usedIndexes.includes(i)) continue;
+                                    if (tokens[i].innerText.trim() === word.trim() && !tokens[i].disabled) {
+                                        tokens[i].click();
+                                        usedIndexes.push(i);
+                                        await _autoSolver.delay(40);
+                                        break;
+                                    }
+                                }
+                            }
+                        } else if (correctSolutions) {
+                            const ta = document.querySelector('textarea[data-test="challenge-translate-input"]');
+                            if (ta) _autoSolver.setInputValue(ta, correctSolutions[0]);
+                        }
+                        break;
+                    }
+
+                    case 'Listen Tap': {
                         const tokens = document.querySelectorAll('[data-test$="challenge-tap-token"]');
-                        const usedIndexes = [];
-                        for (const word of correctTokens) {
+                        const usedIdx = [];
+                        for (const word of (window.sol.correctTokens || [])) {
                             for (let i = 0; i < tokens.length; i++) {
-                                if (usedIndexes.includes(i)) continue;
+                                if (usedIdx.includes(i)) continue;
                                 if (tokens[i].innerText.trim() === word.trim() && !tokens[i].disabled) {
                                     tokens[i].click();
-                                    usedIndexes.push(i);
+                                    usedIdx.push(i);
                                     await _autoSolver.delay(40);
                                     break;
                                 }
                             }
                         }
-                    } else if (correctSolutions) {
-                        const ta = document.querySelector('textarea[data-test="challenge-translate-input"]');
-                        if (ta) _autoSolver.setInputValue(ta, correctSolutions[0]);
-                    }
-                    break;
-                }
-
-                case 'Listen Tap': {
-                    const tokens = document.querySelectorAll('[data-test$="challenge-tap-token"]');
-                    const usedIdx = [];
-                    for (const word of (window.sol.correctTokens || [])) {
-                        for (let i = 0; i < tokens.length; i++) {
-                            if (usedIdx.includes(i)) continue;
-                            if (tokens[i].innerText.trim() === word.trim() && !tokens[i].disabled) {
-                                tokens[i].click();
-                                usedIdx.push(i);
-                                await _autoSolver.delay(40);
-                                break;
-                            }
-                        }
-                    }
-                    break;
-                }
-
-                case 'Listen Type': {
-                    const answer = window.sol.prompt || window.sol.correctSolutions?.[0] || '';
-                    const ta = document.querySelector('textarea[data-test="challenge-translate-input"]') ||
-                               document.querySelector('[data-test="challenge-text-input"]');
-                    if (ta) _autoSolver.setInputValue(ta, answer);
-                    break;
-                }
-
-                case 'Complete Reverse': {
-                    const blankTokens = window.sol.displayTokens?.filter(t => t.isBlank);
-                    const inputFields = document.querySelectorAll('[data-test="challenge-text-input"]');
-                    if (blankTokens && blankTokens.length > 1 && inputFields.length > 1) {
-                        // Multi-blank support
-                        inputFields.forEach((input, index) => {
-                            if (blankTokens[index]) {
-                                _autoSolver.setInputValue(input, blankTokens[index].text);
-                            }
-                        });
-                    } else {
-                        // Single blank (fallback)
-                        const answer = blankTokens?.[0]?.text || window.sol.correctSolutions?.[0] || '';
-                        const input = document.querySelector('[data-test="challenge-text-input"]');
-                        if (input) _autoSolver.setInputValue(input, answer);
-                    }
-                    break;
-                }
-
-                case 'Challenge Choice':
-                    document.querySelectorAll("[data-test='challenge-choice']")[window.sol.correctIndex]?.click();
-                    break;
-                case 'Challenge Choice with Text Input': {
-                    const choiceInput = document.querySelector('[data-test="challenge-text-input"]');
-                    if (choiceInput) {
-                        const answer = window.sol.correctSolutions ? window.sol.correctSolutions[0].split(/(?<=^\S+)\s/)[1] : (window.sol.displayTokens ? window.sol.displayTokens.find(t => t.isBlank)?.text : window.sol.prompt);
-                        _autoSolver.setInputValue(choiceInput, answer);
-                    }
-                    break;
-                }
-                case 'Challenge Text Input': {
-                    const input = document.querySelector('[data-test="challenge-text-input"]');
-                    if (input) {
-                        const answer = window.sol.correctSolutions?.[0] || (window.sol.displayTokens ? window.sol.displayTokens.find(t => t.isBlank)?.text : window.sol.prompt);
-                        _autoSolver.setInputValue(input, answer);
-                    }
-                    break;
-                }
-                case 'Challenge Translate Input': {
-                    const textarea = document.querySelector('textarea[data-test="challenge-translate-input"]');
-                    if (textarea) _autoSolver.setInputValue(textarea, window.sol.correctSolutions?.[0] || window.sol.prompt);
-                    break;
-                }
-                case 'Partial Reverse': {
-                    const partialElm = document.querySelector('[data-test*="challenge-partialReverseTranslate"]')?.querySelector("span[contenteditable]");
-                    if (partialElm) {
-                        const text = window.sol?.displayTokens?.filter(t => t.isBlank)?.map(t => t.text)?.join('')?.trim();
-                        const setter = Object.getOwnPropertyDescriptor(Node.prototype, "textContent").set;
-                        setter.call(partialElm, text);
-                        partialElm.dispatchEvent(new Event('input', {
-                            bubbles: true
-                        }));
-                    }
-                    break;
-                }
-                case 'Type Cloze': {
-                    const clozeInput = document.querySelector('input[type="text"].b4jqk');
-                    if (clozeInput) {
-                        const targetToken = window.sol.displayTokens.find(t => t.damageStart !== undefined);
-                        if (targetToken) {
-                            const correctEnding = targetToken.text.slice(targetToken.damageStart);
-                            _autoSolver.setInputValue(clozeInput, correctEnding);
-                        }
-                    }
-                    break;
-                }
-                case 'Type Cloze Table': {
-                    const tableRows = document.querySelectorAll('tbody tr');
-                    window.sol.displayTableTokens.slice(1).forEach((rowTokens, i) => {
-                        const answerCell = rowTokens[1]?.find(t => typeof t.damageStart === "number");
-                        if (answerCell && tableRows[i]) {
-                            const input = tableRows[i].querySelector('input[type="text"].b4jqk');
-                            if (input) {
-                                const correctEnding = answerCell.text.slice(answerCell.damageStart);
-                                _autoSolver.setInputValue(input, correctEnding);
-                            }
-                        }
-                    });
-                    break;
-                }
-                case 'Tap Cloze Table': {
-                    const tapTableRows = document.querySelectorAll('tbody tr');
-                    window.sol.displayTableTokens.slice(1).forEach((rowTokens, i) => {
-                        const answerCell = rowTokens[1]?.find(t => typeof t.damageStart === "number");
-                        if (!answerCell || !tapTableRows[i]) return;
-                        const wordBank = document.querySelector('[data-test="word-bank"]');
-                        const wordButtons = wordBank ? Array.from(wordBank.querySelectorAll('button[data-test*="challenge-tap-token"]:not([aria-disabled="true"])')) : [];
-                        const correctWord = answerCell.text;
-                        const correctEnding = correctWord.slice(answerCell.damageStart);
-                        let endingMatched = "";
-                        for (let btn of wordButtons) {
-                            if (!correctEnding.startsWith(endingMatched + btn.innerText)) continue;
-                            btn.click();
-                            endingMatched += btn.innerText;
-                            if (endingMatched === correctEnding) break;
-                        }
-                    });
-                    break;
-                }
-                case 'Type Complete Table': {
-                    const completeTableRows = document.querySelectorAll('tbody tr');
-                    window.sol.displayTableTokens.slice(1).forEach((rowTokens, i) => {
-                        const answerCell = rowTokens[1]?.find(t => t.isBlank);
-                        if (!answerCell || !completeTableRows[i]) return;
-                        const input = completeTableRows[i].querySelector('input[type="text"].b4jqk');
-                        if (input) _autoSolver.setInputValue(input, answerCell.text);
-                    });
-                    break;
-                }
-                case 'Pattern Tap Complete': {
-                    const patternWordBank = document.querySelector('[data-test="word-bank"]');
-                    if (!patternWordBank) return;
-                    const correctIndex = window.sol.correctIndex ?? 0;
-                    const correctText = window.sol.choices[correctIndex];
-                    const patternButtons = Array.from(patternWordBank.querySelectorAll('button[data-test*="challenge-tap-token"]:not([aria-disabled="true"])'));
-                    const targetButton = patternButtons.find(btn => btn.innerText.trim() === correctText);
-                    if (targetButton) targetButton.click();
-                    break;
-                }
-                case 'Story Arrange': {
-                    const arrangeChoices = document.querySelectorAll('[data-test*="challenge-tap-token"]:not(span)');
-                    for (let i = 0; i < window.sol.phraseOrder.length; i++) {
-                        arrangeChoices[window.sol.phraseOrder[i]].click();
-                        await _autoSolver.delay(50);
-                    }
-                    break;
-                }
-                case 'Story Multiple Choice': {
-                    const storyChoices = document.querySelectorAll('[data-test="stories-choice"]');
-                    storyChoices[window.sol.correctAnswerIndex]?.click();
-                    break;
-                }
-                case 'Story Point to Phrase': {
-                    const phraseChoices = document.querySelectorAll('[data-test="challenge-tap-token-text"]');
-                    let phraseCorrectIndex = -1;
-                    for (let i = 0; i < window.sol.parts.length; i++) {
-                        if (window.sol.parts[i].selectable === true) {
-                            phraseCorrectIndex += 1;
-                            if (window.sol.correctAnswerIndex === i) {
-                                phraseChoices[phraseCorrectIndex]?.parentElement.click();
-                                break;
-                            }
-                        }
-                    }
-                    break;
-                }
-                case 'Story Pairs': {
-                    const storyButtons = document.querySelectorAll('[data-test*="challenge-tap-token"]:not(span)');
-                    const storyTexts = document.querySelectorAll('[data-test="challenge-tap-token-text"]');
-                    const textToElementMap = new Map();
-                    for (let i = 0; i < storyButtons.length; i++) {
-                        const text = storyTexts[i].innerText.toLowerCase().trim();
-                        textToElementMap.set(text, storyButtons[i]);
-                    }
-                    for (const key in window.sol.dictionary) {
-                        if (window.sol.dictionary.hasOwnProperty(key)) {
-                            const value = window.sol.dictionary[key];
-                            const keyPart = key.split(":")[1].toLowerCase().trim();
-                            const normalizedValue = value.toLowerCase().trim();
-                            const element1 = textToElementMap.get(keyPart);
-                            const element2 = textToElementMap.get(normalizedValue);
-                            if (element1 && !element1.disabled) {
-                                element1.click();
-                                await _autoSolver.delay(50);
-                            }
-                            if (element2 && !element2.disabled) {
-                                element2.click();
-                                await _autoSolver.delay(50);
-                            }
-                        }
-                    }
-                    break;
-                }
-                case 'Challenge Name':
-                    await _autoSolver.handleChallengeName();
-                    break;
-                case 'Pairs':
-                    await _autoSolver.handlePairs();
-                    break;
-                case 'Tokens Run':
-                    await _autoSolver.handleTokensRun();
-                    break;
-                case 'Indices Run':
-                case 'Fill in the Gap':
-                    await _autoSolver.handleIndicesRun();
-                    break;
-                case 'Tap Complete Table':
-                    await _autoSolver.handleTapCompleteTable();
-                    break;
-
-                case 'Syllable Tap':
-                case 'Syllable Listen Tap': {
-                    const correctIndices = window.sol.correctIndices;
-                    const choicesData = window.sol.choices;
-                    const domButtons = Array.from(document.querySelectorAll('[data-test="word-bank"] [data-test$="challenge-tap-token"]'));
-                    correctIndices.forEach(index => {
-                        const correctText = choicesData[index].text;
-                        const matchingButton = domButtons.find(btn => btn.innerText.trim() === correctText);
-                        if (matchingButton) matchingButton.click();
-                    });
-                    break;
-                }
-
-                case 'Character Write Drag': {
-                    const sleep = ms => new Promise(r => setTimeout(r, ms));
-                    const createEvent = (type, x, y, buttons) => new MouseEvent(type, { bubbles: true, clientX: x, clientY: y, buttons, button: 0 });
-                    const normalize = str => str ? str.replace(/\s/g, '') : '';
-                    const strokes = window.sol.strokes;
-                    for (let i = 0; i < strokes.length; i++) {
-                        const targetPathData = normalize(strokes[i].path);
-                        let path, handle;
-                        while (!path || !handle) {
-                            const candidates = document.querySelectorAll('path._1e5Zt');
-                            path = Array.from(candidates).find(p => normalize(p.getAttribute('d')) === targetPathData);
-                            handle = document.querySelector('g._25Ktp');
-                            if (!path || !handle) await sleep(10);
-                        }
-                        const matrix = path.getScreenCTM();
-                        const len = path.getTotalLength();
-                        const start = path.getPointAtLength(0).matrixTransform(matrix);
-                        const end = path.getPointAtLength(len).matrixTransform(matrix);
-                        handle.dispatchEvent(createEvent('mousedown', start.x, start.y, 1));
-                        const steps = 10;
-                        for (let s = 1; s <= steps; s++) {
-                            const p = path.getPointAtLength((s / steps) * len).matrixTransform(matrix);
-                            const move = createEvent('mousemove', p.x, p.y, 1);
-                            handle.dispatchEvent(move);
-                            document.dispatchEvent(move);
-                        }
-                        const finalMove = createEvent('mousemove', end.x, end.y, 1);
-                        handle.dispatchEvent(finalMove);
-                        document.dispatchEvent(finalMove);
-                        await sleep(5);
-                        handle.dispatchEvent(createEvent('mouseup', end.x, end.y, 0));
-                        document.dispatchEvent(createEvent('mouseup', end.x, end.y, 0));
-                    }
-                    break;
-                }
-
-                case 'Character Write Draw': {
-                    const sleep = ms => new Promise(r => setTimeout(r, ms));
-                    const createEvent = (type, x, y, buttons) => new MouseEvent(type, { bubbles: true, clientX: x, clientY: y, buttons, button: 0 });
-                    const normalize = str => str ? str.replace(/\s/g, '') : '';
-                    const strokes = window.sol.strokes;
-                    for (let i = 0; i < strokes.length; i++) {
-                        const targetPathData = normalize(strokes[i].path);
-                        let path, cursor;
-                        while (!path || !cursor) {
-                            const candidates = document.querySelectorAll('path._1e5Zt');
-                            path = Array.from(candidates).find(p => normalize(p.getAttribute('d')) === targetPathData);
-                            cursor = document.querySelector('g._1h31R:not(._25Ktp)');
-                            if (!path || !cursor) await sleep(10);
-                        }
-                        const matrix = path.getScreenCTM();
-                        const len = path.getTotalLength();
-                        const start = path.getPointAtLength(0).matrixTransform(matrix);
-                        const end = path.getPointAtLength(len).matrixTransform(matrix);
-                        cursor.dispatchEvent(createEvent('mousedown', start.x, start.y, 1));
-                        document.dispatchEvent(createEvent('mousedown', start.x, start.y, 1));
-                        const steps = 10;
-                        for (let s = 1; s <= steps; s++) {
-                            const p = path.getPointAtLength((s / steps) * len).matrixTransform(matrix);
-                            const move = createEvent('mousemove', p.x, p.y, 1);
-                            cursor.dispatchEvent(move);
-                            document.dispatchEvent(move);
-                        }
-                        const finalMove = createEvent('mousemove', end.x, end.y, 1);
-                        cursor.dispatchEvent(finalMove);
-                        document.dispatchEvent(finalMove);
-                        await sleep(5);
-                        cursor.dispatchEvent(createEvent('mouseup', end.x, end.y, 0));
-                        document.dispatchEvent(createEvent('mouseup', end.x, end.y, 0));
-                    }
-                    break;
-                }
-
-                case 'Character Write Freehand': {
-                    const sleep = ms => new Promise(r => setTimeout(r, ms));
-                    const createEvent = (type, x, y, buttons) => new MouseEvent(type, { bubbles: true, clientX: x, clientY: y, buttons, button: 0 });
-                    const normalize = str => str ? str.replace(/\s/g, '') : '';
-                    const freehandStrokes = window.sol.strokes.filter(s => s.strokeDrawMode === 'FREEHAND');
-                    for (let i = 0; i < freehandStrokes.length; i++) {
-                        const targetPathData = normalize(freehandStrokes[i].path);
-                        let path, svg;
-                        while (!path || !svg) {
-                            const candidates = document.querySelectorAll('path._22UPm');
-                            path = Array.from(candidates).find(p => normalize(p.getAttribute('d')) === targetPathData);
-                            svg = document.querySelector('svg.o1rqi');
-                            if (!path || !svg) await sleep(10);
-                        }
-                        const matrix = path.getScreenCTM();
-                        const len = path.getTotalLength();
-                        const start = path.getPointAtLength(0).matrixTransform(matrix);
-                        const end = path.getPointAtLength(len).matrixTransform(matrix);
-                        svg.dispatchEvent(createEvent('mousedown', start.x, start.y, 1));
-                        document.dispatchEvent(createEvent('mousedown', start.x, start.y, 1));
-                        const steps = 10;
-                        for (let s = 1; s <= steps; s++) {
-                            const p = path.getPointAtLength((s / steps) * len).matrixTransform(matrix);
-                            const move = createEvent('mousemove', p.x, p.y, 1);
-                            svg.dispatchEvent(move);
-                            document.dispatchEvent(move);
-                        }
-                        const finalMove = createEvent('mousemove', end.x, end.y, 1);
-                        svg.dispatchEvent(finalMove);
-                        document.dispatchEvent(finalMove);
-                        await sleep(5);
-                        svg.dispatchEvent(createEvent('mouseup', end.x, end.y, 0));
-                        document.dispatchEvent(createEvent('mouseup', end.x, end.y, 0));
-                    }
-                    break;
-                }
-
-                case 'Daily Quest Progress':
-                case 'Streak Slide':
-                case 'Leaderboard Slide':
-                    document.querySelector('[data-test="player-next"]')?.click();
-                    break;
-            }
-        } catch (error) {
-
-        }
-    },
-    clickNext: () => {
-        const nextBtn = document.querySelector('[data-test="player-next"]') ||
-            document.querySelector('[data-test="stories-player-continue"]') ||
-            document.querySelector('[data-test="stories-player-done"]');
-        if (!nextBtn) return;
-        const isDisabled = nextBtn.getAttribute('aria-disabled') === 'true' || nextBtn.disabled;
-        if (!isDisabled) nextBtn.click();
-    },
-    solve: async () => {
-        if (_autoSolver._isBusy) return;
-        _autoSolver._isBusy = true;
-        const sleep = ms => new Promise(r => setTimeout(r, ms));
-        const skipSelectors = [
-            '[data-test="practice-hub-ad-no-thanks-button"]',
-            '[data-test="plus-no-thanks"]',
-            '[data-test="story-start"]',
-            '.vpDIE',                                                                    // "Đọc câu này sau" / "Tôi không thể nói lúc này"
-            '._1N-oo._36Vd3._16r-S._1ZBYz._23KDq._1S2uf.HakPM',
-            '._8AMBh._2vfJy._3Qy5R._28UWu._3h0lA._1S2uf._1E9sc',                       // Cant speak modal button variant 1
-            '._1Qh5D._36g4N._2YF0P._28UWu._3h0lA._1S2uf._1E9sc',                       // Cant speak modal button variant 2
-            '._3bBpU._1x5JY._1M9iF._36g4N._2YF0P.T7I0c._2EnxW.MYehf',
-            '._2V6ug._1ursp._7jW2t._28UWu._3h0lA._1S2uf._1E9sc',                       // No Thanks Legendary
-            '._1rcV8._1VYyp._1ursp._7jW2t._1gKir',                                     // Language Score
-            '._2V6ug._1ursp._7jW2t._3zgLG',                                            // Create Profile Later
-        ];
-        skipSelectors.forEach(sel => document.querySelector(sel)?.click());
-        try {
-            let mainElement = document.querySelector('._3yE3H');
-            if (!mainElement) mainElement = document.querySelector('.RMEuZ._1GVfY') || document.querySelector('[data-test="challenge"]') || document.querySelector('[class*="challenge"]');
-            if (!mainElement) {
-                _autoSolver.clickNext();
-                _autoSolver._isBusy = false;
-                return;
-            }
-            const reactInstance = _autoSolver.findReact(mainElement);
-            window.sol = reactInstance?.props?.currentChallenge;
-            if (!window.sol) {
-                _autoSolver.clickNext();
-                _autoSolver._isBusy = false;
-                return;
-            }
-            const challengeType = _autoSolver.determineChallengeType();
-            if (challengeType && challengeType !== 'Challenge Speak' && challengeType !== 'Listen Match' && challengeType !== 'Listen Speak') {
-                await Promise.race([
-                    _autoSolver.handleChallenge(challengeType),
-                    new Promise(r => setTimeout(r, 2000))
-                ]);
-                await sleep(80);
-            } else if (challengeType === 'Challenge Speak' || challengeType === 'Listen Match' || challengeType === 'Listen Speak') {
-                // Dismiss "Đọc câu này sau" / "Tôi không thể nói lúc này" modal trước
-                const speakModalSelectors = ['.vpDIE', '._8AMBh._2vfJy._3Qy5R._28UWu._3h0lA._1S2uf._1E9sc', '._1Qh5D._36g4N._2YF0P._28UWu._3h0lA._1S2uf._1E9sc'];
-                for (const sel of speakModalSelectors) {
-                    const btn = document.querySelector(sel);
-                    if (btn) { btn.click(); await sleep(300); break; }
-                }
-                // Chờ player-skip xuất hiện rồi click
-                let skipBtn = document.querySelector('button[data-test="player-skip"]');
-                if (!skipBtn) {
-                    await sleep(500);
-                    skipBtn = document.querySelector('button[data-test="player-skip"]');
-                }
-                skipBtn?.click();
-                await sleep(150);
-            }
-            _autoSolver.clickNext();
-            await sleep(120);
-        } catch (error) {
-            _autoSolver.clickNext();
-        }
-        _autoSolver._isBusy = false;
-    },
-    _isBusy: false,
-    _solveLoopRunning: false,
-    toggleAutoMode: () => {
-        _isAutoMode = !_isAutoMode;
-        _autoSolver.updateUI();
-        if (_isAutoMode && !_autoSolver._solveLoopRunning) {
-            _autoSolver._solveLoopRunning = true;
-            const initialUrl = window.location.href;
-            (async function loop() {
-                while (_isAutoMode) {
-                    if (window.location.href !== initialUrl) {
-                        _isAutoMode = false;
-                        _autoSolver.updateUI();
                         break;
                     }
-                    const t0 = Date.now();
-                    await _autoSolver.solve();
-                    await new Promise(r => setTimeout(r, 100));
-                    if (!_isAutoMode) break;
-                    const elapsed = Date.now() - t0;
-                    const wait = Math.max(0, 400 - elapsed);
-                    if (wait > 0) await new Promise(r => setTimeout(r, wait));
+
+                    case 'Listen Type': {
+                        const answer = window.sol.prompt || window.sol.correctSolutions?.[0] || '';
+                        const ta = document.querySelector('textarea[data-test="challenge-translate-input"]') ||
+                            document.querySelector('[data-test="challenge-text-input"]');
+                        if (ta) _autoSolver.setInputValue(ta, answer);
+                        break;
+                    }
+
+                    case 'Complete Reverse': {
+                        const blankTokens = window.sol.displayTokens?.filter(t => t.isBlank);
+                        const inputFields = document.querySelectorAll('[data-test="challenge-text-input"]');
+                        if (blankTokens && blankTokens.length > 1 && inputFields.length > 1) {
+                            // Multi-blank support
+                            inputFields.forEach((input, index) => {
+                                if (blankTokens[index]) {
+                                    _autoSolver.setInputValue(input, blankTokens[index].text);
+                                }
+                            });
+                        } else {
+                            // Single blank (fallback)
+                            const answer = blankTokens?.[0]?.text || window.sol.correctSolutions?.[0] || '';
+                            const input = document.querySelector('[data-test="challenge-text-input"]');
+                            if (input) _autoSolver.setInputValue(input, answer);
+                        }
+                        break;
+                    }
+
+                    case 'Challenge Choice':
+                        document.querySelectorAll("[data-test='challenge-choice']")[window.sol.correctIndex]?.click();
+                        break;
+                    case 'Challenge Choice with Text Input': {
+                        const choiceInput = document.querySelector('[data-test="challenge-text-input"]');
+                        if (choiceInput) {
+                            const answer = window.sol.correctSolutions ? window.sol.correctSolutions[0].split(/(?<=^\S+)\s/)[1] : (window.sol.displayTokens ? window.sol.displayTokens.find(t => t.isBlank)?.text : window.sol.prompt);
+                            _autoSolver.setInputValue(choiceInput, answer);
+                        }
+                        break;
+                    }
+                    case 'Challenge Text Input': {
+                        const input = document.querySelector('[data-test="challenge-text-input"]');
+                        if (input) {
+                            const answer = window.sol.correctSolutions?.[0] || (window.sol.displayTokens ? window.sol.displayTokens.find(t => t.isBlank)?.text : window.sol.prompt);
+                            _autoSolver.setInputValue(input, answer);
+                        }
+                        break;
+                    }
+                    case 'Challenge Translate Input': {
+                        const textarea = document.querySelector('textarea[data-test="challenge-translate-input"]');
+                        if (textarea) _autoSolver.setInputValue(textarea, window.sol.correctSolutions?.[0] || window.sol.prompt);
+                        break;
+                    }
+                    case 'Partial Reverse': {
+                        const partialElm = document.querySelector('[data-test*="challenge-partialReverseTranslate"]')?.querySelector("span[contenteditable]");
+                        if (partialElm) {
+                            const text = window.sol?.displayTokens?.filter(t => t.isBlank)?.map(t => t.text)?.join('')?.trim();
+                            const setter = Object.getOwnPropertyDescriptor(Node.prototype, "textContent").set;
+                            setter.call(partialElm, text);
+                            partialElm.dispatchEvent(new Event('input', {
+                                bubbles: true
+                            }));
+                        }
+                        break;
+                    }
+                    case 'Type Cloze': {
+                        const clozeInput = document.querySelector('input[type="text"].b4jqk');
+                        if (clozeInput) {
+                            const targetToken = window.sol.displayTokens.find(t => t.damageStart !== undefined);
+                            if (targetToken) {
+                                const correctEnding = targetToken.text.slice(targetToken.damageStart);
+                                _autoSolver.setInputValue(clozeInput, correctEnding);
+                            }
+                        }
+                        break;
+                    }
+                    case 'Type Cloze Table': {
+                        const tableRows = document.querySelectorAll('tbody tr');
+                        window.sol.displayTableTokens.slice(1).forEach((rowTokens, i) => {
+                            const answerCell = rowTokens[1]?.find(t => typeof t.damageStart === "number");
+                            if (answerCell && tableRows[i]) {
+                                const input = tableRows[i].querySelector('input[type="text"].b4jqk');
+                                if (input) {
+                                    const correctEnding = answerCell.text.slice(answerCell.damageStart);
+                                    _autoSolver.setInputValue(input, correctEnding);
+                                }
+                            }
+                        });
+                        break;
+                    }
+                    case 'Tap Cloze Table': {
+                        const tapTableRows = document.querySelectorAll('tbody tr');
+                        window.sol.displayTableTokens.slice(1).forEach((rowTokens, i) => {
+                            const answerCell = rowTokens[1]?.find(t => typeof t.damageStart === "number");
+                            if (!answerCell || !tapTableRows[i]) return;
+                            const wordBank = document.querySelector('[data-test="word-bank"]');
+                            const wordButtons = wordBank ? Array.from(wordBank.querySelectorAll('button[data-test*="challenge-tap-token"]:not([aria-disabled="true"])')) : [];
+                            const correctWord = answerCell.text;
+                            const correctEnding = correctWord.slice(answerCell.damageStart);
+                            let endingMatched = "";
+                            for (let btn of wordButtons) {
+                                if (!correctEnding.startsWith(endingMatched + btn.innerText)) continue;
+                                btn.click();
+                                endingMatched += btn.innerText;
+                                if (endingMatched === correctEnding) break;
+                            }
+                        });
+                        break;
+                    }
+                    case 'Type Complete Table': {
+                        const completeTableRows = document.querySelectorAll('tbody tr');
+                        window.sol.displayTableTokens.slice(1).forEach((rowTokens, i) => {
+                            const answerCell = rowTokens[1]?.find(t => t.isBlank);
+                            if (!answerCell || !completeTableRows[i]) return;
+                            const input = completeTableRows[i].querySelector('input[type="text"].b4jqk');
+                            if (input) _autoSolver.setInputValue(input, answerCell.text);
+                        });
+                        break;
+                    }
+                    case 'Pattern Tap Complete': {
+                        const patternWordBank = document.querySelector('[data-test="word-bank"]');
+                        if (!patternWordBank) return;
+                        const correctIndex = window.sol.correctIndex ?? 0;
+                        const correctText = window.sol.choices[correctIndex];
+                        const patternButtons = Array.from(patternWordBank.querySelectorAll('button[data-test*="challenge-tap-token"]:not([aria-disabled="true"])'));
+                        const targetButton = patternButtons.find(btn => btn.innerText.trim() === correctText);
+                        if (targetButton) targetButton.click();
+                        break;
+                    }
+                    case 'Story Arrange': {
+                        const arrangeChoices = document.querySelectorAll('[data-test*="challenge-tap-token"]:not(span)');
+                        for (let i = 0; i < window.sol.phraseOrder.length; i++) {
+                            arrangeChoices[window.sol.phraseOrder[i]].click();
+                            await _autoSolver.delay(50);
+                        }
+                        break;
+                    }
+                    case 'Story Multiple Choice': {
+                        const storyChoices = document.querySelectorAll('[data-test="stories-choice"]');
+                        storyChoices[window.sol.correctAnswerIndex]?.click();
+                        break;
+                    }
+                    case 'Story Point to Phrase': {
+                        const phraseChoices = document.querySelectorAll('[data-test="challenge-tap-token-text"]');
+                        let phraseCorrectIndex = -1;
+                        for (let i = 0; i < window.sol.parts.length; i++) {
+                            if (window.sol.parts[i].selectable === true) {
+                                phraseCorrectIndex += 1;
+                                if (window.sol.correctAnswerIndex === i) {
+                                    phraseChoices[phraseCorrectIndex]?.parentElement.click();
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                    case 'Story Pairs': {
+                        const storyButtons = document.querySelectorAll('[data-test*="challenge-tap-token"]:not(span)');
+                        const storyTexts = document.querySelectorAll('[data-test="challenge-tap-token-text"]');
+                        const textToElementMap = new Map();
+                        for (let i = 0; i < storyButtons.length; i++) {
+                            const text = storyTexts[i].innerText.toLowerCase().trim();
+                            textToElementMap.set(text, storyButtons[i]);
+                        }
+                        for (const key in window.sol.dictionary) {
+                            if (window.sol.dictionary.hasOwnProperty(key)) {
+                                const value = window.sol.dictionary[key];
+                                const keyPart = key.split(":")[1].toLowerCase().trim();
+                                const normalizedValue = value.toLowerCase().trim();
+                                const element1 = textToElementMap.get(keyPart);
+                                const element2 = textToElementMap.get(normalizedValue);
+                                if (element1 && !element1.disabled) {
+                                    element1.click();
+                                    await _autoSolver.delay(50);
+                                }
+                                if (element2 && !element2.disabled) {
+                                    element2.click();
+                                    await _autoSolver.delay(50);
+                                }
+                            }
+                        }
+                        break;
+                    }
+                    case 'Challenge Name':
+                        await _autoSolver.handleChallengeName();
+                        break;
+                    case 'Pairs':
+                        await _autoSolver.handlePairs();
+                        break;
+                    case 'Tokens Run':
+                        await _autoSolver.handleTokensRun();
+                        break;
+                    case 'Indices Run':
+                    case 'Fill in the Gap':
+                        await _autoSolver.handleIndicesRun();
+                        break;
+                    case 'Tap Complete Table':
+                        await _autoSolver.handleTapCompleteTable();
+                        break;
+
+                    case 'Syllable Tap':
+                    case 'Syllable Listen Tap': {
+                        const correctIndices = window.sol.correctIndices;
+                        const choicesData = window.sol.choices;
+                        const domButtons = Array.from(document.querySelectorAll('[data-test="word-bank"] [data-test$="challenge-tap-token"]'));
+                        correctIndices.forEach(index => {
+                            const correctText = choicesData[index].text;
+                            const matchingButton = domButtons.find(btn => btn.innerText.trim() === correctText);
+                            if (matchingButton) matchingButton.click();
+                        });
+                        break;
+                    }
+
+                    case 'Character Write Drag': {
+                        const sleep = ms => new Promise(r => setTimeout(r, ms));
+                        const createEvent = (type, x, y, buttons) => new MouseEvent(type, {
+                            bubbles: true,
+                            clientX: x,
+                            clientY: y,
+                            buttons,
+                            button: 0
+                        });
+                        const normalize = str => str ? str.replace(/\s/g, '') : '';
+                        const strokes = window.sol.strokes;
+                        for (let i = 0; i < strokes.length; i++) {
+                            const targetPathData = normalize(strokes[i].path);
+                            let path, handle;
+                            while (!path || !handle) {
+                                const candidates = document.querySelectorAll('path._1e5Zt');
+                                path = Array.from(candidates).find(p => normalize(p.getAttribute('d')) === targetPathData);
+                                handle = document.querySelector('g._25Ktp');
+                                if (!path || !handle) await sleep(10);
+                            }
+                            const matrix = path.getScreenCTM();
+                            const len = path.getTotalLength();
+                            const start = path.getPointAtLength(0).matrixTransform(matrix);
+                            const end = path.getPointAtLength(len).matrixTransform(matrix);
+                            handle.dispatchEvent(createEvent('mousedown', start.x, start.y, 1));
+                            const steps = 10;
+                            for (let s = 1; s <= steps; s++) {
+                                const p = path.getPointAtLength((s / steps) * len).matrixTransform(matrix);
+                                const move = createEvent('mousemove', p.x, p.y, 1);
+                                handle.dispatchEvent(move);
+                                document.dispatchEvent(move);
+                            }
+                            const finalMove = createEvent('mousemove', end.x, end.y, 1);
+                            handle.dispatchEvent(finalMove);
+                            document.dispatchEvent(finalMove);
+                            await sleep(5);
+                            handle.dispatchEvent(createEvent('mouseup', end.x, end.y, 0));
+                            document.dispatchEvent(createEvent('mouseup', end.x, end.y, 0));
+                        }
+                        break;
+                    }
+
+                    case 'Character Write Draw': {
+                        const sleep = ms => new Promise(r => setTimeout(r, ms));
+                        const createEvent = (type, x, y, buttons) => new MouseEvent(type, {
+                            bubbles: true,
+                            clientX: x,
+                            clientY: y,
+                            buttons,
+                            button: 0
+                        });
+                        const normalize = str => str ? str.replace(/\s/g, '') : '';
+                        const strokes = window.sol.strokes;
+                        for (let i = 0; i < strokes.length; i++) {
+                            const targetPathData = normalize(strokes[i].path);
+                            let path, cursor;
+                            while (!path || !cursor) {
+                                const candidates = document.querySelectorAll('path._1e5Zt');
+                                path = Array.from(candidates).find(p => normalize(p.getAttribute('d')) === targetPathData);
+                                cursor = document.querySelector('g._1h31R:not(._25Ktp)');
+                                if (!path || !cursor) await sleep(10);
+                            }
+                            const matrix = path.getScreenCTM();
+                            const len = path.getTotalLength();
+                            const start = path.getPointAtLength(0).matrixTransform(matrix);
+                            const end = path.getPointAtLength(len).matrixTransform(matrix);
+                            cursor.dispatchEvent(createEvent('mousedown', start.x, start.y, 1));
+                            document.dispatchEvent(createEvent('mousedown', start.x, start.y, 1));
+                            const steps = 10;
+                            for (let s = 1; s <= steps; s++) {
+                                const p = path.getPointAtLength((s / steps) * len).matrixTransform(matrix);
+                                const move = createEvent('mousemove', p.x, p.y, 1);
+                                cursor.dispatchEvent(move);
+                                document.dispatchEvent(move);
+                            }
+                            const finalMove = createEvent('mousemove', end.x, end.y, 1);
+                            cursor.dispatchEvent(finalMove);
+                            document.dispatchEvent(finalMove);
+                            await sleep(5);
+                            cursor.dispatchEvent(createEvent('mouseup', end.x, end.y, 0));
+                            document.dispatchEvent(createEvent('mouseup', end.x, end.y, 0));
+                        }
+                        break;
+                    }
+
+                    case 'Character Write Freehand': {
+                        const sleep = ms => new Promise(r => setTimeout(r, ms));
+                        const createEvent = (type, x, y, buttons) => new MouseEvent(type, {
+                            bubbles: true,
+                            clientX: x,
+                            clientY: y,
+                            buttons,
+                            button: 0
+                        });
+                        const normalize = str => str ? str.replace(/\s/g, '') : '';
+                        const freehandStrokes = window.sol.strokes.filter(s => s.strokeDrawMode === 'FREEHAND');
+                        for (let i = 0; i < freehandStrokes.length; i++) {
+                            const targetPathData = normalize(freehandStrokes[i].path);
+                            let path, svg;
+                            while (!path || !svg) {
+                                const candidates = document.querySelectorAll('path._22UPm');
+                                path = Array.from(candidates).find(p => normalize(p.getAttribute('d')) === targetPathData);
+                                svg = document.querySelector('svg.o1rqi');
+                                if (!path || !svg) await sleep(10);
+                            }
+                            const matrix = path.getScreenCTM();
+                            const len = path.getTotalLength();
+                            const start = path.getPointAtLength(0).matrixTransform(matrix);
+                            const end = path.getPointAtLength(len).matrixTransform(matrix);
+                            svg.dispatchEvent(createEvent('mousedown', start.x, start.y, 1));
+                            document.dispatchEvent(createEvent('mousedown', start.x, start.y, 1));
+                            const steps = 10;
+                            for (let s = 1; s <= steps; s++) {
+                                const p = path.getPointAtLength((s / steps) * len).matrixTransform(matrix);
+                                const move = createEvent('mousemove', p.x, p.y, 1);
+                                svg.dispatchEvent(move);
+                                document.dispatchEvent(move);
+                            }
+                            const finalMove = createEvent('mousemove', end.x, end.y, 1);
+                            svg.dispatchEvent(finalMove);
+                            document.dispatchEvent(finalMove);
+                            await sleep(5);
+                            svg.dispatchEvent(createEvent('mouseup', end.x, end.y, 0));
+                            document.dispatchEvent(createEvent('mouseup', end.x, end.y, 0));
+                        }
+                        break;
+                    }
+
+                    case 'Daily Quest Progress':
+                    case 'Streak Slide':
+                    case 'Leaderboard Slide':
+                        document.querySelector('[data-test="player-next"]')?.click();
+                        break;
                 }
+            } catch (error) {
+
+            }
+        },
+        clickNext: () => {
+            const nextBtn = document.querySelector('[data-test="player-next"]') ||
+                document.querySelector('[data-test="stories-player-continue"]') ||
+                document.querySelector('[data-test="stories-player-done"]');
+            if (!nextBtn) return;
+            const isDisabled = nextBtn.getAttribute('aria-disabled') === 'true' || nextBtn.disabled;
+            if (!isDisabled) nextBtn.click();
+        },
+        solve: async () => {
+            if (_autoSolver._isBusy) return;
+            _autoSolver._isBusy = true;
+            const sleep = ms => new Promise(r => setTimeout(r, ms));
+            const skipSelectors = [
+                '[data-test="practice-hub-ad-no-thanks-button"]',
+                '[data-test="plus-no-thanks"]',
+                '[data-test="story-start"]',
+                '.vpDIE', // "Đọc câu này sau" / "Tôi không thể nói lúc này"
+                '._1N-oo._36Vd3._16r-S._1ZBYz._23KDq._1S2uf.HakPM',
+                '._8AMBh._2vfJy._3Qy5R._28UWu._3h0lA._1S2uf._1E9sc', // Cant speak modal button variant 1
+                '._1Qh5D._36g4N._2YF0P._28UWu._3h0lA._1S2uf._1E9sc', // Cant speak modal button variant 2
+                '._3bBpU._1x5JY._1M9iF._36g4N._2YF0P.T7I0c._2EnxW.MYehf',
+                '._2V6ug._1ursp._7jW2t._28UWu._3h0lA._1S2uf._1E9sc', // No Thanks Legendary
+                '._1rcV8._1VYyp._1ursp._7jW2t._1gKir', // Language Score
+                '._2V6ug._1ursp._7jW2t._3zgLG', // Create Profile Later
+            ];
+            skipSelectors.forEach(sel => document.querySelector(sel)?.click());
+            try {
+                let mainElement = document.querySelector('._3yE3H');
+                if (!mainElement) mainElement = document.querySelector('.RMEuZ._1GVfY') || document.querySelector('[data-test="challenge"]') || document.querySelector('[class*="challenge"]');
+                if (!mainElement) {
+                    _autoSolver.clickNext();
+                    _autoSolver._isBusy = false;
+                    return;
+                }
+                const reactInstance = _autoSolver.findReact(mainElement);
+                window.sol = reactInstance?.props?.currentChallenge;
+                if (!window.sol) {
+                    _autoSolver.clickNext();
+                    _autoSolver._isBusy = false;
+                    return;
+                }
+                const challengeType = _autoSolver.determineChallengeType();
+                if (challengeType && challengeType !== 'Challenge Speak' && challengeType !== 'Listen Match' && challengeType !== 'Listen Speak') {
+                    await Promise.race([
+                        _autoSolver.handleChallenge(challengeType),
+                        new Promise(r => setTimeout(r, 2000))
+                    ]);
+                    await sleep(80);
+                } else if (challengeType === 'Challenge Speak' || challengeType === 'Listen Match' || challengeType === 'Listen Speak') {
+                    // Dismiss "Đọc câu này sau" / "Tôi không thể nói lúc này" modal trước
+                    const speakModalSelectors = ['.vpDIE', '._8AMBh._2vfJy._3Qy5R._28UWu._3h0lA._1S2uf._1E9sc', '._1Qh5D._36g4N._2YF0P._28UWu._3h0lA._1S2uf._1E9sc'];
+                    for (const sel of speakModalSelectors) {
+                        const btn = document.querySelector(sel);
+                        if (btn) {
+                            btn.click();
+                            await sleep(300);
+                            break;
+                        }
+                    }
+                    // Chờ player-skip xuất hiện rồi click
+                    let skipBtn = document.querySelector('button[data-test="player-skip"]');
+                    if (!skipBtn) {
+                        await sleep(500);
+                        skipBtn = document.querySelector('button[data-test="player-skip"]');
+                    }
+                    skipBtn?.click();
+                    await sleep(150);
+                }
+                _autoSolver.clickNext();
+                await sleep(120);
+            } catch (error) {
+                _autoSolver.clickNext();
+            }
+            _autoSolver._isBusy = false;
+        },
+        _isBusy: false,
+        _solveLoopRunning: false,
+        toggleAutoMode: () => {
+            _isAutoMode = !_isAutoMode;
+            _autoSolver.updateUI();
+            if (_isAutoMode && !_autoSolver._solveLoopRunning) {
+                _autoSolver._solveLoopRunning = true;
+                const initialUrl = window.location.href;
+                (async function loop() {
+                    while (_isAutoMode) {
+                        if (window.location.href !== initialUrl) {
+                            _isAutoMode = false;
+                            _autoSolver.updateUI();
+                            break;
+                        }
+                        const t0 = Date.now();
+                        await _autoSolver.solve();
+                        await new Promise(r => setTimeout(r, 100));
+                        if (!_isAutoMode) break;
+                        const elapsed = Date.now() - t0;
+                        const wait = Math.max(0, 400 - elapsed);
+                        if (wait > 0) await new Promise(r => setTimeout(r, wait));
+                    }
+                    _autoSolver._solveLoopRunning = false;
+                })();
+            } else if (!_isAutoMode) {
                 _autoSolver._solveLoopRunning = false;
-            })();
-        } else if (!_isAutoMode) {
-            _autoSolver._solveLoopRunning = false;
-        }
-    },
-    createUI: () => {
-        if (_solverUI) return;
-        _solverUI = document.createElement('div');
-        _solverUI.id = 'nightware-solver-ui';
-        _solverUI.style.cssText = `position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 2147483647; display: flex; gap: 12px; animation: slideUp 0.3s ease-out; pointer-events: auto;`;
-        _solverUI.innerHTML = `
+            }
+        },
+        createUI: () => {
+            if (_solverUI) return;
+            _solverUI = document.createElement('div');
+            _solverUI.id = 'nightware-solver-ui';
+            _solverUI.style.cssText = `position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 2147483647; display: flex; gap: 12px; animation: slideUp 0.3s ease-out; pointer-events: auto;`;
+            _solverUI.innerHTML = `
             <button class="nw-solver-btn" id="nw-solve-single" style="padding: 12px 24px; background: #89e219; border: none; border-bottom: 4px solid #58cc02; border-radius: 12px; color: white; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.15); pointer-events: auto;">SOLVE</button>
             <button class="nw-solver-btn" id="nw-solve-all" style="padding: 12px 24px; background: #ffc800; border: none; border-bottom: 4px solid #ff9600; border-radius: 12px; color: white; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.15); pointer-events: auto;">SOLVE ALL</button>
         `;
-        const style = document.createElement('style');
-        style.textContent = `@keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } } .nw-solver-btn:hover { filter: brightness(1.1); transform: translateY(-2px); } .nw-solver-btn:active { border-bottom: 0px; transform: translateY(2px); }`;
-        document.head.appendChild(style);
-        document.body.appendChild(_solverUI);
-        document.getElementById('nw-solve-single').addEventListener('click', () => _autoSolver.solve());
-        document.getElementById('nw-solve-all').addEventListener('click', () => _autoSolver.toggleAutoMode());
-        document.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                if (e.shiftKey) _autoSolver.toggleAutoMode();
-                else _autoSolver.solve();
-            }
-        });
-    },
-    removeUI: () => {
-        if (_solverUI) {
-            _solverUI.remove();
-            _solverUI = null;
-        }
-        if (_solvingIntervalId) {
-            clearInterval(_solvingIntervalId);
-            _solvingIntervalId = null;
-        }
-        _isAutoMode = false;
-    },
-    updateUI: () => {
-        const btn = document.getElementById('nw-solve-all');
-        if (btn) {
-            btn.textContent = _isAutoMode ? 'PAUSE' : 'SOLVE ALL';
-            btn.style.background = _isAutoMode ? '#ff4b4b' : '#1cb0f6';
-            btn.style.borderBottomColor = _isAutoMode ? '#cc0000' : '#2b70c9';
-        }
-    },
-    checkAndToggle: () => {
-        const currentIsInLesson = window.location.pathname.includes('/lesson') || window.location.pathname.includes('/practice');
-        if (currentIsInLesson !== _isInLesson) {
-            _isInLesson = currentIsInLesson;
-            if (_isInLesson && _INJECT_SOLVER_ENABLED) {
-                setTimeout(() => _autoSolver.createUI(), 500);
-            } else {
-                _autoSolver.removeUI();
-            }
-        }
-    }
-}
-setInterval(() => _autoSolver.checkAndToggle(), 1000);
-
-let _lessonSolving=false;
-let _currentLessonCount=0;
-let _lessonsToSolve=0;
-
-function _getJwt(){
-    const m=document.cookie.match(/(^| )jwt_token=([^;]+)/);
-    return m?m[2]:null;
-}
-function _decodeJwt(t){
-    try{
-        const b=t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
-        const pad=b.padEnd(b.length+(4-b.length%4)%4,'=');
-        return JSON.parse(decodeURIComponent(atob(pad).split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join('')));
-    }catch{return null;}
-}
-function _buildHdrs(jwt){
-    return {'Content-Type':'application/json','Authorization':'Bearer '+jwt,'User-Agent':navigator.userAgent};
-}
-function _goalHdrs(jwt){
-    return {'Content-Type':'application/json','x-requested-with':'XMLHttpRequest','accept':'application/json; charset=UTF-8','Authorization':'Bearer '+jwt};
-}
-function _gm(method,url,data,hdrs){
-    return new Promise((res,rej)=>GM_xmlhttpRequest({
-        method,url,headers:hdrs||_hdrs,
-        data:data?JSON.stringify(data):null,
-        onload:r=>res(r),onerror:()=>rej(new Error('Network')),
-        timeout:15000,ontimeout:()=>rej(new Error('Timeout'))
-    }));
-}
-
-function _setBtnState(btnId, cfg, labelText) {
-    const btn = document.getElementById(btnId);
-    if(!btn) return;
-    const lbl = btn.querySelector('.DH_Btn_Label') || btn.querySelector('.DH_Sm_Btn_Label');
-    if(!lbl) return;
-
-    const prevTxt = lbl.textContent;
-    lbl.textContent = labelText;
-    const newW = btn.offsetWidth;
-    lbl.textContent = prevTxt;
-
-    btn.style.width = btn.offsetWidth+'px';
-    requestAnimationFrame(()=>{
-        lbl.style.opacity='0'; lbl.style.filter='blur(4px)';
-        btn.style.width = newW+'px';
-        btn.style.background = cfg.bg;
-        btn.style.outline = `solid 2px ${cfg.outline}`;
-        btn.style.outlineOffset = '-2px';
-    });
-    setTimeout(()=>{
-        lbl.style.transition='0s';
-        lbl.style.color = cfg.tc;
-        void lbl.offsetWidth;
-        lbl.style.transition='0.4s';
-        lbl.textContent = labelText;
-        requestAnimationFrame(()=>{ lbl.style.opacity='1'; lbl.style.filter='blur(0)'; });
-        setTimeout(()=>{ btn.style.width=''; }, 400);
-    },400);
-}
-
-const _C_BLUE  = {bg:'rgb(var(--DH-blue))',            outline:'rgba(0,0,0,0.18)',                tc:'#fff'};
-const _C_GREEN = {bg:'rgba(var(--DH-green),0.10)',      outline:'rgba(var(--DH-green),0.22)',      tc:'rgb(var(--DH-green))'};
-const _C_RED   = {bg:'rgba(var(--DH-red),0.10)',        outline:'rgba(var(--DH-red),0.22)',        tc:'rgb(var(--DH-red))'};
-const _C_GRAY  = {bg:'rgb(var(--color-eel,117,117,117),0.10)', outline:'rgb(var(--color-eel,117,117,117),0.20)', tc:'rgb(var(--color-eel,117,117,117),0.60)'};
-
-function _resetBtn(btnId, label){
-    const btn=document.getElementById(btnId); if(!btn) return;
-    btn.disabled=false;
-    _setBtnState(btnId, _C_BLUE, label);
-    const prog=document.getElementById(btnId.replace('_Btn','_Prog'));
-    if(prog) setTimeout(()=>prog.classList.remove('on'),2000);
-}
-function _setBtnProgress(btnId, pct){
-    const btn=document.getElementById(btnId); if(!btn) return;
-    const lbl=btn.querySelector('.DH_Btn_Label')||btn.querySelector('.DH_Sm_Btn_Label');
-    if(lbl) lbl.textContent=pct+'%';
-    const fill=document.getElementById(btnId.replace('_Btn','_Fill'));
-    if(fill) fill.style.width=pct+'%';
-}
-function _setBtnRunning(btnId){
-    const btn=document.getElementById(btnId); if(!btn) return;
-    btn.disabled=false;
-    _setBtnState(btnId, _C_RED, '0%');
-    const prog=document.getElementById(btnId.replace('_Btn','_Prog'));
-    if(prog) prog.classList.add('on');
-}
-function _setBtnDone(btnId, label){
-    const btn=document.getElementById(btnId); if(!btn) return;
-    _setBtnState(btnId, _C_GREEN, label||'DONE ✓');
-    const fill=document.getElementById(btnId.replace('_Btn','_Fill'));
-    if(fill) fill.style.width='100%';
-}
-
-const _GF_SCRIPT_URL='https://greasyfork.org/en/scripts/561041-duolingo-duohacker';
-const _CURRENT_VER='2026.05.25';
-
-function _setConn(state, label){
-        if (state === 'connected' && _isOutdated) {
-        state = 'outdated';
-        label = `v${_remoteVersion} available — click to update`;
-    }
-
-    const btn=document.getElementById('DH_Conn_Btn');
-    const ico=document.getElementById('DH_Conn_Ico');
-    const txt=document.getElementById('DH_Conn_Txt');
-    ico.classList.remove('DH_Spin_Ico');
-
-if(state==='outdated'){
-        const newBtn=btn.cloneNode(true);
-        btn.parentNode.replaceChild(newBtn,btn);
-        const nb=document.getElementById('DH_Conn_Btn');
-        const ni=document.getElementById('DH_Conn_Ico');
-        const nt=document.getElementById('DH_Conn_Txt');
-
-
-        nb.style.background=`linear-gradient(0deg,rgba(var(--DH-orange),0.10),rgba(var(--DH-orange),0.10)),rgb(var(--color-snow),0.90)`;
-        nb.style.outline=`2px solid rgba(var(--DH-orange),0.30)`;
-        nb.style.outlineOffset='-2px';
-        nb.style.cursor='pointer';
-        nb.style.display='flex';
-        nb.style.alignItems='center';
-
-
-        nt.textContent='Outdated';
-        nt.style.color=`rgb(var(--DH-orange))`;
-
-
-        ni.textContent='';
-        ni.style.display='flex';
-        ni.style.alignItems='center';
-        ni.style.justifyContent='center';
-
-        ni.style.color=`rgb(var(--DH-orange))`;
-        ni.innerHTML=`<svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;display:block;"><path fill="currentColor" d="M21.171 15.398l-5.912-9.854c-.776-1.293-1.963-2.033-3.259-2.033s-2.483.74-3.259 2.031l-5.912 9.856c-.786 1.309-.872 2.705-.235 3.83.636 1.126 1.878 1.772 3.406 1.772h12c1.528 0 2.77-.646 3.406-1.771.637-1.125.551-2.521-.235-3.831zm-9.171 2.151c-.854 0-1.55-.695-1.55-1.549 0-.855.695-1.551 1.55-1.551s1.55.696 1.55 1.551c0 .854-.696 1.549-1.55 1.549zm1.633-7.424c-.011.031-1.401 3.468-1.401 3.468-.038.094-.13.156-.231.156s-.193-.062-.231-.156l-1.391-3.438c-.09-.233-.129-.443-.129-.655 0-.965.785-1.75 1.75-1.75s1.75.785 1.75 1.75c0 .212-.039.422-.117.625z"/></svg>`;
-
-        nb.title=label;
-        nb.onclick = () => window.open(_GF_SCRIPT_URL, '_blank');
-        document.getElementById('DH_User_Row').style.display='flex';
-        return;
-    }
-
-    const _SVG_CONNECTING=`<svg class="DH_Spin_Ico" width="16" height="16" viewBox="0 0 297 297" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M294.853 178.121c-1.814-1.671-4.404-2.203-6.729-1.382l-25.97 9.168c17.558-70.878-24.569-143.07-94.69-161.569-34.475-9.094-70.423-4.215-101.225 13.737C35.438 56.028 13.475 84.901 4.397 119.377c-8.083 30.698-4.951 63.329 8.819 91.883 13.616 28.234 36.767 50.846 65.186 63.669 3.256 1.47 6.737 2.203 10.214 2.203 3.647 0 7.293-.807 10.672-2.418 6.59-3.141 11.435-8.99 13.293-16.047 3.086-11.721-2.756-23.89-13.893-28.937-37.335-16.923-56.844-58.027-46.387-97.737 5.7-21.65 19.508-39.794 38.878-51.089 19.372-11.295 41.963-14.378 63.611-8.675 44.273 11.659 70.99 56.813 60.113 101.108l-17.584-20.48c-1.612-1.878-4.135-2.705-6.544-2.152-2.412.555-4.318 2.401-4.948 4.794l-11.478 43.588c-.566 2.153-.02 4.447 1.457 6.112l40.428 45.603c1.785 2.012 4.604 2.752 7.144 1.882l57.644-19.78c2.106-.723 3.711-2.45 4.279-4.603l11.479-43.587c.635-2.412-.106-4.949-1.92-6.62z" fill="currentColor"/></svg>`;
-    const _SVG_CONNECTED=`<svg width="16" height="16" viewBox="0 0 921 921" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M648.5 794.6c-23.5 44.5-51.2 79.5-82.1 104.2-6.8 5.5-13.7 10.3-20.8 14.7 98.5-18.4 186-68.1 251.7-138.4-6.1-3.7-12.5-7.3-19.1-10.8-29.8-15.8-63.1-29.1-99.1-39.6-8.9 24.8-19.1 48.2-30.6 69.9zm-170.5-134.6c62.4 1.2 122.7 8.8 178.3 22.3C674.9 620.5 685.4 550.8 686.8 478H478V660zm0 242.5c22.8-3.5 45.1-13.9 66.6-31 27.2-21.7 51.7-53.1 73-93.3 10.3-19.4 19.5-40.4 27.6-62.6C593.1 703.2 536.6 696.2 478 695v207.5zM231 229.6c-37.8-11.2-73-25.2-104.5-41.9-9-4.8-17.7-9.7-26-14.9C40.8 247.4 3.8 340.9 0 443h199.2C200.7 367.2 211.6 294.5 231 229.6zm589.5-56.8c-8.3 5.1-16.9 10.1-26 14.9-31.5 16.7-66.7 30.7-104.5 41.9 19.4 64.9 30.3 137.6 31.8 213.4H921C917.2 340.9 880.2 247.4 820.5 172.8zM376.4 871.5c21.4 17.1 43.8 27.5 66.6 31V695c-58.6 1.2-115.1 8.2-167.2 20.6 8.1 22.2 17.3 43.1 27.6 62.6 21.3 40.2 45.9 71.6 73 93.3zM443 660V478H234.2c1.5 72.8 12 142.5 30.5 204.3C320.3 668.9 380.6 661.2 443 660zm-208.8-217H443V261c-62.4-1.2-122.7-8.8-178.3-22.3C246.2 300.5 235.6 370.2 234.2 443zm487.6 35c-1.5 75.8-12.4 148.5-31.8 213.4 37.8 11.2 73 25.2 104.5 41.9 9 4.8 17.7 9.7 26 14.9C880.2 673.6 917.2 580 921 478H721.8zM478 443h208.8c-1.5-72.8-12-142.5-30.5-204.3C600.7 252.2 540.4 259.8 478 261v182zm0-424.5V226c58.6-1.2 115.1-8.2 167.2-20.6-8.1-22.2-17.3-43.1-27.6-62.6-21.3-40.2-45.8-71.6-73-93.3C523.1 32.4 500.8 22 478 18.5zM123.7 145.9c6.1 3.7 12.5 7.3 19.1 10.8 29.8 15.8 63.1 29.1 99.1 39.6 8.9-24.8 19.1-48.2 30.6-69.9 23.5-44.5 51.2-79.5 82.1-104.2 6.8-5.5 13.7-10.3 20.8-14.7C276.9 25.9 189.4 75.6 123.7 145.9zM443 18.5c-22.8 3.5-45.1 13.9-66.6 31-27.2 21.7-51.7 53.1-73 93.3-10.3 19.4-19.5 40.4-27.6 62.6C327.9 217.8 384.4 224.8 443 226V18.5zm-316.6 714.8c31.5-16.7 66.7-30.7 104.5-41.9C211.5 626.5 200.6 553.8 199.1 478H0c3.8 102.1 40.8 195.6 100.5 270.2 8.2-5.1 16.8-10.1 25.9-14.9zm-2.7 41.8C189.4 845.1 276.9 894.8 375.4 913.2c-7-4.3-13.9-9.2-20.8-14.7C323.7 874.1 296 839 272.5 794.6c-11.5-21.7-21.7-45.1-30.6-69.9-35.9 10.6-69.2 23.9-99.1 39.6-6.6 3.5-13 7.1-19.1 10.8zm525.1-651.7c11.5 21.7 21.7 45.1 30.6 69.9 35.9-10.6 69.2-23.9 99.1-39.6 6.6-3.5 13-7.1 19.1-10.8C731.6 75.6 644.1 25.9 545.6 7.5c7 4.3 13.9 9.2 20.8 14.7 30.9 24.7 58.6 59.7 82.1 104.2z"/></svg>`;
-    const _SVG_ERROR=`<svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M21.171 15.398l-5.912-9.854c-.776-1.293-1.963-2.033-3.259-2.033s-2.483.74-3.259 2.031l-5.912 9.856c-.786 1.309-.872 2.705-.235 3.83.636 1.126 1.878 1.772 3.406 1.772h12c1.528 0 2.77-.646 3.406-1.771.637-1.125.551-2.521-.235-3.831zm-9.171 2.151c-.854 0-1.55-.695-1.55-1.549 0-.855.695-1.551 1.55-1.551s1.55.696 1.55 1.551c0 .854-.696 1.549-1.55 1.549zm1.633-7.424c-.011.031-1.401 3.468-1.401 3.468-.038.094-.13.156-.231.156s-.193-.062-.231-.156l-1.391-3.438c-.09-.233-.129-.443-.129-.655 0-.965.785-1.75 1.75-1.75s1.75.785 1.75 1.75c0 .212-.039.422-.117.625z"/></svg>`;
-    const S={
-        connecting:{bg:`rgb(var(--color-eel,117,117,117),0.10)`,outline:`rgb(var(--color-eel,117,117,117),0.20)`,tc:`rgb(var(--color-eel,117,117,117),0.70)`,t:'Connecting',svg:_SVG_CONNECTING},
-        connected:  {bg:`linear-gradient(0deg,rgba(var(--DH-green),0.10),rgba(var(--DH-green),0.10)),rgb(var(--color-snow),0.90)`,outline:`rgba(var(--DH-green),0.22)`,tc:`rgb(var(--DH-green))`,t:'Connected',svg:_SVG_CONNECTED},
-        error:      {bg:`rgba(var(--DH-red),0.08)`,outline:`rgba(var(--DH-red),0.20)`,tc:`rgb(var(--DH-red))`,t:label||'Error',svg:_SVG_ERROR},
-    }[state];
-    btn.style.background=S.bg; btn.style.outline=`2px solid ${S.outline}`; btn.style.outlineOffset='-2px';
-    txt.textContent=S.t; txt.style.color=S.tc;
-    ico.innerHTML=S.svg; ico.style.color=S.tc; ico.style.display='flex'; ico.style.alignItems='center'; ico.style.justifyContent='center';
-    if(state==='connected') document.getElementById('DH_User_Row').style.display='flex';
-}
-
-async function _checkVersionOnLoad(){
-    try{
-        const r=await new Promise((res,rej)=>GM_xmlhttpRequest({
-            method:'GET',
-            url:`https://greasyfork.org/scripts/561041.json`,
-            headers:{'Accept':'application/json'},
-            onload:r=>res(r),onerror:()=>rej(),timeout:5000
-        }));
-        if(r.status!==200) return;
-        const data=JSON.parse(r.responseText);
-        const remoteVer=(data.version||'').trim();
-        const cmp = (v1, v2) => {
-            const a = v1.split('.').map(Number);
-            const b = v2.split('.').map(Number);
-            for (let i = 0; i < Math.max(a.length, b.length); i++) {
-                if ((a[i] || 0) > (b[i] || 0)) return 1;
-                if ((a[i] || 0) < (b[i] || 0)) return -1;
-            }
-            return 0;
-        };
-        if(cmp(remoteVer, _CURRENT_VER) !== 0){
-            _isOutdated = true;
-            _remoteVersion = remoteVer;
-            const txt = document.getElementById('DH_Conn_Txt');
-            if(txt && txt.textContent === 'Connected') {
-                _setConn('outdated', `v${remoteVer} available`);
-            }
-        }
-    }catch(e){}
-}
-setTimeout(_checkVersionOnLoad, 2000);
-
-let _animBusy=false;
-function _doHide(val){
-    if(_animBusy) return; _animBusy=true; _hidden=val;
-    const main=document.getElementById('DH_Main');
-    const box=document.getElementById('DH_Main_Box');
-    const h=box.offsetHeight;
-    const icoVisible=document.getElementById('DH_Ico_Visible');
-    const icoHidden=document.getElementById('DH_Ico_Hidden');
-    const hideTxt=document.getElementById('DH_Hide_Txt');
-    const hideBtn=document.getElementById('DH_Hide_Btn');
-    main.style.transition='0.8s cubic-bezier(0.16,1,0.32,1)';
-    box.style.transition='0.8s cubic-bezier(0.16,1,0.32,1)';
-    const switchV1Btn=document.getElementById('DH_SwitchV1_Btn');
-    const switchV2Btn=document.getElementById('DH_SwitchV2_Btn');
-    if(val){
-        if(switchV1Btn) switchV1Btn.style.display='none';
-        if(switchV2Btn) switchV2Btn.style.display='none';
-        hideBtn.style.background=`linear-gradient(0deg,rgba(var(--DH-blue),0.10),rgba(var(--DH-blue),0.10)),rgb(var(--color-snow),0.80)`;
-        hideBtn.style.outline=`2px solid rgba(var(--DH-blue),0.20)`;
-        if(icoVisible) icoVisible.style.display='none';
-        if(icoHidden){ icoHidden.style.display=''; icoHidden.querySelector('path').setAttribute('fill','rgb(var(--DH-blue))'); }
-        hideTxt.textContent='Show'; hideTxt.style.color='rgb(var(--DH-blue))';
-        main.style.bottom=`-${h-8}px`; box.style.filter='blur(8px)'; box.style.opacity='0';
-    } else {
-        if(switchV1Btn) switchV1Btn.style.display=(!_v1Mode)?'':'none';
-        if(switchV2Btn) switchV2Btn.style.display=(_v1Mode)?'':'none';
-        hideBtn.style.background=`rgb(var(--DH-blue))`;
-        hideBtn.style.outline=`2px solid rgba(0,0,0,0.20)`;
-        if(icoHidden) icoHidden.style.display='none';
-        if(icoVisible){ icoVisible.style.display=''; }
-        hideTxt.textContent='Hide'; hideTxt.style.color='#fff';
-        main.style.bottom='16px'; box.style.filter=''; box.style.opacity='';
-    }
-    setTimeout(()=>{ main.style.transition=''; box.style.transition=''; _animBusy=false; },800);
-}
-
-let _curPage=1, _pageBusy=false;
-function _goPage(to){
-    if(_pageBusy||_curPage===to) return; _pageBusy=true;
-    const box=document.getElementById('DH_Main_Box');
-    const fromEl=document.getElementById(`DH_Page_${_curPage}`);
-    const toEl=document.getElementById(`DH_Page_${to}`);
-    if(!fromEl||!toEl){_pageBusy=false;return;}
-    const oldH=box.offsetHeight;
-    fromEl.style.display='none'; toEl.classList.add('active'); toEl.style.opacity='0';
-    const newH=box.offsetHeight;
-    toEl.classList.remove('active'); toEl.style.opacity=''; fromEl.style.display='';
-    box.style.height=oldH+'px'; box.style.transition='height 0.8s cubic-bezier(0.16,1,0.32,1)';
-    fromEl.style.transition='opacity 0.3s,filter 0.3s';
-    fromEl.style.opacity='0'; fromEl.style.filter='blur(4px)';
-    requestAnimationFrame(()=>{ box.style.height=newH+'px'; });
-    setTimeout(()=>{
-        fromEl.classList.remove('active'); fromEl.style.cssText='';
-        toEl.classList.add('active');
-        toEl.style.opacity='0'; toEl.style.filter='blur(4px)';
-        void toEl.offsetWidth;
-        toEl.style.transition='opacity 0.3s,filter 0.3s';
-        toEl.style.opacity='1'; toEl.style.filter='blur(0)';
-        _pageHistory.push(to);
-        _curPage=to;
-        if(to===2){
-
-            const lgB=document.getElementById('DH_League_Btn');
-            const qB=document.getElementById('DH_Quest_Btn');
-            if(_user&&lgB) lgB.disabled=false;
-            if(_user&&qB) qB.disabled=false;
-        }
-        if(to===4){
-            const delI=document.getElementById('DH_Delay_Input');
-            if(delI) delI.value=_delay;
-        }
-        if(to===5){ _renderAccounts(); }
-        if(to===6){ _loadMonthlyQuests(); }
-        if(to===9){ _loadLicense(); }
-        setTimeout(()=>{ box.style.height=''; box.style.transition=''; toEl.style.cssText=''; _pageBusy=false; },300);
-    },350);
-}
-function _goBack(){
-    if(_pageHistory.length>1) _pageHistory.pop();
-    const prev=_pageHistory[_pageHistory.length-1]||1;
-
-    _pageHistory.pop();
-    _goPage(prev);
-}
-
-let _nTimer;
-function _notif(icon,title,body,dur=5){
-    const box=document.getElementById('DH_Notif_Box');
-    document.getElementById('DH_Notif_Icon').textContent=icon;
-    document.getElementById('DH_Notif_Title').textContent=title;
-    document.getElementById('DH_Notif_Body').textContent=body;
-    box.classList.add('show'); clearTimeout(_nTimer);
-    _nTimer=setTimeout(()=>box.classList.remove('show'),dur*1000);
-}
-
-async function _connect(){
-    _setConn('connecting');
-    _jwt=_getJwt();
-    if(!_jwt){_setConn('error','Not logged in');return;}
-    const dec=_decodeJwt(_jwt);
-    if(!dec){_setConn('error','Invalid token');return;}
-    _sub=dec.sub; _hdrs=_buildHdrs(_jwt);
-    try{
-        const r=await _gm('GET',`https://www.duolingo.com/2017-06-30/users/${_sub}?fields=id,username,fromLanguage,learningLanguage,streak,totalXp,gems,picture,streakData`);
-        if(r.status!==200) throw new Error(r.status);
-        _user=JSON.parse(r.responseText);
-        _setConn('connected'); _renderUser(_user);
-        _getPrivacy().then(v=>{ _privacy=v; _applyHideProfileToggle(); });
-        _v1FetchSkillId();
-        ['DH_XP_Btn','DH_Gem_Btn','DH_Streak_Btn','DH_League_Btn','DH_Quest_Btn','DH_Practice_Btn','DH_V1_XP_Btn','DH_V1_Gem_Btn','DH_V1_Streak_Btn','DH_Super_Activate_Btn','DH_V1_Super_Activate_Btn'].forEach(id=>{
-            const b=document.getElementById(id); if(b) b.disabled=false;
-        });
-
-        const saveBtn=document.getElementById('DH_AccSave_Btn');
-        if(saveBtn) saveBtn.disabled=false;
-        const mqClaimNav=document.getElementById('DH_MonthlyQuest_Claim_Btn');
-        if(mqClaimNav) mqClaimNav.disabled=false;
-    }catch(e){
-        _setConn('error','Failed — retrying');
-        setTimeout(_connect,8000);
-    }
-}
-
-function _renderUser(u){
-    if(!u) return;
-    document.getElementById('DH_UName').textContent=u.username||'';
-    _v1SyncUser();
-    document.getElementById('DH_UXP').textContent=(u.totalXp||0).toLocaleString();
-    document.getElementById('DH_UGems').textContent=(u.gems||0).toLocaleString();
-    document.getElementById('DH_UStreak').textContent=(u.streak||0).toLocaleString();
-    if(u.picture){
-        let hq=u.picture.replace(/\/(medium|large|small)$/,'/xlarge');
-        if(!hq.endsWith('/xlarge')&&hq.includes('duolingo.com/ssr-avatars')) hq+='/xlarge';
-        const av=document.getElementById('DH_Avatar');
-        const avImg=document.createElement('img');
-        avImg.src=hq;
-        avImg.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;';
-        avImg.draggable=false;
-        avImg.onerror=function(){av.innerHTML='👤';};
-        av.innerHTML=''; av.appendChild(avImg);
-    }
-}
-
-async function _farmXP(txp){
-    const MIN=30,MAX=499;
-    let loops=Math.floor(txp/MAX),rem=txp%MAX;
-    if(rem>0&&rem<MIN&&loops>0){loops--;rem+=MAX;}
-    const total=loops+(rem>=MIN?1:0);
-    let cur=0,earned=0;
-    _setBtnRunning('DH_XP_Btn');
-    for(let i=0;i<loops;i++){
-        if(!_running) break;
-        const ok=await _storyXP(469);
-        if(ok){earned+=MAX;cur++;}
-        _setBtnProgress('DH_XP_Btn',Math.floor((cur/total)*100));
-        await _sleep(_delay);
-    }
-    if(rem>=MIN&&_running){
-        const ok=await _storyXP(Math.min(rem-MIN,469));
-        if(ok){earned+=rem;cur++;}
-        _setBtnProgress('DH_XP_Btn',100);
-    }
-    if(_running){
-        _setBtnDone('DH_XP_Btn','DONE ✓');
-        _notif('✅','XP Farm Done!',`Farmed ${earned} XP in ${cur} loops.`);
-        setTimeout(_connect,1500);
-        setTimeout(()=>_resetBtn('DH_XP_Btn','GET'), 3000);
-    }
-}
-
-async function _storyXP(hh){
-    try{
-        const now=Math.floor(Date.now()/1000),dur=Math.floor(Math.random()*121+300);
-        const r=await _gm('POST','https://stories.duolingo.com/api2/stories/fr-en-le-passeport/complete',{
-            awardXp:true,completedBonusChallenge:true,
-            fromLanguage:'fr',learningLanguage:'en',
-            hasXpBoost:false,illustrationFormat:'svg',
-            isFeaturedStoryInPracticeHub:true,isLegendaryMode:true,
-            isV2Redo:false,isV2Story:false,masterVersion:true,
-            maxScore:0,score:0,happyHourBonusXp:hh,
-            startTime:now,endTime:now+dur
-        });
-        return r.status===200;
-    }catch{return false;}
-}
-
-// ── Slug probe — used only by V1 Mode infinite farm (fallback detection) ──
-let _workingSlug=null,_workingSlugFrom=null,_workingSlugLearn=null;
-let _probingSlugPromise=null;
-const _SLUG_CANDIDATES=()=>[
-    ['vi-en-le-passeport','vi','en'],
-    ['fr-en-le-passeport','fr','en'],
-    ['en-fr-le-passeport','en','fr'],
-    ['es-en-le-passeport','es','en'],
-    ['de-en-le-passeport','de','en'],
-    ['pt-en-le-passeport','pt','en'],
-    ['it-en-le-passeport','it','en'],
-];
-async function _probeSlug(){
-    if(_workingSlug) return _workingSlug;
-    if(_probingSlugPromise) return _probingSlugPromise;
-    _probingSlugPromise=(async()=>{
-        const now=Math.floor(Date.now()/1000);
-        const tryCandidate=([slug,from,learn])=>_gm('POST',`https://stories.duolingo.com/api2/stories/${slug}/complete`,{
-            awardXp:false,completedBonusChallenge:false,
-            fromLanguage:from,learningLanguage:learn,
-            hasXpBoost:false,illustrationFormat:'svg',
-            isFeaturedStoryInPracticeHub:true,isLegendaryMode:true,
-            isV2Redo:false,isV2Story:false,masterVersion:true,
-            maxScore:0,score:0,happyHourBonusXp:0,
-            startTime:now,endTime:now+300
-        }).then(r=>{
-            if(r.status===200||r.status===429) return [slug,from,learn];
-            return null;
-        }).catch(()=>null);
-
-        const winner=await new Promise(resolve=>{
-            let settled=false;
-            let pending=_SLUG_CANDIDATES().length;
-            _SLUG_CANDIDATES().forEach(c=>{
-                tryCandidate(c).then(result=>{
-                    pending--;
-                    if(result&&!settled){settled=true;resolve(result);}
-                    else if(pending===0&&!settled) resolve(null);
-                });
+            const style = document.createElement('style');
+            style.textContent = `@keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } } .nw-solver-btn:hover { filter: brightness(1.1); transform: translateY(-2px); } .nw-solver-btn:active { border-bottom: 0px; transform: translateY(2px); }`;
+            document.head.appendChild(style);
+            document.body.appendChild(_solverUI);
+            document.getElementById('nw-solve-single').addEventListener('click', () => _autoSolver.solve());
+            document.getElementById('nw-solve-all').addEventListener('click', () => _autoSolver.toggleAutoMode());
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    if (e.shiftKey) _autoSolver.toggleAutoMode();
+                    else _autoSolver.solve();
+                }
             });
-        });
-
-        if(winner){
-            _workingSlug=winner[0];
-            _workingSlugFrom=winner[1];
-            _workingSlugLearn=winner[2];
-        }
-        _probingSlugPromise=null;
-        return winner?winner[0]:null;
-    })();
-    return _probingSlugPromise;
-}
-
-// ── Gem Farm Helpers (ported from GemHelper) ──────────────────────────────
-async function _fetchGemRewards(){
-    try{
-        const response = await fetch(`https://www.duolingo.com/2023-05-23/users/${_sub}?fields=rewardBundles`, {
-            headers: {
-                'authorization': `Bearer ${_jwt}`,
-                'content-type': 'application/json'
+        },
+        removeUI: () => {
+            if (_solverUI) {
+                _solverUI.remove();
+                _solverUI = null;
             }
-        });
-
-        if(!response.ok) return [];
-
-        const data = await response.json();
-        const bundles=data.rewardBundles||[];
-
-        const gemRewards=[];
-        for(const bundle of bundles){
-            for(const reward of bundle.rewards||[]){
-                if(!reward.consumed&&(reward.id.includes('GEMS')||reward.currency==='GEMS')){
-                    gemRewards.push({id:reward.id,amount:reward.amount||0});
+            if (_solvingIntervalId) {
+                clearInterval(_solvingIntervalId);
+                _solvingIntervalId = null;
+            }
+            _isAutoMode = false;
+        },
+        updateUI: () => {
+            const btn = document.getElementById('nw-solve-all');
+            if (btn) {
+                btn.textContent = _isAutoMode ? 'PAUSE' : 'SOLVE ALL';
+                btn.style.background = _isAutoMode ? '#ff4b4b' : '#1cb0f6';
+                btn.style.borderBottomColor = _isAutoMode ? '#cc0000' : '#2b70c9';
+            }
+        },
+        checkAndToggle: () => {
+            const currentIsInLesson = window.location.pathname.includes('/lesson') || window.location.pathname.includes('/practice');
+            if (currentIsInLesson !== _isInLesson) {
+                _isInLesson = currentIsInLesson;
+                if (_isInLesson && _INJECT_SOLVER_ENABLED) {
+                    setTimeout(() => _autoSolver.createUI(), 500);
+                } else {
+                    _autoSolver.removeUI();
                 }
             }
         }
-
-        return gemRewards;
-    }catch(e){
-        return [];
     }
-}
+    setInterval(() => _autoSolver.checkAndToggle(), 1000);
 
-async function _exploitGemReward(rewardId){
-    const body={
-        consumed:true,
-        fromLanguage:_user.fromLanguage,
-        learningLanguage:_user.learningLanguage,
-        pathLevelSpecifics:{
-            anchorSkillId:'f22fd38157eea63965dc39eeac3c40c1',
-            indexSinceAnchorSkill:0,
-            treeId:'14b1a2672c1bb3b250ebaa31b86c343e',
-            nodeState:'active'
+    let _lessonSolving = false;
+    let _currentLessonCount = 0;
+    let _lessonsToSolve = 0;
+
+    function _getJwt() {
+        const m = document.cookie.match(/(^| )jwt_token=([^;]+)/);
+        return m ? m[2] : null;
+    }
+
+    function _decodeJwt(t) {
+        try {
+            const b = t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+            const pad = b.padEnd(b.length + (4 - b.length % 4) % 4, '=');
+            return JSON.parse(decodeURIComponent(atob(pad).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+        } catch {
+            return null;
         }
-    };
-    try{
-        // Use native fetch like Gem Helper instead of _gm wrapper
-        const response = await fetch(`https://www.duolingo.com/2023-05-23/users/${_sub}/rewards/${rewardId}`, {
-            method: 'PATCH',
-            headers: {
-                'authorization': `Bearer ${_jwt}`,
-                'content-type': 'application/json',
-                'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36',
-                'x-amzn-trace-id': `User=${_sub}`,
-                'x-requested-with': 'XMLHttpRequest',
-                'referer': 'https://www.duolingo.com/learn',
-                'origin': 'https://www.duolingo.com'
-            },
-            body: JSON.stringify(body)
-        });
-
-        return response.ok;
-    }catch(e){
-        return false;
-    }
-}
-
-async function _getGemCount(){
-    try{
-        const response = await fetch(`https://www.duolingo.com/2023-05-23/users/${_sub}?fields=gemsConfig`, {
-            headers: {
-                'authorization': `Bearer ${_jwt}`,
-                'content-type': 'application/json'
-            }
-        });
-
-        if(!response.ok) return null;
-
-        const data = await response.json();
-        return data.gemsConfig?.gems??null;
-    }catch(e){
-        return null;
-    }
-}
-
-const THREADS=4;
-
-async function _farmGems(){
-    _setBtnState('DH_Gem_Btn', _C_RED, 'STOP');
-    const btn = document.getElementById('DH_Gem_Btn');
-    if(btn) btn.disabled = false;
-
-    const gemInput = document.getElementById('DH_Gem_Input');
-    if(gemInput) gemInput.value = '';
-
-    let totalGained = 0;
-
-    outer:
-    while(_running && _task==='gem'){
-        const rewards = await _fetchGemRewards();
-
-        if(rewards.length === 0){
-            await _sleep(_delay * 2);
-            continue;
-        }
-
-        let gemsBefore = await _getGemCount() ?? (_user?.gems ?? 0);
-
-        for(let i = 0; i < rewards.length; i += THREADS){
-            if(!_running || _task !== 'gem') break outer;
-
-            const batch = rewards.slice(i, i + THREADS);
-            await Promise.all(batch.map(r => _exploitGemReward(r.id)));
-            await _sleep(150);
-
-            const now = await _getGemCount();
-            if(now !== null){
-                const gained = Math.max(0, now - gemsBefore);
-                totalGained += gained;
-                gemsBefore = now;
-                if(gemInput) gemInput.value = String(totalGained);
-                if(_user){ _user.gems = now; _renderUser(_user); }
-            }
-
-            await _sleep(Math.max(50, _delay - 50));
-        }
-
-        // Pass done — loop back to fetch fresh rewards (runs until user stops)
-        await _sleep(_delay);
     }
 
-    // Always reset button after farm ends (stopped or done)
-    _setBtnState('DH_Gem_Btn', _C_BLUE, 'RUN');
-    if(btn) btn.disabled = !_user;
-    if(totalGained > 0){
-        _notif('✅','Gem Farm Done!',`+${totalGained} gems gained.`);
-        setTimeout(_connect, 1500);
-    }
-}
-
-
-async function _farmStreak(days){
-    const CH=["assist","characterIntro","characterMatch","characterPuzzle","characterSelect","characterTrace","characterWrite","completeReverseTranslation","definition","dialogue","extendedMatch","extendedListenMatch","form","freeResponse","gapFill","judge","listen","listenComplete","listenMatch","match","name","listenComprehension","listenIsolation","listenSpeak","listenTap","orderTapComplete","partialListen","partialReverseTranslate","patternTapComplete","radioBinary","radioImageSelect","radioListenMatch","radioListenRecognize","radioSelect","readComprehension","reverseAssist","sameDifferent","select","selectPronunciation","selectTranscription","svgPuzzle","syllableTap","syllableListenTap","speak","tapCloze","tapClozeTable","tapComplete","tapCompleteTable","tapDescribe","translate","transliterate","transliterationAssist","typeCloze","typeClozeTable","typeComplete","typeCompleteTable","writeComprehension"];
-    let farmStart;
-    try{
-        const s=new Date(_user.streakData?.currentStreak?.startDate||Date.now());
-        s.setDate(s.getDate()-1);farmStart=s;
-    }catch{const n=new Date();n.setDate(n.getDate()-1);farmStart=n;}
-    _setBtnRunning('DH_Streak_Btn');
-    for(let i=0;i<days;i++){
-        if(!_running) break;
-        const simDay=new Date(farmStart);
-        simDay.setDate(simDay.getDate()-i);
-        const end=Math.floor(simDay.getTime()/1000);
-        try{
-            const sr=await _gm('POST','https://www.duolingo.com/2023-05-23/sessions',{
-                challengeTypes:CH,fromLanguage:_user.fromLanguage,isFinalLevel:false,isV2:true,
-                juicy:true,learningLanguage:_user.learningLanguage,smartTipsVersion:2,type:'GLOBAL_PRACTICE'
-            });
-            if(sr.status===200){
-                const sess=JSON.parse(sr.responseText);
-                await new Promise((res,rej)=>GM_xmlhttpRequest({
-                    method:'PUT',url:`https://www.duolingo.com/2023-05-23/sessions/${sess.id}`,
-                    headers:_hdrs,data:JSON.stringify({
-                        ...sess,heartsLeft:5,startTime:end-1,endTime:end,
-                        enableBonusPoints:false,failed:false,maxInLessonStreak:9,shouldLearnThings:true
-                    }),
-                    onload:r=>res(r),onerror:()=>rej(),timeout:15000,ontimeout:()=>rej()
-                }));
-            }
-        }catch{}
-        _setBtnProgress('DH_Streak_Btn',Math.floor(((i+1)/days)*100));
-        await _sleep(_delay);
-    }
-    if(_running){
-        _setBtnDone('DH_Streak_Btn','DONE ✓');
-        _notif('🔥','Streak Farm Done!',`Restored ${days} streak days.`);
-        setTimeout(_connect,1500);
-        setTimeout(()=>_resetBtn('DH_Streak_Btn','RUN'), 3000);
-    }
-}
-
-async function _farmPractice(count){
-
-    _lessonsToSolve=count;
-    _currentLessonCount=0;
-    if(_lessonSolving){_notif('⚠️','Busy','Practice farm already running.');return;}
-    _lessonSolving=true;
-    const btn=document.getElementById('DH_Practice_Btn');
-    _setBtnState('DH_Practice_Btn',_C_RED,'STOP');
-    _notif('📚','Farm Practice','Navigating to practice...',3);
-
-    if(!window.location.pathname.startsWith('/practice')){
-        window.location.assign('/practice');
-        return;
-    }
-    await _solveCurrentLesson();
-}
-
-async function _solveCurrentLesson(){
-
-    let waited=0;
-    while(!document.querySelector('[data-test="challenge"]')&&!document.querySelector('._3yE3H')&&waited<10000&&_lessonSolving){
-        await _sleep(500); waited+=500;
-    }
-    if(!_lessonSolving) return;
-
-    await new Promise(resolve=>{
-        let lastId=null, solving=false, ticks=0;
-        const MAX=240;
-        const clickNext=()=>{
-            const nb=document.querySelector('[data-test="player-next"]')||document.querySelector('[data-test="stories-player-continue"]')||document.querySelector('[data-test="stories-player-done"]');
-            if(!nb||nb.getAttribute('aria-disabled')==='true'||nb.disabled) return;
-            nb.click(); setTimeout(()=>{if(!nb.disabled) nb.click();},5);
+    function _buildHdrs(jwt) {
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jwt,
+            'User-Agent': navigator.userAgent
         };
-        const iv=setInterval(async()=>{
-            try{
-                if(!_lessonSolving){clearInterval(iv);resolve();return;}
-                if(++ticks>MAX){clearInterval(iv);resolve();return;}
-                const done=document.querySelector('[data-test="session-over"]')||document.querySelector('[data-test="session-complete-slide"]')||document.querySelector('[data-test="session-complete"]');
-                if(done){clearInterval(iv);_currentLessonCount++;
-
-                    try{const s=JSON.parse(sessionStorage.getItem('dh2_practice')||'{}');s.done=_currentLessonCount;sessionStorage.setItem('dh2_practice',JSON.stringify(s));}catch{}
-                    await _sleep(500);resolve();return;}
-                if(solving) return;
-                let el=document.querySelector('._3yE3H')||document.querySelector('[data-test="challenge"]')||document.querySelector('[class*="challenge"]');
-                if(!el){clickNext();return;}
-                const ri=_autoSolver.findReact(el);
-                window.sol=ri?.props?.currentChallenge;
-                if(!window.sol){clickNext();return;}
-                const cid=`${window.sol.type}:${window.sol.id||JSON.stringify(window.sol.correctIndex??window.sol.correctTokens??window.sol.correctSolutions?.[0]??'')}`;
-                if(cid===lastId){clickNext();return;}
-                const type=_autoSolver.determineChallengeType();
-                if(!type){clickNext();return;}
-                solving=true; lastId=cid;
-                try{await _autoSolver.handleChallenge(type);}catch{}
-                await _sleep(350); clickNext(); await _sleep(600); solving=false;
-            }catch{solving=false;}
-        },500);
-        setTimeout(()=>{clearInterval(iv);resolve();},180000);
-    });
-
-    if(!_lessonSolving) return;
-
-    if(_lessonsToSolve>0&&_currentLessonCount>=_lessonsToSolve){
-        _notif('✅','Farm Practice Done!',`Completed ${_currentLessonCount} practice(s).`);
-        _stopPractice();
-        return;
     }
 
-    _notif('📚','Farm Practice',`Done ${_currentLessonCount}${_lessonsToSolve>0?' / '+_lessonsToSolve:''} — loading next...`,2);
-    await _sleep(800);
-    if(_lessonSolving) window.location.assign('/practice');
-}
+    function _goalHdrs(jwt) {
+        return {
+            'Content-Type': 'application/json',
+            'x-requested-with': 'XMLHttpRequest',
+            'accept': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ' + jwt
+        };
+    }
 
-function _stopPractice(){
-    _lessonSolving=false;
-    _setBtnState('DH_Practice_Btn',_C_BLUE,'RUN');
-    const btn=document.getElementById('DH_Practice_Btn');
-    if(btn) btn.disabled=!_user;
-}
+    function _gm(method, url, data, hdrs) {
+        return new Promise((res, rej) => GM_xmlhttpRequest({
+            method,
+            url,
+            headers: hdrs || _hdrs,
+            data: data ? JSON.stringify(data) : null,
+            onload: r => res(r),
+            onerror: () => rej(new Error('Network')),
+            timeout: 15000,
+            ontimeout: () => rej(new Error('Timeout'))
+        }));
+    }
 
-function _resumePracticeIfNeeded(){
-    const saved=sessionStorage.getItem('dh2_practice');
-    if(!saved) return;
-    try{
-        const {active,count,done}=JSON.parse(saved);
-        if(!active) return;
-        _lessonsToSolve=count; _currentLessonCount=done;
-        sessionStorage.setItem('dh2_practice',JSON.stringify({active:true,count,done}));
-        if(window.location.pathname.startsWith('/practice')){
-            _lessonSolving=true;
-            if(_user){
-                _setBtnState('DH_Practice_Btn',_C_RED,'STOP');
-                _solveCurrentLesson();
-            } else {
+    function _setBtnState(btnId, cfg, labelText) {
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+        const lbl = btn.querySelector('.DH_Btn_Label') || btn.querySelector('.DH_Sm_Btn_Label');
+        if (!lbl) return;
 
-                const orig=_setConn.bind(null);
-                const check=setInterval(()=>{if(_user){clearInterval(check);_setBtnState('DH_Practice_Btn',_C_RED,'STOP');_solveCurrentLesson();}},500);
+        const prevTxt = lbl.textContent;
+        lbl.textContent = labelText;
+        const newW = btn.offsetWidth;
+        lbl.textContent = prevTxt;
+
+        btn.style.width = btn.offsetWidth + 'px';
+        requestAnimationFrame(() => {
+            lbl.style.opacity = '0';
+            lbl.style.filter = 'blur(4px)';
+            btn.style.width = newW + 'px';
+            btn.style.background = cfg.bg;
+            btn.style.outline = `solid 2px ${cfg.outline}`;
+            btn.style.outlineOffset = '-2px';
+        });
+        setTimeout(() => {
+            lbl.style.transition = '0s';
+            lbl.style.color = cfg.tc;
+            void lbl.offsetWidth;
+            lbl.style.transition = '0.4s';
+            lbl.textContent = labelText;
+            requestAnimationFrame(() => {
+                lbl.style.opacity = '1';
+                lbl.style.filter = 'blur(0)';
+            });
+            setTimeout(() => {
+                btn.style.width = '';
+            }, 400);
+        }, 400);
+    }
+
+    const _C_BLUE = {
+        bg: 'rgb(var(--DH-blue))',
+        outline: 'rgba(0,0,0,0.18)',
+        tc: '#fff'
+    };
+    const _C_GREEN = {
+        bg: 'rgba(var(--DH-green),0.10)',
+        outline: 'rgba(var(--DH-green),0.22)',
+        tc: 'rgb(var(--DH-green))'
+    };
+    const _C_RED = {
+        bg: 'rgba(var(--DH-red),0.10)',
+        outline: 'rgba(var(--DH-red),0.22)',
+        tc: 'rgb(var(--DH-red))'
+    };
+    const _C_GRAY = {
+        bg: 'rgb(var(--color-eel,117,117,117),0.10)',
+        outline: 'rgb(var(--color-eel,117,117,117),0.20)',
+        tc: 'rgb(var(--color-eel,117,117,117),0.60)'
+    };
+
+    function _resetBtn(btnId, label) {
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+        btn.disabled = false;
+        _setBtnState(btnId, _C_BLUE, label);
+        const prog = document.getElementById(btnId.replace('_Btn', '_Prog'));
+        if (prog) setTimeout(() => prog.classList.remove('on'), 2000);
+    }
+
+    function _setBtnProgress(btnId, pct) {
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+        const lbl = btn.querySelector('.DH_Btn_Label') || btn.querySelector('.DH_Sm_Btn_Label');
+        if (lbl) lbl.textContent = pct + '%';
+        const fill = document.getElementById(btnId.replace('_Btn', '_Fill'));
+        if (fill) fill.style.width = pct + '%';
+    }
+
+    function _setBtnRunning(btnId) {
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+        btn.disabled = false;
+        _setBtnState(btnId, _C_RED, '0%');
+        const prog = document.getElementById(btnId.replace('_Btn', '_Prog'));
+        if (prog) prog.classList.add('on');
+    }
+
+    function _setBtnDone(btnId, label) {
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+        _setBtnState(btnId, _C_GREEN, label || 'DONE ✓');
+        const fill = document.getElementById(btnId.replace('_Btn', '_Fill'));
+        if (fill) fill.style.width = '100%';
+    }
+
+    const _GF_SCRIPT_URL = 'https://greasyfork.org/en/scripts/561041-duolingo-duohacker';
+    const _CURRENT_VER = '2026.06.05';
+
+    /* ── Changelog Popup ── */
+    const _CHANGELOG = [{
+        version: '2026.06.05',
+        changes: [
+            '✨ Donate button — support DuoHacker on Patreon',
+            '⚠️ Auto League warning — alerts before running to protect your account',
+        ]
+    }, ];
+
+    function _setConn(state, label) {
+        if (state === 'connected' && _isOutdated) {
+            state = 'outdated';
+            label = `v${_remoteVersion} available — click to update`;
+        }
+
+        const btn = document.getElementById('DH_Conn_Btn');
+        const ico = document.getElementById('DH_Conn_Ico');
+        const txt = document.getElementById('DH_Conn_Txt');
+        ico.classList.remove('DH_Spin_Ico');
+
+        if (state === 'outdated') {
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            const nb = document.getElementById('DH_Conn_Btn');
+            const ni = document.getElementById('DH_Conn_Ico');
+            const nt = document.getElementById('DH_Conn_Txt');
+
+
+            nb.style.background = `linear-gradient(0deg,rgba(var(--DH-orange),0.10),rgba(var(--DH-orange),0.10)),rgb(var(--color-snow),0.90)`;
+            nb.style.outline = `2px solid rgba(var(--DH-orange),0.30)`;
+            nb.style.outlineOffset = '-2px';
+            nb.style.cursor = 'pointer';
+            nb.style.display = 'flex';
+            nb.style.alignItems = 'center';
+
+
+            nt.textContent = 'Outdated';
+            nt.style.color = `rgb(var(--DH-orange))`;
+
+
+            ni.textContent = '';
+            ni.style.display = 'flex';
+            ni.style.alignItems = 'center';
+            ni.style.justifyContent = 'center';
+
+            ni.style.color = `rgb(var(--DH-orange))`;
+            ni.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;display:block;"><path fill="currentColor" d="M21.171 15.398l-5.912-9.854c-.776-1.293-1.963-2.033-3.259-2.033s-2.483.74-3.259 2.031l-5.912 9.856c-.786 1.309-.872 2.705-.235 3.83.636 1.126 1.878 1.772 3.406 1.772h12c1.528 0 2.77-.646 3.406-1.771.637-1.125.551-2.521-.235-3.831zm-9.171 2.151c-.854 0-1.55-.695-1.55-1.549 0-.855.695-1.551 1.55-1.551s1.55.696 1.55 1.551c0 .854-.696 1.549-1.55 1.549zm1.633-7.424c-.011.031-1.401 3.468-1.401 3.468-.038.094-.13.156-.231.156s-.193-.062-.231-.156l-1.391-3.438c-.09-.233-.129-.443-.129-.655 0-.965.785-1.75 1.75-1.75s1.75.785 1.75 1.75c0 .212-.039.422-.117.625z"/></svg>`;
+
+            nb.title = label;
+            nb.onclick = () => window.open(_GF_SCRIPT_URL, '_blank');
+            document.getElementById('DH_User_Row').style.display = 'flex';
+            return;
+        }
+
+        const _SVG_CONNECTING = `<svg class="DH_Spin_Ico" width="16" height="16" viewBox="0 0 297 297" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M294.853 178.121c-1.814-1.671-4.404-2.203-6.729-1.382l-25.97 9.168c17.558-70.878-24.569-143.07-94.69-161.569-34.475-9.094-70.423-4.215-101.225 13.737C35.438 56.028 13.475 84.901 4.397 119.377c-8.083 30.698-4.951 63.329 8.819 91.883 13.616 28.234 36.767 50.846 65.186 63.669 3.256 1.47 6.737 2.203 10.214 2.203 3.647 0 7.293-.807 10.672-2.418 6.59-3.141 11.435-8.99 13.293-16.047 3.086-11.721-2.756-23.89-13.893-28.937-37.335-16.923-56.844-58.027-46.387-97.737 5.7-21.65 19.508-39.794 38.878-51.089 19.372-11.295 41.963-14.378 63.611-8.675 44.273 11.659 70.99 56.813 60.113 101.108l-17.584-20.48c-1.612-1.878-4.135-2.705-6.544-2.152-2.412.555-4.318 2.401-4.948 4.794l-11.478 43.588c-.566 2.153-.02 4.447 1.457 6.112l40.428 45.603c1.785 2.012 4.604 2.752 7.144 1.882l57.644-19.78c2.106-.723 3.711-2.45 4.279-4.603l11.479-43.587c.635-2.412-.106-4.949-1.92-6.62z" fill="currentColor"/></svg>`;
+        const _SVG_CONNECTED = `<svg width="16" height="16" viewBox="0 0 921 921" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M648.5 794.6c-23.5 44.5-51.2 79.5-82.1 104.2-6.8 5.5-13.7 10.3-20.8 14.7 98.5-18.4 186-68.1 251.7-138.4-6.1-3.7-12.5-7.3-19.1-10.8-29.8-15.8-63.1-29.1-99.1-39.6-8.9 24.8-19.1 48.2-30.6 69.9zm-170.5-134.6c62.4 1.2 122.7 8.8 178.3 22.3C674.9 620.5 685.4 550.8 686.8 478H478V660zm0 242.5c22.8-3.5 45.1-13.9 66.6-31 27.2-21.7 51.7-53.1 73-93.3 10.3-19.4 19.5-40.4 27.6-62.6C593.1 703.2 536.6 696.2 478 695v207.5zM231 229.6c-37.8-11.2-73-25.2-104.5-41.9-9-4.8-17.7-9.7-26-14.9C40.8 247.4 3.8 340.9 0 443h199.2C200.7 367.2 211.6 294.5 231 229.6zm589.5-56.8c-8.3 5.1-16.9 10.1-26 14.9-31.5 16.7-66.7 30.7-104.5 41.9 19.4 64.9 30.3 137.6 31.8 213.4H921C917.2 340.9 880.2 247.4 820.5 172.8zM376.4 871.5c21.4 17.1 43.8 27.5 66.6 31V695c-58.6 1.2-115.1 8.2-167.2 20.6 8.1 22.2 17.3 43.1 27.6 62.6 21.3 40.2 45.9 71.6 73 93.3zM443 660V478H234.2c1.5 72.8 12 142.5 30.5 204.3C320.3 668.9 380.6 661.2 443 660zm-208.8-217H443V261c-62.4-1.2-122.7-8.8-178.3-22.3C246.2 300.5 235.6 370.2 234.2 443zm487.6 35c-1.5 75.8-12.4 148.5-31.8 213.4 37.8 11.2 73 25.2 104.5 41.9 9 4.8 17.7 9.7 26 14.9C880.2 673.6 917.2 580 921 478H721.8zM478 443h208.8c-1.5-72.8-12-142.5-30.5-204.3C600.7 252.2 540.4 259.8 478 261v182zm0-424.5V226c58.6-1.2 115.1-8.2 167.2-20.6-8.1-22.2-17.3-43.1-27.6-62.6-21.3-40.2-45.8-71.6-73-93.3C523.1 32.4 500.8 22 478 18.5zM123.7 145.9c6.1 3.7 12.5 7.3 19.1 10.8 29.8 15.8 63.1 29.1 99.1 39.6 8.9-24.8 19.1-48.2 30.6-69.9 23.5-44.5 51.2-79.5 82.1-104.2 6.8-5.5 13.7-10.3 20.8-14.7C276.9 25.9 189.4 75.6 123.7 145.9zM443 18.5c-22.8 3.5-45.1 13.9-66.6 31-27.2 21.7-51.7 53.1-73 93.3-10.3 19.4-19.5 40.4-27.6 62.6C327.9 217.8 384.4 224.8 443 226V18.5zm-316.6 714.8c31.5-16.7 66.7-30.7 104.5-41.9C211.5 626.5 200.6 553.8 199.1 478H0c3.8 102.1 40.8 195.6 100.5 270.2 8.2-5.1 16.8-10.1 25.9-14.9zm-2.7 41.8C189.4 845.1 276.9 894.8 375.4 913.2c-7-4.3-13.9-9.2-20.8-14.7C323.7 874.1 296 839 272.5 794.6c-11.5-21.7-21.7-45.1-30.6-69.9-35.9 10.6-69.2 23.9-99.1 39.6-6.6 3.5-13 7.1-19.1 10.8zm525.1-651.7c11.5 21.7 21.7 45.1 30.6 69.9 35.9-10.6 69.2-23.9 99.1-39.6 6.6-3.5 13-7.1 19.1-10.8C731.6 75.6 644.1 25.9 545.6 7.5c7 4.3 13.9 9.2 20.8 14.7 30.9 24.7 58.6 59.7 82.1 104.2z"/></svg>`;
+        const _SVG_ERROR = `<svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M21.171 15.398l-5.912-9.854c-.776-1.293-1.963-2.033-3.259-2.033s-2.483.74-3.259 2.031l-5.912 9.856c-.786 1.309-.872 2.705-.235 3.83.636 1.126 1.878 1.772 3.406 1.772h12c1.528 0 2.77-.646 3.406-1.771.637-1.125.551-2.521-.235-3.831zm-9.171 2.151c-.854 0-1.55-.695-1.55-1.549 0-.855.695-1.551 1.55-1.551s1.55.696 1.55 1.551c0 .854-.696 1.549-1.55 1.549zm1.633-7.424c-.011.031-1.401 3.468-1.401 3.468-.038.094-.13.156-.231.156s-.193-.062-.231-.156l-1.391-3.438c-.09-.233-.129-.443-.129-.655 0-.965.785-1.75 1.75-1.75s1.75.785 1.75 1.75c0 .212-.039.422-.117.625z"/></svg>`;
+        const S = {
+            connecting: {
+                bg: `rgb(var(--color-eel,117,117,117),0.10)`,
+                outline: `rgb(var(--color-eel,117,117,117),0.20)`,
+                tc: `rgb(var(--color-eel,117,117,117),0.70)`,
+                t: 'Connecting',
+                svg: _SVG_CONNECTING
+            },
+            connected: {
+                bg: `linear-gradient(0deg,rgba(var(--DH-green),0.10),rgba(var(--DH-green),0.10)),rgb(var(--color-snow),0.90)`,
+                outline: `rgba(var(--DH-green),0.22)`,
+                tc: `rgb(var(--DH-green))`,
+                t: 'Connected',
+                svg: _SVG_CONNECTED
+            },
+            error: {
+                bg: `rgba(var(--DH-red),0.08)`,
+                outline: `rgba(var(--DH-red),0.20)`,
+                tc: `rgb(var(--DH-red))`,
+                t: label || 'Error',
+                svg: _SVG_ERROR
+            },
+        } [state];
+        btn.style.background = S.bg;
+        btn.style.outline = `2px solid ${S.outline}`;
+        btn.style.outlineOffset = '-2px';
+        txt.textContent = S.t;
+        txt.style.color = S.tc;
+        ico.innerHTML = S.svg;
+        ico.style.color = S.tc;
+        ico.style.display = 'flex';
+        ico.style.alignItems = 'center';
+        ico.style.justifyContent = 'center';
+        if (state === 'connected') document.getElementById('DH_User_Row').style.display = 'flex';
+    }
+
+    async function _checkVersionOnLoad() {
+        try {
+            const r = await new Promise((res, rej) => GM_xmlhttpRequest({
+                method: 'GET',
+                url: `https://greasyfork.org/scripts/561041.json`,
+                headers: {
+                    'Accept': 'application/json'
+                },
+                onload: r => res(r),
+                onerror: () => rej(),
+                timeout: 5000
+            }));
+            if (r.status !== 200) return;
+            const data = JSON.parse(r.responseText);
+            const remoteVer = (data.version || '').trim();
+            const cmp = (v1, v2) => {
+                const a = v1.split('.').map(Number);
+                const b = v2.split('.').map(Number);
+                for (let i = 0; i < Math.max(a.length, b.length); i++) {
+                    if ((a[i] || 0) > (b[i] || 0)) return 1;
+                    if ((a[i] || 0) < (b[i] || 0)) return -1;
+                }
+                return 0;
+            };
+            if (cmp(remoteVer, _CURRENT_VER) !== 0) {
+                _isOutdated = true;
+                _remoteVersion = remoteVer;
+                const txt = document.getElementById('DH_Conn_Txt');
+                if (txt && txt.textContent === 'Connected') {
+                    _setConn('outdated', `v${remoteVer} available`);
+                }
+            }
+        } catch (e) {}
+    }
+    setTimeout(_checkVersionOnLoad, 2000);
+
+    let _animBusy = false;
+
+    function _doHide(val) {
+        if (_animBusy) return;
+        _animBusy = true;
+        _hidden = val;
+        const main = document.getElementById('DH_Main');
+        const box = document.getElementById('DH_Main_Box');
+        const h = box.offsetHeight;
+        const icoVisible = document.getElementById('DH_Ico_Visible');
+        const icoHidden = document.getElementById('DH_Ico_Hidden');
+        const hideTxt = document.getElementById('DH_Hide_Txt');
+        const hideBtn = document.getElementById('DH_Hide_Btn');
+        main.style.transition = '0.8s cubic-bezier(0.16,1,0.32,1)';
+        box.style.transition = '0.8s cubic-bezier(0.16,1,0.32,1)';
+        const switchV1Btn = document.getElementById('DH_SwitchV1_Btn');
+        const switchV2Btn = document.getElementById('DH_SwitchV2_Btn');
+        if (val) {
+            if (switchV1Btn) switchV1Btn.style.display = 'none';
+            if (switchV2Btn) switchV2Btn.style.display = 'none';
+            hideBtn.style.background = `linear-gradient(0deg,rgba(var(--DH-blue),0.10),rgba(var(--DH-blue),0.10)),rgb(var(--color-snow),0.80)`;
+            hideBtn.style.outline = `2px solid rgba(var(--DH-blue),0.20)`;
+            if (icoVisible) icoVisible.style.display = 'none';
+            if (icoHidden) {
+                icoHidden.style.display = '';
+                icoHidden.querySelector('path').setAttribute('fill', 'rgb(var(--DH-blue))');
+            }
+            hideTxt.textContent = 'Show';
+            hideTxt.style.color = 'rgb(var(--DH-blue))';
+            main.style.bottom = `-${h-8}px`;
+            box.style.filter = 'blur(8px)';
+            box.style.opacity = '0';
+        } else {
+            if (switchV1Btn) switchV1Btn.style.display = (!_v1Mode) ? '' : 'none';
+            if (switchV2Btn) switchV2Btn.style.display = (_v1Mode) ? '' : 'none';
+            hideBtn.style.background = `rgb(var(--DH-blue))`;
+            hideBtn.style.outline = `2px solid rgba(0,0,0,0.20)`;
+            if (icoHidden) icoHidden.style.display = 'none';
+            if (icoVisible) {
+                icoVisible.style.display = '';
+            }
+            hideTxt.textContent = 'Hide';
+            hideTxt.style.color = '#fff';
+            main.style.bottom = '16px';
+            box.style.filter = '';
+            box.style.opacity = '';
+        }
+        setTimeout(() => {
+            main.style.transition = '';
+            box.style.transition = '';
+            _animBusy = false;
+        }, 800);
+    }
+
+    let _curPage = 1,
+        _pageBusy = false;
+
+    function _goPage(to) {
+        if (_pageBusy || _curPage === to) return;
+        _pageBusy = true;
+        const box = document.getElementById('DH_Main_Box');
+        const fromEl = document.getElementById(`DH_Page_${_curPage}`);
+        const toEl = document.getElementById(`DH_Page_${to}`);
+        if (!fromEl || !toEl) {
+            _pageBusy = false;
+            return;
+        }
+        const oldH = box.offsetHeight;
+        fromEl.style.display = 'none';
+        toEl.classList.add('active');
+        toEl.style.opacity = '0';
+        const newH = box.offsetHeight;
+        toEl.classList.remove('active');
+        toEl.style.opacity = '';
+        fromEl.style.display = '';
+        box.style.height = oldH + 'px';
+        box.style.transition = 'height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        fromEl.style.transition = 'opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), filter 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+        fromEl.style.opacity = '0';
+        fromEl.style.filter = 'blur(6px)';
+        fromEl.style.transform = 'scale(0.96)';
+        requestAnimationFrame(() => {
+            box.style.height = newH + 'px';
+        });
+        setTimeout(() => {
+            fromEl.classList.remove('active');
+            fromEl.style.cssText = '';
+            toEl.classList.add('active');
+            toEl.style.opacity = '0';
+            toEl.style.filter = 'blur(6px)';
+            toEl.style.transform = 'scale(1.04)';
+            void toEl.offsetWidth;
+            toEl.style.transition = 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), filter 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            toEl.style.opacity = '1';
+            toEl.style.filter = 'blur(0)';
+            toEl.style.transform = 'scale(1)';
+            _pageHistory.push(to);
+            _curPage = to;
+            if (to === 2) {
+
+                const lgB = document.getElementById('DH_League_Btn');
+                const qB = document.getElementById('DH_Quest_Btn');
+                if (_user && lgB) lgB.disabled = false;
+                if (_user && qB) qB.disabled = false;
+            }
+            if (to === 4) {
+                const delI = document.getElementById('DH_Delay_Input');
+                if (delI) delI.value = _delay;
+            }
+            // Đã preload rồi nên không cần load lại khi chuyển page
+            setTimeout(() => {
+                box.style.height = '';
+                box.style.transition = '';
+                toEl.style.cssText = '';
+                _pageBusy = false;
+            }, 400);
+        }, 380);
+    }
+
+    function _goBack() {
+        if (_pageHistory.length > 1) _pageHistory.pop();
+        const prev = _pageHistory[_pageHistory.length - 1] || 1;
+
+        _pageHistory.pop();
+        _goPage(prev);
+    }
+
+    let _nTimer;
+
+    function _notif(icon, title, body, dur = 5) {
+        const box = document.getElementById('DH_Notif_Box');
+        document.getElementById('DH_Notif_Icon').textContent = icon;
+        document.getElementById('DH_Notif_Title').textContent = title;
+        document.getElementById('DH_Notif_Body').textContent = body;
+        box.classList.add('show');
+        clearTimeout(_nTimer);
+        _nTimer = setTimeout(() => box.classList.remove('show'), dur * 1000);
+    }
+
+    async function _connect() {
+        _setConn('connecting');
+        _jwt = _getJwt();
+        if (!_jwt) {
+            _setConn('error', 'Not logged in');
+            return;
+        }
+        const dec = _decodeJwt(_jwt);
+        if (!dec) {
+            _setConn('error', 'Invalid token');
+            return;
+        }
+        _sub = dec.sub;
+        _hdrs = _buildHdrs(_jwt);
+        try {
+            const r = await _gm('GET', `https://www.duolingo.com/2017-06-30/users/${_sub}?fields=id,username,fromLanguage,learningLanguage,streak,totalXp,gems,picture,streakData`);
+            if (r.status !== 200) throw new Error(r.status);
+            _user = JSON.parse(r.responseText);
+            _setConn('connected');
+            _renderUser(_user);
+            _getPrivacy().then(v => {
+                _privacy = v;
+                _applyHideProfileToggle();
+            });
+            _v1FetchSkillId();
+            ['DH_XP_Btn', 'DH_Gem_Btn', 'DH_Streak_Btn', 'DH_League_Btn', 'DH_Quest_Btn', 'DH_Practice_Btn', 'DH_V1_XP_Btn', 'DH_V1_Gem_Btn', 'DH_V1_Streak_Btn', 'DH_Super_Activate_Btn', 'DH_V1_Super_Activate_Btn'].forEach(id => {
+                const b = document.getElementById(id);
+                if (b) b.disabled = false;
+            });
+
+            const saveBtn = document.getElementById('DH_AccSave_Btn');
+            if (saveBtn) saveBtn.disabled = false;
+            const mqClaimNav = document.getElementById('DH_MonthlyQuest_Claim_Btn');
+            if (mqClaimNav) mqClaimNav.disabled = false;
+
+            // Preload tất cả dữ liệu ngay sau khi kết nối thành công
+            setTimeout(() => {
+                _loadShop(); // Load shop items
+                _renderAccounts(); // Load account manager
+                _loadMonthlyQuests(); // Load monthly quests
+                _loadLicense(); // Load license
+            }, 500);
+        } catch (e) {
+            _setConn('error', 'Failed — retrying');
+            setTimeout(_connect, 8000);
+        }
+    }
+
+    function _renderUser(u) {
+        if (!u) return;
+        document.getElementById('DH_UName').textContent = u.username || '';
+        _v1SyncUser();
+        document.getElementById('DH_UXP').textContent = (u.totalXp || 0).toLocaleString();
+        document.getElementById('DH_UGems').textContent = (u.gems || 0).toLocaleString();
+        document.getElementById('DH_UStreak').textContent = (u.streak || 0).toLocaleString();
+        if (u.picture) {
+            let hq = u.picture.replace(/\/(medium|large|small)$/, '/xlarge');
+            if (!hq.endsWith('/xlarge') && hq.includes('duolingo.com/ssr-avatars')) hq += '/xlarge';
+            const av = document.getElementById('DH_Avatar');
+            const avImg = document.createElement('img');
+            avImg.src = hq;
+            avImg.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;';
+            avImg.draggable = false;
+            avImg.onerror = function() {
+                av.innerHTML = '👤';
+            };
+            av.innerHTML = '';
+            av.appendChild(avImg);
+        }
+    }
+
+    async function _farmXP(txp) {
+        const MIN = 30,
+            MAX = 499;
+        let loops = Math.floor(txp / MAX),
+            rem = txp % MAX;
+        if (rem > 0 && rem < MIN && loops > 0) {
+            loops--;
+            rem += MAX;
+        }
+        const total = loops + (rem >= MIN ? 1 : 0);
+        let cur = 0,
+            earned = 0;
+        _setBtnRunning('DH_XP_Btn');
+        for (let i = 0; i < loops; i++) {
+            if (!_running) break;
+            const ok = await _storyXP(469);
+            if (ok) {
+                earned += MAX;
+                cur++;
+            }
+            _setBtnProgress('DH_XP_Btn', Math.floor((cur / total) * 100));
+            await _sleep(_delay);
+        }
+        if (rem >= MIN && _running) {
+            const ok = await _storyXP(Math.min(rem - MIN, 469));
+            if (ok) {
+                earned += rem;
+                cur++;
+            }
+            _setBtnProgress('DH_XP_Btn', 100);
+        }
+        if (_running) {
+            _setBtnDone('DH_XP_Btn', 'DONE ✓');
+            _notif('✅', 'XP Farm Done!', `Farmed ${earned} XP in ${cur} loops.`);
+            setTimeout(_connect, 1500);
+            setTimeout(() => _resetBtn('DH_XP_Btn', 'GET'), 3000);
+        }
+    }
+
+    async function _storyXP(hh) {
+        try {
+            const now = Math.floor(Date.now() / 1000),
+                dur = Math.floor(Math.random() * 121 + 300);
+            const r = await _gm('POST', 'https://stories.duolingo.com/api2/stories/fr-en-le-passeport/complete', {
+                awardXp: true,
+                completedBonusChallenge: true,
+                fromLanguage: 'fr',
+                learningLanguage: 'en',
+                hasXpBoost: false,
+                illustrationFormat: 'svg',
+                isFeaturedStoryInPracticeHub: true,
+                isLegendaryMode: true,
+                isV2Redo: false,
+                isV2Story: false,
+                masterVersion: true,
+                maxScore: 0,
+                score: 0,
+                happyHourBonusXp: hh,
+                startTime: now,
+                endTime: now + dur
+            });
+            return r.status === 200;
+        } catch {
+            return false;
+        }
+    }
+
+    // ── Slug probe — used only by V1 Mode infinite farm (fallback detection) ──
+    let _workingSlug = null,
+        _workingSlugFrom = null,
+        _workingSlugLearn = null;
+    let _probingSlugPromise = null;
+    const _SLUG_CANDIDATES = () => [
+        ['vi-en-le-passeport', 'vi', 'en'],
+        ['fr-en-le-passeport', 'fr', 'en'],
+        ['en-fr-le-passeport', 'en', 'fr'],
+        ['es-en-le-passeport', 'es', 'en'],
+        ['de-en-le-passeport', 'de', 'en'],
+        ['pt-en-le-passeport', 'pt', 'en'],
+        ['it-en-le-passeport', 'it', 'en'],
+    ];
+    async function _probeSlug() {
+        if (_workingSlug) return _workingSlug;
+        if (_probingSlugPromise) return _probingSlugPromise;
+        _probingSlugPromise = (async () => {
+            const now = Math.floor(Date.now() / 1000);
+            const tryCandidate = ([slug, from, learn]) => _gm('POST', `https://stories.duolingo.com/api2/stories/${slug}/complete`, {
+                awardXp: false,
+                completedBonusChallenge: false,
+                fromLanguage: from,
+                learningLanguage: learn,
+                hasXpBoost: false,
+                illustrationFormat: 'svg',
+                isFeaturedStoryInPracticeHub: true,
+                isLegendaryMode: true,
+                isV2Redo: false,
+                isV2Story: false,
+                masterVersion: true,
+                maxScore: 0,
+                score: 0,
+                happyHourBonusXp: 0,
+                startTime: now,
+                endTime: now + 300
+            }).then(r => {
+                if (r.status === 200 || r.status === 429) return [slug, from, learn];
+                return null;
+            }).catch(() => null);
+
+            const winner = await new Promise(resolve => {
+                let settled = false;
+                let pending = _SLUG_CANDIDATES().length;
+                _SLUG_CANDIDATES().forEach(c => {
+                    tryCandidate(c).then(result => {
+                        pending--;
+                        if (result && !settled) {
+                            settled = true;
+                            resolve(result);
+                        } else if (pending === 0 && !settled) resolve(null);
+                    });
+                });
+            });
+
+            if (winner) {
+                _workingSlug = winner[0];
+                _workingSlugFrom = winner[1];
+                _workingSlugLearn = winner[2];
+            }
+            _probingSlugPromise = null;
+            return winner ? winner[0] : null;
+        })();
+        return _probingSlugPromise;
+    }
+
+    // ── Gem Farm Helpers (ported from GemHelper) ──────────────────────────────
+    async function _fetchGemRewards() {
+        try {
+            const response = await fetch(`https://www.duolingo.com/2023-05-23/users/${_sub}?fields=rewardBundles`, {
+                headers: {
+                    'authorization': `Bearer ${_jwt}`,
+                    'content-type': 'application/json'
+                }
+            });
+
+            if (!response.ok) return [];
+
+            const data = await response.json();
+            const bundles = data.rewardBundles || [];
+
+            const gemRewards = [];
+            for (const bundle of bundles) {
+                for (const reward of bundle.rewards || []) {
+                    if (!reward.consumed && (reward.id.includes('GEMS') || reward.currency === 'GEMS')) {
+                        gemRewards.push({
+                            id: reward.id,
+                            amount: reward.amount || 0
+                        });
+                    }
+                }
+            }
+
+            return gemRewards;
+        } catch (e) {
+            return [];
+        }
+    }
+
+    async function _exploitGemReward(rewardId) {
+        const body = {
+            consumed: true,
+            fromLanguage: _user.fromLanguage,
+            learningLanguage: _user.learningLanguage,
+            pathLevelSpecifics: {
+                anchorSkillId: 'f22fd38157eea63965dc39eeac3c40c1',
+                indexSinceAnchorSkill: 0,
+                treeId: '14b1a2672c1bb3b250ebaa31b86c343e',
+                nodeState: 'active'
+            }
+        };
+        try {
+            // Use native fetch like Gem Helper instead of _gm wrapper
+            const response = await fetch(`https://www.duolingo.com/2023-05-23/users/${_sub}/rewards/${rewardId}`, {
+                method: 'PATCH',
+                headers: {
+                    'authorization': `Bearer ${_jwt}`,
+                    'content-type': 'application/json',
+                    'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36',
+                    'x-amzn-trace-id': `User=${_sub}`,
+                    'x-requested-with': 'XMLHttpRequest',
+                    'referer': 'https://www.duolingo.com/learn',
+                    'origin': 'https://www.duolingo.com'
+                },
+                body: JSON.stringify(body)
+            });
+
+            return response.ok;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    async function _getGemCount() {
+        try {
+            const response = await fetch(`https://www.duolingo.com/2023-05-23/users/${_sub}?fields=gemsConfig`, {
+                headers: {
+                    'authorization': `Bearer ${_jwt}`,
+                    'content-type': 'application/json'
+                }
+            });
+
+            if (!response.ok) return null;
+
+            const data = await response.json();
+            return data.gemsConfig?.gems ?? null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    const THREADS = 4;
+
+    async function _farmGems() {
+        _setBtnState('DH_Gem_Btn', _C_RED, 'STOP');
+        const btn = document.getElementById('DH_Gem_Btn');
+        if (btn) btn.disabled = false;
+
+        const gemInput = document.getElementById('DH_Gem_Input');
+        if (gemInput) gemInput.value = '';
+
+        let totalGained = 0;
+
+        outer:
+            while (_running && _task === 'gem') {
+                const rewards = await _fetchGemRewards();
+
+                if (rewards.length === 0) {
+                    await _sleep(_delay * 2);
+                    continue;
+                }
+
+                let gemsBefore = await _getGemCount() ?? (_user?.gems ?? 0);
+
+                for (let i = 0; i < rewards.length; i += THREADS) {
+                    if (!_running || _task !== 'gem') break outer;
+
+                    const batch = rewards.slice(i, i + THREADS);
+                    await Promise.all(batch.map(r => _exploitGemReward(r.id)));
+                    await _sleep(150);
+
+                    const now = await _getGemCount();
+                    if (now !== null) {
+                        const gained = Math.max(0, now - gemsBefore);
+                        totalGained += gained;
+                        gemsBefore = now;
+                        if (gemInput) gemInput.value = String(totalGained);
+                        if (_user) {
+                            _user.gems = now;
+                            _renderUser(_user);
+                        }
+                    }
+
+                    await _sleep(Math.max(50, _delay - 50));
+                }
+
+                // Pass done — loop back to fetch fresh rewards (runs until user stops)
+                await _sleep(_delay);
+            }
+
+        // Always reset button after farm ends (stopped or done)
+        _setBtnState('DH_Gem_Btn', _C_BLUE, 'RUN');
+        if (btn) btn.disabled = !_user;
+        if (totalGained > 0) {
+            _notif('✅', 'Gem Farm Done!', `+${totalGained} gems gained.`);
+            setTimeout(_connect, 1500);
+        }
+    }
+
+
+    async function _farmStreak(days) {
+        const CH = ["assist", "characterIntro", "characterMatch", "characterPuzzle", "characterSelect", "characterTrace", "characterWrite", "completeReverseTranslation", "definition", "dialogue", "extendedMatch", "extendedListenMatch", "form", "freeResponse", "gapFill", "judge", "listen", "listenComplete", "listenMatch", "match", "name", "listenComprehension", "listenIsolation", "listenSpeak", "listenTap", "orderTapComplete", "partialListen", "partialReverseTranslate", "patternTapComplete", "radioBinary", "radioImageSelect", "radioListenMatch", "radioListenRecognize", "radioSelect", "readComprehension", "reverseAssist", "sameDifferent", "select", "selectPronunciation", "selectTranscription", "svgPuzzle", "syllableTap", "syllableListenTap", "speak", "tapCloze", "tapClozeTable", "tapComplete", "tapCompleteTable", "tapDescribe", "translate", "transliterate", "transliterationAssist", "typeCloze", "typeClozeTable", "typeComplete", "typeCompleteTable", "writeComprehension"];
+        let farmStart;
+        try {
+            const s = new Date(_user.streakData?.currentStreak?.startDate || Date.now());
+            s.setDate(s.getDate() - 1);
+            farmStart = s;
+        } catch {
+            const n = new Date();
+            n.setDate(n.getDate() - 1);
+            farmStart = n;
+        }
+        _setBtnRunning('DH_Streak_Btn');
+        for (let i = 0; i < days; i++) {
+            if (!_running) break;
+            const simDay = new Date(farmStart);
+            simDay.setDate(simDay.getDate() - i);
+            const end = Math.floor(simDay.getTime() / 1000);
+            try {
+                const sr = await _gm('POST', 'https://www.duolingo.com/2023-05-23/sessions', {
+                    challengeTypes: CH,
+                    fromLanguage: _user.fromLanguage,
+                    isFinalLevel: false,
+                    isV2: true,
+                    juicy: true,
+                    learningLanguage: _user.learningLanguage,
+                    smartTipsVersion: 2,
+                    type: 'GLOBAL_PRACTICE'
+                });
+                if (sr.status === 200) {
+                    const sess = JSON.parse(sr.responseText);
+                    await new Promise((res, rej) => GM_xmlhttpRequest({
+                        method: 'PUT',
+                        url: `https://www.duolingo.com/2023-05-23/sessions/${sess.id}`,
+                        headers: _hdrs,
+                        data: JSON.stringify({
+                            ...sess,
+                            heartsLeft: 5,
+                            startTime: end - 1,
+                            endTime: end,
+                            enableBonusPoints: false,
+                            failed: false,
+                            maxInLessonStreak: 9,
+                            shouldLearnThings: true
+                        }),
+                        onload: r => res(r),
+                        onerror: () => rej(),
+                        timeout: 15000,
+                        ontimeout: () => rej()
+                    }));
+                }
+            } catch {}
+            _setBtnProgress('DH_Streak_Btn', Math.floor(((i + 1) / days) * 100));
+            await _sleep(_delay);
+        }
+        if (_running) {
+            _setBtnDone('DH_Streak_Btn', 'DONE ✓');
+            _notif('🔥', 'Streak Farm Done!', `Restored ${days} streak days.`);
+            setTimeout(_connect, 1500);
+            setTimeout(() => _resetBtn('DH_Streak_Btn', 'RUN'), 3000);
+        }
+    }
+
+    async function _farmPractice(count) {
+
+        _lessonsToSolve = count;
+        _currentLessonCount = 0;
+        if (_lessonSolving) {
+            _notif('⚠️', 'Busy', 'Practice farm already running.');
+            return;
+        }
+        _lessonSolving = true;
+        const btn = document.getElementById('DH_Practice_Btn');
+        _setBtnState('DH_Practice_Btn', _C_RED, 'STOP');
+        _notif('📚', 'Farm Practice', 'Navigating to practice...', 3);
+
+        if (!window.location.pathname.startsWith('/practice')) {
+            window.location.assign('/practice');
+            return;
+        }
+        await _solveCurrentLesson();
+    }
+
+    async function _solveCurrentLesson() {
+
+        let waited = 0;
+        while (!document.querySelector('[data-test="challenge"]') && !document.querySelector('._3yE3H') && waited < 10000 && _lessonSolving) {
+            await _sleep(500);
+            waited += 500;
+        }
+        if (!_lessonSolving) return;
+
+        await new Promise(resolve => {
+            let lastId = null,
+                solving = false,
+                ticks = 0;
+            const MAX = 240;
+            const clickNext = () => {
+                const nb = document.querySelector('[data-test="player-next"]') || document.querySelector('[data-test="stories-player-continue"]') || document.querySelector('[data-test="stories-player-done"]');
+                if (!nb || nb.getAttribute('aria-disabled') === 'true' || nb.disabled) return;
+                nb.click();
+                setTimeout(() => {
+                    if (!nb.disabled) nb.click();
+                }, 5);
+            };
+            const iv = setInterval(async () => {
+                try {
+                    if (!_lessonSolving) {
+                        clearInterval(iv);
+                        resolve();
+                        return;
+                    }
+                    if (++ticks > MAX) {
+                        clearInterval(iv);
+                        resolve();
+                        return;
+                    }
+                    const done = document.querySelector('[data-test="session-over"]') || document.querySelector('[data-test="session-complete-slide"]') || document.querySelector('[data-test="session-complete"]');
+                    if (done) {
+                        clearInterval(iv);
+                        _currentLessonCount++;
+
+                        try {
+                            const s = JSON.parse(sessionStorage.getItem('dh2_practice') || '{}');
+                            s.done = _currentLessonCount;
+                            sessionStorage.setItem('dh2_practice', JSON.stringify(s));
+                        } catch {}
+                        await _sleep(500);
+                        resolve();
+                        return;
+                    }
+                    if (solving) return;
+                    let el = document.querySelector('._3yE3H') || document.querySelector('[data-test="challenge"]') || document.querySelector('[class*="challenge"]');
+                    if (!el) {
+                        clickNext();
+                        return;
+                    }
+                    const ri = _autoSolver.findReact(el);
+                    window.sol = ri?.props?.currentChallenge;
+                    if (!window.sol) {
+                        clickNext();
+                        return;
+                    }
+                    const cid = `${window.sol.type}:${window.sol.id||JSON.stringify(window.sol.correctIndex??window.sol.correctTokens??window.sol.correctSolutions?.[0]??'')}`;
+                    if (cid === lastId) {
+                        clickNext();
+                        return;
+                    }
+                    const type = _autoSolver.determineChallengeType();
+                    if (!type) {
+                        clickNext();
+                        return;
+                    }
+                    solving = true;
+                    lastId = cid;
+                    try {
+                        await _autoSolver.handleChallenge(type);
+                    } catch {}
+                    await _sleep(350);
+                    clickNext();
+                    await _sleep(600);
+                    solving = false;
+                } catch {
+                    solving = false;
+                }
+            }, 500);
+            setTimeout(() => {
+                clearInterval(iv);
+                resolve();
+            }, 180000);
+        });
+
+        if (!_lessonSolving) return;
+
+        if (_lessonsToSolve > 0 && _currentLessonCount >= _lessonsToSolve) {
+            _notif('✅', 'Farm Practice Done!', `Completed ${_currentLessonCount} practice(s).`);
+            _stopPractice();
+            return;
+        }
+
+        _notif('📚', 'Farm Practice', `Done ${_currentLessonCount}${_lessonsToSolve>0?' / '+_lessonsToSolve:''} — loading next...`, 2);
+        await _sleep(800);
+        if (_lessonSolving) window.location.assign('/practice');
+    }
+
+    function _stopPractice() {
+        _lessonSolving = false;
+        _setBtnState('DH_Practice_Btn', _C_BLUE, 'RUN');
+        const btn = document.getElementById('DH_Practice_Btn');
+        if (btn) btn.disabled = !_user;
+    }
+
+    function _resumePracticeIfNeeded() {
+        const saved = sessionStorage.getItem('dh2_practice');
+        if (!saved) return;
+        try {
+            const {
+                active,
+                count,
+                done
+            } = JSON.parse(saved);
+            if (!active) return;
+            _lessonsToSolve = count;
+            _currentLessonCount = done;
+            sessionStorage.setItem('dh2_practice', JSON.stringify({
+                active: true,
+                count,
+                done
+            }));
+            if (window.location.pathname.startsWith('/practice')) {
+                _lessonSolving = true;
+                if (_user) {
+                    _setBtnState('DH_Practice_Btn', _C_RED, 'STOP');
+                    _solveCurrentLesson();
+                } else {
+
+                    const orig = _setConn.bind(null);
+                    const check = setInterval(() => {
+                        if (_user) {
+                            clearInterval(check);
+                            _setBtnState('DH_Practice_Btn', _C_RED, 'STOP');
+                            _solveCurrentLesson();
+                        }
+                    }, 500);
+                }
+            }
+        } catch {}
+    }
+
+    async function _farmLeague() {
+        const LB = 'https://duolingo-leaderboards-prod.duolingo.com/leaderboards/7d9f5dd1-8423-491a-91f2-2532052038ce';
+        const prog = document.getElementById('DH_League_Prog');
+        const fill = document.getElementById('DH_League_Fill');
+        if (prog) prog.classList.add('on');
+        _setBtnState('DH_League_Btn', _C_RED, 'STOP');
+        while (_running) {
+            try {
+                const r = await _gm('GET', `${LB}/users/${_sub}?client_unlocked=true&_=${Date.now()}`);
+                if (r.status !== 200) {
+                    await _sleep(3000);
+                    continue;
+                }
+                const data = JSON.parse(r.responseText);
+                const ranks = data?.active?.cohort?.rankings || [];
+                const me = ranks.find(u => u.user_id == _sub);
+                if (!me) {
+                    _notif('⚠️', 'Not in league!', 'Join a league first.');
+                    break;
+                }
+                const rank = ranks.indexOf(me) + 1;
+                const top1 = ranks[0];
+                const gap = top1.score - me.score;
+                if (rank === 1 && gap <= 0) {
+                    _notif('🏆', 'League #1!', 'You reached Rank #1!');
+                    break;
+                }
+                if (fill) fill.style.width = Math.min(95, Math.floor((me.score / Math.max(top1.score, 1)) * 100)) + '%';
+                if (gap + 100 > 0) {
+                    const ok = await _storyXP(469);
+                    if (!ok) await _sleep(3000);
+                }
+                await _sleep(_delay);
+            } catch {
+                await _sleep(5000);
             }
         }
-    }catch{}
-}
-
-async function _farmLeague(){
-    const LB='https://duolingo-leaderboards-prod.duolingo.com/leaderboards/7d9f5dd1-8423-491a-91f2-2532052038ce';
-    const prog=document.getElementById('DH_League_Prog');
-    const fill=document.getElementById('DH_League_Fill');
-    if(prog) prog.classList.add('on');
-    _setBtnState('DH_League_Btn',_C_RED,'STOP');
-    while(_running){
-        try{
-            const r=await _gm('GET',`${LB}/users/${_sub}?client_unlocked=true&_=${Date.now()}`);
-            if(r.status!==200){await _sleep(3000);continue;}
-            const data=JSON.parse(r.responseText);
-            const ranks=data?.active?.cohort?.rankings||[];
-            const me=ranks.find(u=>u.user_id==_sub);
-            if(!me){_notif('⚠️','Not in league!','Join a league first.');break;}
-            const rank=ranks.indexOf(me)+1;
-            const top1=ranks[0];
-            const gap=top1.score-me.score;
-            if(rank===1&&gap<=0){_notif('🏆','League #1!','You reached Rank #1!');break;}
-            if(fill) fill.style.width=Math.min(95,Math.floor((me.score/Math.max(top1.score,1))*100))+'%';
-            if(gap+100>0){const ok=await _storyXP(469);if(!ok)await _sleep(3000);}
-            await _sleep(_delay);
-        }catch{await _sleep(5000);}
+        _resetLeague();
     }
-    _resetLeague();
-}
 
-function _getQuestTimestamp(goalId){
-    const m=goalId.match(/^(\d{4})_(\d{2})_monthly/);
-    if(m){return new Date(Date.UTC(parseInt(m[1]),parseInt(m[2])-1,15,12,0,0)).toISOString();}
-    return new Date().toISOString();
-}
-async function _getGoals(){
-    return new Promise(r=>GM_xmlhttpRequest({
-        method:'GET',url:`${GOALS_API}/schema?ui_language=en&_=${Date.now()}`,
-        headers:_goalHdrs(_jwt),
-        onload:res=>r(res.status===200?JSON.parse(res.responseText):null),
-        onerror:()=>r(null)
-    }));
-}
-async function _getProgress(){
-    const tz=Intl.DateTimeFormat().resolvedOptions().timeZone;
-    return new Promise(r=>GM_xmlhttpRequest({
-        method:'GET',url:`${GOALS_API}/users/${_sub}/progress?timezone=${encodeURIComponent(tz)}&ui_language=en`,
-        headers:_goalHdrs(_jwt),
-        onload:res=>r(res.status===200?JSON.parse(res.responseText):null),
-        onerror:()=>r(null)
-    }));
-}
-async function _bruteForceGoals(metrics){
-    const updates=metrics.map(m=>({metric:m,quantity:2000}));
-    updates.push({metric:'QUESTS',quantity:1});
-    return new Promise(r=>GM_xmlhttpRequest({
-        method:'POST',url:`${GOALS_API}/users/${_sub}/progress/batch`,
-        headers:_goalHdrs(_jwt),
-        data:JSON.stringify({metric_updates:updates,timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,timestamp:new Date().toISOString()}),
-        onload:res=>r(res.status===200),onerror:()=>r(false)
-    }));
-}
-async function _updateGoal(metric,amount,goalId){
-    return new Promise(r=>GM_xmlhttpRequest({
-        method:'POST',url:`${GOALS_API}/users/${_sub}/progress/batch`,
-        headers:_goalHdrs(_jwt),
-        data:JSON.stringify({metric_updates:[{metric,quantity:amount}],timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,timestamp:_getQuestTimestamp(goalId)}),
-        onload:res=>r(res.status===200),onerror:()=>r(false)
-    }));
-}
-
-async function _farmDailyQuest(){
-    _setBtnState('DH_Quest_Btn',_C_GRAY,'Loading...');
-    const [schema,progress]=await Promise.all([_getGoals(),_getProgress()]);
-    if(!schema||!progress){_notif('❌','Error','Could not load quest data.');_resetBtn('DH_Quest_Btn','RUN');return;}
-    const earned=new Set(progress.badges?.earned||[]);
-    const daily=(schema.goals||[]).filter(g=>g.category&&g.category.includes('DAILY'));
-    const metrics=new Set(daily.filter(g=>!earned.has(g.badgeId)&&!earned.has(g.goalId)&&g.metric).map(g=>g.metric));
-    if(!metrics.size){
-        _notif('✅','All Done!','All daily quests completed.');
-        _setBtnDone('DH_Quest_Btn','DONE ✓');
-        setTimeout(()=>_resetBtn('DH_Quest_Btn','RUN'),3000);return;
+    function _getQuestTimestamp(goalId) {
+        const m = goalId.match(/^(\d{4})_(\d{2})_monthly/);
+        if (m) {
+            return new Date(Date.UTC(parseInt(m[1]), parseInt(m[2]) - 1, 15, 12, 0, 0)).toISOString();
+        }
+        return new Date().toISOString();
     }
-    _setBtnState('DH_Quest_Btn',_C_RED,'Running...');
-    const ok=await _bruteForceGoals(Array.from(metrics));
-    if(ok){
-        _notif('✅','Daily Quests Done!',`Completed ${metrics.size} metric(s).`);
-        _setBtnDone('DH_Quest_Btn','DONE ✓');
-        setTimeout(()=>_resetBtn('DH_Quest_Btn','RUN'),3000);
-    } else {
-        _notif('❌','Error','Quest completion failed.');
-        _resetBtn('DH_Quest_Btn','RUN');
+    async function _getGoals() {
+        return new Promise(r => GM_xmlhttpRequest({
+            method: 'GET',
+            url: `${GOALS_API}/schema?ui_language=en&_=${Date.now()}`,
+            headers: _goalHdrs(_jwt),
+            onload: res => r(res.status === 200 ? JSON.parse(res.responseText) : null),
+            onerror: () => r(null)
+        }));
     }
-}
-
-function _formatItem(id){
-    return id.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
-}
-function _categorizeItem(item){
-    const id=item.id||'';
-    if(id.includes('streak_freeze')) return {cat:'Streak Freezes',icon:'https://d35aaqx5ub95lt.cloudfront.net/images/icons/216ddc11afcbb98f44e53d565ccf479e.svg'};
-    if(id.includes('xp_boost'))      return {cat:'XP Boosts',     icon:'https://d35aaqx5ub95lt.cloudfront.net/images/icons/68c1fd0f467456a4c607ecc0ac040533.svg'};
-    if(id.includes('health')||id.includes('heart')) return {cat:'Hearts', icon:'https://d35aaqx5ub95lt.cloudfront.net/images/hearts/547ffcf0e6256af421ad1a32c26b8f1a.svg'};
-    if(id.includes('gem'))            return {cat:'Gems',          icon:'https://d35aaqx5ub95lt.cloudfront.net/images/gems/45c14e05be9c1af1d7d0b54c6eed7eee.svg'};
-    if(item.type==='outfit')          return {cat:'Outfits',       icon:'https://d35aaqx5ub95lt.cloudfront.net/vendor/0cecd302cf0bcd0f73d51768feff75fe.svg'};
-    if(id.includes('free_taste'))     return {cat:'Free Taste',    icon:'https://d35aaqx5ub95lt.cloudfront.net/images/super/11db6cd6f69cb2e3c5046b915be8e669.svg'};
-    return {cat:'Misc', icon:'https://d35aaqx5ub95lt.cloudfront.net/images/leagues/9fadb349c2ece257386a0e576359c867.svg'};
-}
-
-async function _getShopItems(){
-    return new Promise(r=>GM_xmlhttpRequest({
-        method:'GET',url:'https://www.duolingo.com/2023-05-23/shop-items',
-        headers:_hdrs,
-        onload:res=>{
-            try{if(res.status===200)r(JSON.parse(res.responseText).shopItems||[]);else r([]);}
-            catch{r([]);}
-        },
-        onerror:()=>r([])
-    }));
-}
-
-async function _buyShopItem(itemId){
-    const payload={itemName:itemId,isFree:true,consumed:true,fromLanguage:_user.fromLanguage,learningLanguage:_user.learningLanguage};
-    return new Promise(r=>GM_xmlhttpRequest({
-        method:'POST',url:`https://www.duolingo.com/2017-06-30/users/${_sub}/shop-items`,
-        headers:_hdrs,data:JSON.stringify(payload),
-        onload:res=>r(res.status===200),onerror:()=>r(false)
-    }));
-}
-
-let _allShopItems=[];
-function _renderShop(items,filter=''){
-    const container=document.getElementById('DH_Shop_Container');
-    container.innerHTML='';
-    const valid=items.filter(i=>i.currencyType==='XGM'&&!i.id.includes('gift'));
-    const f=filter.trim().toLowerCase();
-    const filtered=f?valid.filter(i=>(i.name||_formatItem(i.id)).toLowerCase().includes(f)):valid;
-    if(!filtered.length){
-        const p=document.createElement('p');
-        p.className='DH_T2 DH_NoSel'; p.style.cssText='text-align:center;padding:8px 0;';
-        p.textContent=f?'No items found.':'No items available.';
-        container.appendChild(p); return;
+    async function _getProgress() {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        return new Promise(r => GM_xmlhttpRequest({
+            method: 'GET',
+            url: `${GOALS_API}/users/${_sub}/progress?timezone=${encodeURIComponent(tz)}&ui_language=en`,
+            headers: _goalHdrs(_jwt),
+            onload: res => r(res.status === 200 ? JSON.parse(res.responseText) : null),
+            onerror: () => r(null)
+        }));
     }
-    const ORDER=['Streak Freezes','XP Boosts','Hearts','Gems','Outfits','Free Taste','Misc'];
-    const grouped={};
-    filtered.forEach(i=>{
-        const {cat,icon}=_categorizeItem(i);
-        if(!grouped[cat]) grouped[cat]=[];
-        let name=i.name||_formatItem(i.id);
-        if(i.id.includes('xp_boost')&&i.id.match(/\d+$/)) name+=' Mins';
-        grouped[cat].push({...i,displayName:name,icon,cat});
-    });
-    ORDER.forEach(cat=>{
-        if(!grouped[cat]) return;
-        const header=document.createElement('div');
-        header.className='DH_Cat_Header DH_NoSel'; header.textContent=cat;
-        container.appendChild(header);
-        const grid=document.createElement('div');
-        grid.className='DH_Shop_Grid';
-        grouped[cat].forEach(item=>{
-            const card=document.createElement('div');
-            card.className='DH_Shop_Card';
-            card.innerHTML=`
+    async function _bruteForceGoals(metrics) {
+        const updates = metrics.map(m => ({
+            metric: m,
+            quantity: 2000
+        }));
+        updates.push({
+            metric: 'QUESTS',
+            quantity: 1
+        });
+        return new Promise(r => GM_xmlhttpRequest({
+            method: 'POST',
+            url: `${GOALS_API}/users/${_sub}/progress/batch`,
+            headers: _goalHdrs(_jwt),
+            data: JSON.stringify({
+                metric_updates: updates,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                timestamp: new Date().toISOString()
+            }),
+            onload: res => r(res.status === 200),
+            onerror: () => r(false)
+        }));
+    }
+    async function _updateGoal(metric, amount, goalId) {
+        return new Promise(r => GM_xmlhttpRequest({
+            method: 'POST',
+            url: `${GOALS_API}/users/${_sub}/progress/batch`,
+            headers: _goalHdrs(_jwt),
+            data: JSON.stringify({
+                metric_updates: [{
+                    metric,
+                    quantity: amount
+                }],
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                timestamp: _getQuestTimestamp(goalId)
+            }),
+            onload: res => r(res.status === 200),
+            onerror: () => r(false)
+        }));
+    }
+
+    async function _farmDailyQuest() {
+        _setBtnState('DH_Quest_Btn', _C_GRAY, 'Loading...');
+        const [schema, progress] = await Promise.all([_getGoals(), _getProgress()]);
+        if (!schema || !progress) {
+            _notif('❌', 'Error', 'Could not load quest data.');
+            _resetBtn('DH_Quest_Btn', 'RUN');
+            return;
+        }
+        const earned = new Set(progress.badges?.earned || []);
+        const daily = (schema.goals || []).filter(g => g.category && g.category.includes('DAILY'));
+        const metrics = new Set(daily.filter(g => !earned.has(g.badgeId) && !earned.has(g.goalId) && g.metric).map(g => g.metric));
+        if (!metrics.size) {
+            _notif('✅', 'All Done!', 'All daily quests completed.');
+            _setBtnDone('DH_Quest_Btn', 'DONE ✓');
+            setTimeout(() => _resetBtn('DH_Quest_Btn', 'RUN'), 3000);
+            return;
+        }
+        _setBtnState('DH_Quest_Btn', _C_RED, 'Running...');
+        const ok = await _bruteForceGoals(Array.from(metrics));
+        if (ok) {
+            _notif('✅', 'Daily Quests Done!', `Completed ${metrics.size} metric(s).`);
+            _setBtnDone('DH_Quest_Btn', 'DONE ✓');
+            setTimeout(() => _resetBtn('DH_Quest_Btn', 'RUN'), 3000);
+        } else {
+            _notif('❌', 'Error', 'Quest completion failed.');
+            _resetBtn('DH_Quest_Btn', 'RUN');
+        }
+    }
+
+    function _formatItem(id) {
+        return id.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    }
+
+    function _categorizeItem(item) {
+        const id = item.id || '';
+        if (id.includes('streak_freeze')) return {
+            cat: 'Streak Freezes',
+            icon: 'https://d35aaqx5ub95lt.cloudfront.net/images/icons/216ddc11afcbb98f44e53d565ccf479e.svg'
+        };
+        if (id.includes('xp_boost')) return {
+            cat: 'XP Boosts',
+            icon: 'https://d35aaqx5ub95lt.cloudfront.net/images/icons/68c1fd0f467456a4c607ecc0ac040533.svg'
+        };
+        if (id.includes('health') || id.includes('heart')) return {
+            cat: 'Hearts',
+            icon: 'https://d35aaqx5ub95lt.cloudfront.net/images/hearts/547ffcf0e6256af421ad1a32c26b8f1a.svg'
+        };
+        if (id.includes('gem')) return {
+            cat: 'Gems',
+            icon: 'https://d35aaqx5ub95lt.cloudfront.net/images/gems/45c14e05be9c1af1d7d0b54c6eed7eee.svg'
+        };
+        if (item.type === 'outfit') return {
+            cat: 'Outfits',
+            icon: 'https://d35aaqx5ub95lt.cloudfront.net/vendor/0cecd302cf0bcd0f73d51768feff75fe.svg'
+        };
+        if (id.includes('free_taste')) return {
+            cat: 'Free Taste',
+            icon: 'https://d35aaqx5ub95lt.cloudfront.net/images/super/11db6cd6f69cb2e3c5046b915be8e669.svg'
+        };
+        return {
+            cat: 'Misc',
+            icon: 'https://d35aaqx5ub95lt.cloudfront.net/images/leagues/9fadb349c2ece257386a0e576359c867.svg'
+        };
+    }
+
+    async function _getShopItems() {
+        return new Promise(r => GM_xmlhttpRequest({
+            method: 'GET',
+            url: 'https://www.duolingo.com/2023-05-23/shop-items',
+            headers: _hdrs,
+            onload: res => {
+                try {
+                    if (res.status === 200) r(JSON.parse(res.responseText).shopItems || []);
+                    else r([]);
+                } catch {
+                    r([]);
+                }
+            },
+            onerror: () => r([])
+        }));
+    }
+
+    async function _buyShopItem(itemId) {
+        const payload = {
+            itemName: itemId,
+            isFree: true,
+            consumed: true,
+            fromLanguage: _user.fromLanguage,
+            learningLanguage: _user.learningLanguage
+        };
+        return new Promise(r => GM_xmlhttpRequest({
+            method: 'POST',
+            url: `https://www.duolingo.com/2017-06-30/users/${_sub}/shop-items`,
+            headers: _hdrs,
+            data: JSON.stringify(payload),
+            onload: res => r(res.status === 200),
+            onerror: () => r(false)
+        }));
+    }
+
+    let _allShopItems = [];
+
+    function _renderShop(items, filter = '') {
+        const container = document.getElementById('DH_Shop_Container');
+        container.innerHTML = '';
+        const valid = items.filter(i => i.currencyType === 'XGM' && !i.id.includes('gift'));
+        const f = filter.trim().toLowerCase();
+        const filtered = f ? valid.filter(i => (i.name || _formatItem(i.id)).toLowerCase().includes(f)) : valid;
+        if (!filtered.length) {
+            const p = document.createElement('p');
+            p.className = 'DH_T2 DH_NoSel';
+            p.style.cssText = 'text-align:center;padding:8px 0;';
+            p.textContent = f ? 'No items found.' : 'No items available.';
+            container.appendChild(p);
+            return;
+        }
+        const ORDER = ['Streak Freezes', 'XP Boosts', 'Hearts', 'Gems', 'Outfits', 'Free Taste', 'Misc'];
+        const grouped = {};
+        filtered.forEach(i => {
+            const {
+                cat,
+                icon
+            } = _categorizeItem(i);
+            if (!grouped[cat]) grouped[cat] = [];
+            let name = i.name || _formatItem(i.id);
+            if (i.id.includes('xp_boost') && i.id.match(/\d+$/)) name += ' Mins';
+            grouped[cat].push({
+                ...i,
+                displayName: name,
+                icon,
+                cat
+            });
+        });
+        ORDER.forEach(cat => {
+            if (!grouped[cat]) return;
+            const header = document.createElement('div');
+            header.className = 'DH_Cat_Header DH_NoSel';
+            header.textContent = cat;
+            container.appendChild(header);
+            const grid = document.createElement('div');
+            grid.className = 'DH_Shop_Grid';
+            grouped[cat].forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'DH_Shop_Card';
+                card.innerHTML = `
                 <img src="${item.icon}" class="DH_Shop_Ico">
                 <div class="DH_Shop_Name DH_NoSel">${item.displayName}</div>
                 <button class="DH_Shop_Btn" data-id="${item.id}">GET</button>`;
-            const ico=card.querySelector('.DH_Shop_Ico');
-            if(ico) ico.onerror=function(){this.style.display='none';const fb=document.createElement('div');fb.style.cssText='width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:22px;';fb.textContent='🎁';this.parentNode.insertBefore(fb,this);};
-            const btn=card.querySelector('.DH_Shop_Btn');
-            btn.onclick=async()=>{
-                btn.className='DH_Shop_Btn loading'; btn.textContent='...';
-                setTimeout(()=>{if(btn.textContent==='...')btn.textContent='50%';},300);
-                const ok=await _buyShopItem(item.id);
-                btn.textContent='100%';
-                setTimeout(()=>{
-                    if(ok){btn.className='DH_Shop_Btn got';btn.textContent='GOT ✓';_notif('🛒','Shop','Got '+item.displayName+'!');
-                        setTimeout(()=>{btn.className='DH_Shop_Btn';btn.textContent='GET';},3000);
-                    } else {
-                        btn.className='DH_Shop_Btn fail';btn.textContent='FAILED';
-                        setTimeout(()=>{btn.className='DH_Shop_Btn';btn.textContent='GET';},2000);
-                        _notif('❌','Shop','Failed to get item.');
-                    }
-                },300);
-            };
-            grid.appendChild(card);
-        });
-        container.appendChild(grid);
-    });
-}
-
-async function _loadShop(){
-    const container=document.getElementById('DH_Shop_Container');
-    const cached=localStorage.getItem('dh2_shop');
-    if(cached){
-        try{const items=JSON.parse(cached);if(items&&items.length){_allShopItems=items;_renderShop(items);return;}}
-        catch{localStorage.removeItem('dh2_shop');}
-    }
-    container.innerHTML='<p class="DH_T2 DH_NoSel" style="text-align:center;padding:8px 0;">Loading shop...</p>';
-    const items=await _getShopItems();
-    if(items.length) localStorage.setItem('dh2_shop',JSON.stringify(items));
-    _allShopItems=items;
-    _renderShop(items);
-}
-
-function _installFakeSuper(){
-    if(localStorage.getItem('dh2_super')!=='true') return;
-    const RX=/https:\/\/www\.duolingo\.com\/\d{4}-\d{2}-\d{2}\/users\/.+/;
-    const ITEMS={gold_subscription:{itemName:'gold_subscription',subscriptionInfo:{vendor:'STRIPE',renewing:true,isFamilyPlan:true,expectedExpiration:9999999999000}}};
-    function mod(j){try{const d=JSON.parse(j);d.hasPlus=true;if(!d.trackingProperties)d.trackingProperties={};d.trackingProperties.has_item_gold_subscription=true;d.shopItems={...d.shopItems,...ITEMS};return JSON.stringify(d);}catch{return j;}}
-    const uw=(typeof unsafeWindow!=='undefined')?unsafeWindow:window;
-    const orig=uw.fetch;
-    uw.fetch=function(resource,options){
-        const url=resource instanceof Request?resource.url:resource;
-        const method=resource instanceof Request?resource.method:(options?.method||'GET');
-        if(method.toUpperCase()==='GET'&&RX.test(url)&&!url.includes('/shop-items')){
-            return orig.apply(this,arguments).then(async r=>{
-                const text=await r.clone().text();
-                return new Response(mod(text),{status:r.status,statusText:r.statusText,headers:new Headers(r.headers)});
+                const ico = card.querySelector('.DH_Shop_Ico');
+                if (ico) ico.onerror = function() {
+                    this.style.display = 'none';
+                    const fb = document.createElement('div');
+                    fb.style.cssText = 'width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:22px;';
+                    fb.textContent = '🎁';
+                    this.parentNode.insertBefore(fb, this);
+                };
+                const btn = card.querySelector('.DH_Shop_Btn');
+                btn.onclick = async () => {
+                    btn.className = 'DH_Shop_Btn loading';
+                    btn.textContent = '...';
+                    setTimeout(() => {
+                        if (btn.textContent === '...') btn.textContent = '50%';
+                    }, 300);
+                    const ok = await _buyShopItem(item.id);
+                    btn.textContent = '100%';
+                    setTimeout(() => {
+                        if (ok) {
+                            btn.className = 'DH_Shop_Btn got';
+                            btn.textContent = 'GOT ✓';
+                            _notif('🛒', 'Shop', 'Got ' + item.displayName + '!');
+                            setTimeout(() => {
+                                btn.className = 'DH_Shop_Btn';
+                                btn.textContent = 'GET';
+                            }, 3000);
+                        } else {
+                            btn.className = 'DH_Shop_Btn fail';
+                            btn.textContent = 'FAILED';
+                            setTimeout(() => {
+                                btn.className = 'DH_Shop_Btn';
+                                btn.textContent = 'GET';
+                            }, 2000);
+                            _notif('❌', 'Shop', 'Failed to get item.');
+                        }
+                    }, 300);
+                };
+                grid.appendChild(card);
             });
-        }
-        return orig.apply(this,arguments);
-    };
-}
-_installFakeSuper();
+            container.appendChild(grid);
+        });
+    }
 
-function _resetLeague(){
-    const btn=document.getElementById('DH_League_Btn'); if(!btn) return;
-    btn.disabled=false; _setBtnState('DH_League_Btn',_C_BLUE,'RUN');
-    const fill=document.getElementById('DH_League_Fill');
-    if(fill) fill.style.width='0%';
-    const prog=document.getElementById('DH_League_Prog');
-    if(prog) setTimeout(()=>prog.classList.remove('on'),2000);
-}
-
-
-
-
-function _v1UpdateDisplayNow(){
-    requestAnimationFrame(()=>{
-        const xi=document.getElementById('DH_V1_XP_Input');
-        const gi=document.getElementById('DH_V1_Gem_Input');
-        const si=document.getElementById('DH_V1_Streak_Input');
-
-
-        if(xi){ xi.value=_v1Earned.xp>0?String(_v1Earned.xp):''; }
-        if(gi){ gi.value=_v1Earned.gems>0?String(_v1Earned.gems):''; }
-        if(si){ si.value=_v1Earned.streak>0?String(_v1Earned.streak):''; }
-    });
-}
-
-function _v1SetBtnState(btnId,cfg,label){
-    const btn=document.getElementById(btnId); if(!btn) return;
-    const lbl=btn.querySelector('.DH_Btn_Label'); if(!lbl) return;
-    btn.style.background=cfg.bg;
-    btn.style.outline=`2px solid ${cfg.outline}`;
-    btn.style.outlineOffset='-2px';
-    lbl.style.color=cfg.tc;
-    lbl.textContent=label;
-}
-
-function _v1SetProg(id, pct){
-    const prog=document.getElementById(id+'_Prog');
-    const fill=document.getElementById(id+'_Fill');
-    if(prog&&!prog.classList.contains('on')) prog.classList.add('on');
-    if(fill) fill.style.width=Math.min(100,Math.max(1,pct))+'%';
-}
-function _v1ClearProg(id){
-    const prog=document.getElementById(id+'_Prog');
-    const fill=document.getElementById(id+'_Fill');
-    setTimeout(()=>{ if(prog) prog.classList.remove('on'); },2000);
-    if(fill) fill.style.width='0%';
-}
-
-
-let _v1SkillId=null;
-async function _v1FetchSkillId(){
-    if(_v1SkillId) return _v1SkillId;
-    try{
-        const r=await _gm('GET',
-            `https://www.duolingo.com/2017-06-30/users/${_sub}?fields=currentCourse{pathSectioned{units{levels{pathLevelMetadata{skillId},pathLevelClientData{skillId}}}}}`
-        );
-        if(r.status!==200) return null;
-        const d=JSON.parse(r.responseText);
-        const sections=d.currentCourse?.pathSectioned||[];
-        for(const sec of sections)
-            for(const unit of (sec.units||[]))
-                for(const lvl of (unit.levels||[])){
-                    const sid=lvl.pathLevelMetadata?.skillId||lvl.pathLevelClientData?.skillId;
-                    if(sid){ _v1SkillId=sid; return sid; }
+    async function _loadShop() {
+        const container = document.getElementById('DH_Shop_Container');
+        const cached = localStorage.getItem('dh2_shop');
+        if (cached) {
+            try {
+                const items = JSON.parse(cached);
+                if (items && items.length) {
+                    _allShopItems = items;
+                    _renderShop(items);
+                    return;
                 }
-    }catch{}
-    return null;
-}
-
-
-async function _v1XP110Once(){
-    const sid=await _v1FetchSkillId();
-    if(!sid) return false;
-    try{
-        const sr=await _gm('POST','https://www.duolingo.com/2017-06-30/sessions',{
-            challengeTypes:[],
-            fromLanguage:_user.fromLanguage,
-            learningLanguage:_user.learningLanguage,
-            type:'UNIT_TEST',
-            skillIds:[sid]
-        });
-        if(!sr||sr.status!==200) return false;
-        const sess=JSON.parse(sr.responseText);
-        const now=Math.floor(Date.now()/1000);
-        const ur=await _gm('PUT',`https://www.duolingo.com/2017-06-30/sessions/${sess.id}`,{
-            id:sess.id,
-            metadata:sess.metadata,
-            type:'UNIT_TEST',
-            fromLanguage:_user.fromLanguage,
-            learningLanguage:_user.learningLanguage,
-            challenges:[],
-            adaptiveChallenges:[],
-            sessionExperimentRecord:[],
-            experiments_with_treatment_contexts:[],
-            adaptiveInterleavedChallenges:[],
-            sessionStartExperiments:[],
-            trackingProperties:[],
-            ttsAnnotations:[],
-            heartsLeft:0,
-            startTime:now,
-            enableBonusPoints:true,
-            endTime:now+60,
-            failed:false,
-            maxInLessonStreak:9,
-            shouldLearnThings:true,
-            hasBoost:true,
-            happyHourBonusXp:10,
-            pathLevelSpecifics:{unitIndex:0}
-        });
-        if(ur&&ur.status===200){
-            const d=JSON.parse(ur.responseText);
-            return d?.awardedXp||d?.xpGain||110;
+            } catch {
+                localStorage.removeItem('dh2_shop');
+            }
         }
-    }catch{}
-    return false;
-}
+        container.innerHTML = '<p class="DH_T2 DH_NoSel" style="text-align:center;padding:8px 0;">Loading shop...</p>';
+        const items = await _getShopItems();
+        if (items.length) localStorage.setItem('dh2_shop', JSON.stringify(items));
+        _allShopItems = items;
+        _renderShop(items);
+    }
 
+    function _installFakeSuper() {
+        if (localStorage.getItem('dh2_super') !== 'true') return;
+        const RX = /https:\/\/www\.duolingo\.com\/\d{4}-\d{2}-\d{2}\/users\/.+/;
+        const ITEMS = {
+            gold_subscription: {
+                itemName: 'gold_subscription',
+                subscriptionInfo: {
+                    vendor: 'STRIPE',
+                    renewing: true,
+                    isFamilyPlan: true,
+                    expectedExpiration: 9999999999000
+                }
+            }
+        };
 
-async function _v1FarmXP(){
-    _v1Earned.xp=0; _v1UpdateDisplayNow();
-    _v1SetBtnState('DH_V1_XP_Btn',_C_RED,'STOP');
-    _v1SetProg('DH_V1_XP',1);
-
-    // Always start with story API (499 XP), silently fallback to global API (110 XP) on failure
-    let use499 = true;
-
-    let cons429 = 0;
-    const MAX_429 = 2;
-    let fallbackErrors = 0;
-    const MAX_FALLBACK = 5;
-    let loopPct = 0;
-    let fallbackLoops = 0; // count loops in fallback mode, re-probe every 10
-
-    // Slug is fixed (fr-en-le-passeport), no need to probe before starting
-    _workingSlug = 'fr-en-le-passeport';
-    _workingSlugFrom = 'fr';
-    _workingSlugLearn = 'en';
-    _v1FetchSkillId();
-
-    while(_v1Running && _v1Task==='xp'){
-        if(use499){
-            let status = 0;
-            try{
-                const now = Math.floor(Date.now()/1000);
-                const dur = Math.floor(Math.random()*121+300);
-                const r = await _gm('POST',`https://stories.duolingo.com/api2/stories/${_workingSlug}/complete`,{
-                    awardXp:true, completedBonusChallenge:true,
-                    fromLanguage:_workingSlugFrom, learningLanguage:_workingSlugLearn,
-                    hasXpBoost:false, illustrationFormat:'svg',
-                    isFeaturedStoryInPracticeHub:true, isLegendaryMode:true,
-                    isV2Redo:false, isV2Story:false, masterVersion:true,
-                    maxScore:0, score:0, happyHourBonusXp:469,
-                    startTime:now, endTime:now+dur
+        function mod(j) {
+            try {
+                const d = JSON.parse(j);
+                d.hasPlus = true;
+                if (!d.trackingProperties) d.trackingProperties = {};
+                d.trackingProperties.has_item_gold_subscription = true;
+                d.shopItems = {
+                    ...d.shopItems,
+                    ...ITEMS
+                };
+                return JSON.stringify(d);
+            } catch {
+                return j;
+            }
+        }
+        const uw = (typeof unsafeWindow !== 'undefined') ? unsafeWindow : window;
+        const orig = uw.fetch;
+        uw.fetch = function(resource, options) {
+            const url = resource instanceof Request ? resource.url : resource;
+            const method = resource instanceof Request ? resource.method : (options?.method || 'GET');
+            if (method.toUpperCase() === 'GET' && RX.test(url) && !url.includes('/shop-items')) {
+                return orig.apply(this, arguments).then(async r => {
+                    const text = await r.clone().text();
+                    return new Response(mod(text), {
+                        status: r.status,
+                        statusText: r.statusText,
+                        headers: new Headers(r.headers)
+                    });
                 });
-                status = r.status;
-            }catch{}
+            }
+            return orig.apply(this, arguments);
+        };
+    }
+    _installFakeSuper();
 
-            if(status===200){
-                cons429=0; fallbackErrors=0;
-                _v1Earned.xp += 499;
-                _v1UpdateDisplayNow();
-                loopPct = (loopPct+2)%99+1;
-                _v1SetProg('DH_V1_XP', loopPct);
-            } else if(status===429){
-                cons429++;
-                if(cons429>=MAX_429){
-                    use499=false; fallbackLoops=0;
-                }
-                await _sleep(_delay*2);
-                continue;
-            } else {
-                use499=false; fallbackLoops=0;
-                continue;
-            }
-        } else {
-            // Global API — DuoFarmer-style UNIT_TEST session (110 XP)
-            // Every 10 fallback loops, try story API again
-            if(fallbackLoops>0 && fallbackLoops%10===0){
-                use499=true; cons429=0;
-            }
-            fallbackLoops++;
-            const earned = await _v1XP110Once();
-            if(earned){
-                fallbackErrors=0;
-                _v1Earned.xp += earned;
-                _v1UpdateDisplayNow();
-                loopPct = (loopPct+1)%99+1;
-                _v1SetProg('DH_V1_XP', loopPct);
-            } else {
-                fallbackErrors++;
-                if(fallbackErrors>=MAX_FALLBACK){
-                    _notif('❌','V1 XP','Too many errors, stopping.');
-                    break;
-                }
-                await _sleep(_delay*3);
-                continue;
-            }
-        }
-        await _sleep(_delay);
+    function _resetLeague() {
+        const btn = document.getElementById('DH_League_Btn');
+        if (!btn) return;
+        btn.disabled = false;
+        _setBtnState('DH_League_Btn', _C_BLUE, 'RUN');
+        const fill = document.getElementById('DH_League_Fill');
+        if (fill) fill.style.width = '0%';
+        const prog = document.getElementById('DH_League_Prog');
+        if (prog) setTimeout(() => prog.classList.remove('on'), 2000);
     }
 
-    _v1ClearProg('DH_V1_XP');
-    _v1SetBtnState('DH_V1_XP_Btn',_C_BLUE,'RUN');
-    document.getElementById('DH_V1_XP_Btn').disabled=!_user;
-    _v1Running=false; _v1Task=null;
-    if(_v1Earned.xp>0){ _notif('✅','XP Farm Done!',`Farmed ${_v1Earned.xp.toLocaleString()} XP.`); setTimeout(_connect,1500); }
-}
 
-async function _v1FarmGems(){
-    _v1Earned.gems = 0; _v1UpdateDisplayNow();
-    _v1SetBtnState('DH_V1_Gem_Btn', _C_RED, 'STOP');
-    _v1SetProg('DH_V1_Gem', 1);
 
-    let loopPct = 0;
 
-    outer:
-    while(_v1Running && _v1Task === 'gems'){
-        const rewards = await _fetchGemRewards();
+    function _v1UpdateDisplayNow() {
+        requestAnimationFrame(() => {
+            const xi = document.getElementById('DH_V1_XP_Input');
+            const gi = document.getElementById('DH_V1_Gem_Input');
+            const si = document.getElementById('DH_V1_Streak_Input');
 
-        if(rewards.length === 0){
-            _notif('⚠️','Gem Farm','No rewards available. Retrying…',3);
-            await _sleep(_delay * 2);
-            continue;
-        }
 
-        const gemsBefore = await _getGemCount() ?? (_user?.gems ?? 0);
-
-        // Process in parallel batches of 3 threads
-        for(let i = 0; i < rewards.length; i += THREADS){
-            if(!_v1Running || _v1Task !== 'gems') break outer;
-            const batch = rewards.slice(i, i + THREADS);
-            await Promise.all(batch.map(r => _exploitGemReward(r.id)));
-            await _sleep(300);
-
-            const now = await _getGemCount();
-            if(now !== null){
-                const cycle = Math.max(0, now - gemsBefore);
-                _v1Earned.gems += cycle;
-                _v1UpdateDisplayNow();
-                loopPct = (loopPct + 1) % 99 + 1;
-                _v1SetProg('DH_V1_Gem', loopPct);
-                if(_user){ _user.gems = now; _v1SyncUser(); }
+            if (xi) {
+                xi.value = _v1Earned.xp > 0 ? String(_v1Earned.xp) : '';
             }
-        }
-
-        await _sleep(_delay);
+            if (gi) {
+                gi.value = _v1Earned.gems > 0 ? String(_v1Earned.gems) : '';
+            }
+            if (si) {
+                si.value = _v1Earned.streak > 0 ? String(_v1Earned.streak) : '';
+            }
+        });
     }
 
-    _v1ClearProg('DH_V1_Gem');
-    _v1SetBtnState('DH_V1_Gem_Btn', _C_BLUE, 'RUN');
-    document.getElementById('DH_V1_Gem_Btn').disabled = !_user;
-    _v1Running = false; _v1Task = null;
-    if(_v1Earned.gems > 0){ _notif('✅','Gem Farm Done!',`+${_v1Earned.gems.toLocaleString()} gems gained.`); setTimeout(_connect, 1500); }
-}
+    function _v1SetBtnState(btnId, cfg, label) {
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+        const lbl = btn.querySelector('.DH_Btn_Label');
+        if (!lbl) return;
+        btn.style.background = cfg.bg;
+        btn.style.outline = `2px solid ${cfg.outline}`;
+        btn.style.outlineOffset = '-2px';
+        lbl.style.color = cfg.tc;
+        lbl.textContent = label;
+    }
+
+    function _v1SetProg(id, pct) {
+        const prog = document.getElementById(id + '_Prog');
+        const fill = document.getElementById(id + '_Fill');
+        if (prog && !prog.classList.contains('on')) prog.classList.add('on');
+        if (fill) fill.style.width = Math.min(100, Math.max(1, pct)) + '%';
+    }
+
+    function _v1ClearProg(id) {
+        const prog = document.getElementById(id + '_Prog');
+        const fill = document.getElementById(id + '_Fill');
+        setTimeout(() => {
+            if (prog) prog.classList.remove('on');
+        }, 2000);
+        if (fill) fill.style.width = '0%';
+    }
 
 
-async function _v1FarmStreak(){
-    _v1Earned.streak=0; _v1UpdateDisplayNow();
-    _v1SetBtnState('DH_V1_Streak_Btn',_C_RED,'STOP');
-    _v1SetProg('DH_V1_Streak',1);
+    let _v1SkillId = null;
+    async function _v1FetchSkillId() {
+        if (_v1SkillId) return _v1SkillId;
+        try {
+            const r = await _gm('GET',
+                `https://www.duolingo.com/2017-06-30/users/${_sub}?fields=currentCourse{pathSectioned{units{levels{pathLevelMetadata{skillId},pathLevelClientData{skillId}}}}}`
+            );
+            if (r.status !== 200) return null;
+            const d = JSON.parse(r.responseText);
+            const sections = d.currentCourse?.pathSectioned || [];
+            for (const sec of sections)
+                for (const unit of (sec.units || []))
+                    for (const lvl of (unit.levels || [])) {
+                        const sid = lvl.pathLevelMetadata?.skillId || lvl.pathLevelClientData?.skillId;
+                        if (sid) {
+                            _v1SkillId = sid;
+                            return sid;
+                        }
+                    }
+        } catch {}
+        return null;
+    }
 
-    const CH=["assist","characterIntro","characterMatch","characterPuzzle","characterSelect","characterTrace","characterWrite","completeReverseTranslation","definition","dialogue","extendedMatch","extendedListenMatch","form","freeResponse","gapFill","judge","listen","listenComplete","listenMatch","match","name","listenComprehension","listenIsolation","listenSpeak","listenTap","orderTapComplete","partialListen","partialReverseTranslate","patternTapComplete","radioBinary","radioImageSelect","radioListenMatch","radioListenRecognize","radioSelect","readComprehension","reverseAssist","sameDifferent","select","selectPronunciation","selectTranscription","svgPuzzle","syllableTap","syllableListenTap","speak","tapCloze","tapClozeTable","tapComplete","tapCompleteTable","tapDescribe","translate","transliterate","transliterationAssist","typeCloze","typeClozeTable","typeComplete","typeCompleteTable","writeComprehension"];
-    let farmStart;
-    try{
-        const s=new Date(_user.streakData?.currentStreak?.startDate||Date.now());
-        s.setDate(s.getDate()-1); farmStart=s;
-    }catch{ farmStart=new Date(); farmStart.setDate(farmStart.getDate()-1); }
-    let dayIdx=0;
-    let loopPct=0;
 
-    while(_v1Running&&_v1Task==='streak'){
-        const simDay=new Date(farmStart);
-        simDay.setDate(simDay.getDate()-dayIdx);
-        const end=Math.floor(simDay.getTime()/1000);
-        try{
-            const sr=await _gm('POST','https://www.duolingo.com/2023-05-23/sessions',{
-                challengeTypes:CH,fromLanguage:_user.fromLanguage,isFinalLevel:false,isV2:true,
-                juicy:true,learningLanguage:_user.learningLanguage,smartTipsVersion:2,type:'GLOBAL_PRACTICE'
+    async function _v1XP110Once() {
+        const sid = await _v1FetchSkillId();
+        if (!sid) return false;
+        try {
+            const sr = await _gm('POST', 'https://www.duolingo.com/2017-06-30/sessions', {
+                challengeTypes: [],
+                fromLanguage: _user.fromLanguage,
+                learningLanguage: _user.learningLanguage,
+                type: 'UNIT_TEST',
+                skillIds: [sid]
             });
-            if(sr.status===200){
-                const sess=JSON.parse(sr.responseText);
-                await new Promise((res,rej)=>GM_xmlhttpRequest({
-                    method:'PUT',url:`https://www.duolingo.com/2023-05-23/sessions/${sess.id}`,
-                    headers:_hdrs,
-                    data:JSON.stringify({
-                        ...sess,heartsLeft:5,startTime:end-1,endTime:end,
-                        enableBonusPoints:false,failed:false,maxInLessonStreak:9,shouldLearnThings:true
-                    }),
-                    onload:r=>res(r),onerror:()=>rej(new Error('net')),
-                    timeout:15000,ontimeout:()=>rej(new Error('timeout'))
-                }));
-                _v1Earned.streak++;
-                _v1UpdateDisplayNow();
-                loopPct=(loopPct+1)%99+1;
-                _v1SetProg('DH_V1_Streak',loopPct);
+            if (!sr || sr.status !== 200) return false;
+            const sess = JSON.parse(sr.responseText);
+            const now = Math.floor(Date.now() / 1000);
+            const ur = await _gm('PUT', `https://www.duolingo.com/2017-06-30/sessions/${sess.id}`, {
+                id: sess.id,
+                metadata: sess.metadata,
+                type: 'UNIT_TEST',
+                fromLanguage: _user.fromLanguage,
+                learningLanguage: _user.learningLanguage,
+                challenges: [],
+                adaptiveChallenges: [],
+                sessionExperimentRecord: [],
+                experiments_with_treatment_contexts: [],
+                adaptiveInterleavedChallenges: [],
+                sessionStartExperiments: [],
+                trackingProperties: [],
+                ttsAnnotations: [],
+                heartsLeft: 0,
+                startTime: now,
+                enableBonusPoints: true,
+                endTime: now + 60,
+                failed: false,
+                maxInLessonStreak: 9,
+                shouldLearnThings: true,
+                hasBoost: true,
+                happyHourBonusXp: 10,
+                pathLevelSpecifics: {
+                    unitIndex: 0
+                }
+            });
+            if (ur && ur.status === 200) {
+                const d = JSON.parse(ur.responseText);
+                return d?.awardedXp || d?.xpGain || 110;
             }
-        }catch{}
-        dayIdx++;
-        await _sleep(_delay);
+        } catch {}
+        return false;
     }
 
-    _v1ClearProg('DH_V1_Streak');
-    _v1SetBtnState('DH_V1_Streak_Btn',_C_BLUE,'RUN');
-    document.getElementById('DH_V1_Streak_Btn').disabled=!_user;
-    _v1Running=false; _v1Task=null;
-    if(_v1Earned.streak>0){ _notif('🔥','Streak Farm Done!',`Farmed ${_v1Earned.streak} streak days.`); setTimeout(_connect,1500); }
-}
 
-function _v1RunToggle(task){
-    if(_v1Running&&_v1Task===task){
-        _v1Running=false; _v1Task=null; return;
+    async function _v1FarmXP() {
+        _v1Earned.xp = 0;
+        _v1UpdateDisplayNow();
+        _v1SetBtnState('DH_V1_XP_Btn', _C_RED, 'STOP');
+        _v1SetProg('DH_V1_XP', 1);
+
+        // Always start with story API (499 XP), silently fallback to global API (110 XP) on failure
+        let use499 = true;
+
+        let cons429 = 0;
+        const MAX_429 = 2;
+        let fallbackErrors = 0;
+        const MAX_FALLBACK = 5;
+        let loopPct = 0;
+        let fallbackLoops = 0; // count loops in fallback mode, re-probe every 10
+
+        // Slug is fixed (fr-en-le-passeport), no need to probe before starting
+        _workingSlug = 'fr-en-le-passeport';
+        _workingSlugFrom = 'fr';
+        _workingSlugLearn = 'en';
+        _v1FetchSkillId();
+
+        while (_v1Running && _v1Task === 'xp') {
+            if (use499) {
+                let status = 0;
+                try {
+                    const now = Math.floor(Date.now() / 1000);
+                    const dur = Math.floor(Math.random() * 121 + 300);
+                    const r = await _gm('POST', `https://stories.duolingo.com/api2/stories/${_workingSlug}/complete`, {
+                        awardXp: true,
+                        completedBonusChallenge: true,
+                        fromLanguage: _workingSlugFrom,
+                        learningLanguage: _workingSlugLearn,
+                        hasXpBoost: false,
+                        illustrationFormat: 'svg',
+                        isFeaturedStoryInPracticeHub: true,
+                        isLegendaryMode: true,
+                        isV2Redo: false,
+                        isV2Story: false,
+                        masterVersion: true,
+                        maxScore: 0,
+                        score: 0,
+                        happyHourBonusXp: 469,
+                        startTime: now,
+                        endTime: now + dur
+                    });
+                    status = r.status;
+                } catch {}
+
+                if (status === 200) {
+                    cons429 = 0;
+                    fallbackErrors = 0;
+                    _v1Earned.xp += 499;
+                    _v1UpdateDisplayNow();
+                    loopPct = (loopPct + 2) % 99 + 1;
+                    _v1SetProg('DH_V1_XP', loopPct);
+                } else if (status === 429) {
+                    cons429++;
+                    if (cons429 >= MAX_429) {
+                        use499 = false;
+                        fallbackLoops = 0;
+                    }
+                    await _sleep(_delay * 2);
+                    continue;
+                } else {
+                    use499 = false;
+                    fallbackLoops = 0;
+                    continue;
+                }
+            } else {
+                // Global API — DuoFarmer-style UNIT_TEST session (110 XP)
+                // Every 10 fallback loops, try story API again
+                if (fallbackLoops > 0 && fallbackLoops % 10 === 0) {
+                    use499 = true;
+                    cons429 = 0;
+                }
+                fallbackLoops++;
+                const earned = await _v1XP110Once();
+                if (earned) {
+                    fallbackErrors = 0;
+                    _v1Earned.xp += earned;
+                    _v1UpdateDisplayNow();
+                    loopPct = (loopPct + 1) % 99 + 1;
+                    _v1SetProg('DH_V1_XP', loopPct);
+                } else {
+                    fallbackErrors++;
+                    if (fallbackErrors >= MAX_FALLBACK) {
+                        _notif('❌', 'V1 XP', 'Too many errors, stopping.');
+                        break;
+                    }
+                    await _sleep(_delay * 3);
+                    continue;
+                }
+            }
+            await _sleep(_delay);
+        }
+
+        _v1ClearProg('DH_V1_XP');
+        _v1SetBtnState('DH_V1_XP_Btn', _C_BLUE, 'RUN');
+        document.getElementById('DH_V1_XP_Btn').disabled = !_user;
+        _v1Running = false;
+        _v1Task = null;
+        if (_v1Earned.xp > 0) {
+            _notif('✅', 'XP Farm Done!', `Farmed ${_v1Earned.xp.toLocaleString()} XP.`);
+            setTimeout(_connect, 1500);
+        }
     }
-    if(_v1Running){_notif('⚠️','Busy','Stop current V1 farm first.');return;}
-    if(!_user){_notif('⚠️','Not connected','Please wait.');return;}
-    _v1Running=true; _v1Task=task;
-    if(task==='xp')     _v1FarmXP();
-    if(task==='gems') _v1FarmGems();
-    if(task==='streak') _v1FarmStreak();
-}
 
+    async function _v1FarmGems() {
+        _v1Earned.gems = 0;
+        _v1UpdateDisplayNow();
+        _v1SetBtnState('DH_V1_Gem_Btn', _C_RED, 'STOP');
+        _v1SetProg('DH_V1_Gem', 1);
 
-async function _run(type,val){
-    if(_running){_running=false;_notif('⏹️','Stopped','Farm stopped.');return;}
-    if(!_user){_notif('⚠️','Not connected','Please wait.');return;}
-    _running=true; _task=type;
-    try{
-        if(type==='xp')     await _farmXP(val);
-        if(type==='gem')    await _farmGems();
-        if(type==='streak') await _farmStreak(val);
-        if(type==='league') await _farmLeague();
-    }catch(e){_notif('❌','Error',e.message);}
-    // If stopped mid-farm, reset XP/Streak buttons (Gem and League reset themselves)
-    if(!_running){
-        if(type==='xp')     _resetBtn('DH_XP_Btn','GET');
-        if(type==='streak') _resetBtn('DH_Streak_Btn','RUN');
+        let loopPct = 0;
+
+        outer:
+            while (_v1Running && _v1Task === 'gems') {
+                const rewards = await _fetchGemRewards();
+
+                if (rewards.length === 0) {
+                    _notif('⚠️', 'Gem Farm', 'No rewards available. Retrying…', 3);
+                    await _sleep(_delay * 2);
+                    continue;
+                }
+
+                const gemsBefore = await _getGemCount() ?? (_user?.gems ?? 0);
+
+                // Process in parallel batches of 3 threads
+                for (let i = 0; i < rewards.length; i += THREADS) {
+                    if (!_v1Running || _v1Task !== 'gems') break outer;
+                    const batch = rewards.slice(i, i + THREADS);
+                    await Promise.all(batch.map(r => _exploitGemReward(r.id)));
+                    await _sleep(300);
+
+                    const now = await _getGemCount();
+                    if (now !== null) {
+                        const cycle = Math.max(0, now - gemsBefore);
+                        _v1Earned.gems += cycle;
+                        _v1UpdateDisplayNow();
+                        loopPct = (loopPct + 1) % 99 + 1;
+                        _v1SetProg('DH_V1_Gem', loopPct);
+                        if (_user) {
+                            _user.gems = now;
+                            _v1SyncUser();
+                        }
+                    }
+                }
+
+                await _sleep(_delay);
+            }
+
+        _v1ClearProg('DH_V1_Gem');
+        _v1SetBtnState('DH_V1_Gem_Btn', _C_BLUE, 'RUN');
+        document.getElementById('DH_V1_Gem_Btn').disabled = !_user;
+        _v1Running = false;
+        _v1Task = null;
+        if (_v1Earned.gems > 0) {
+            _notif('✅', 'Gem Farm Done!', `+${_v1Earned.gems.toLocaleString()} gems gained.`);
+            setTimeout(_connect, 1500);
+        }
     }
-    _running=false; _task=null;
-}
 
-function _accGetAll(){ try{return JSON.parse(localStorage.getItem('dh2_accounts')||'[]');}catch{return [];} }
-function _accSetAll(arr){ localStorage.setItem('dh2_accounts',JSON.stringify(arr)); }
 
-function _accSaveCurrent(){
-    if(!_user||!_jwt||!_sub){ _notif('⚠️','Not connected','Please wait for connection.'); return; }
-    const all=_accGetAll();
-    if(all.find(a=>a.id==_sub)){ _notif('ℹ️','Already saved','This account is already in the list.'); return; }
-    let pic='';
-    if(_user.picture){
-        pic=_user.picture.replace(/\/(medium|large|small)$/,'/xlarge');
-        if(!pic.endsWith('/xlarge')&&pic.includes('duolingo.com/ssr-avatars')) pic+='/xlarge';
+    async function _v1FarmStreak() {
+        _v1Earned.streak = 0;
+        _v1UpdateDisplayNow();
+        _v1SetBtnState('DH_V1_Streak_Btn', _C_RED, 'STOP');
+        _v1SetProg('DH_V1_Streak', 1);
+
+        const CH = ["assist", "characterIntro", "characterMatch", "characterPuzzle", "characterSelect", "characterTrace", "characterWrite", "completeReverseTranslation", "definition", "dialogue", "extendedMatch", "extendedListenMatch", "form", "freeResponse", "gapFill", "judge", "listen", "listenComplete", "listenMatch", "match", "name", "listenComprehension", "listenIsolation", "listenSpeak", "listenTap", "orderTapComplete", "partialListen", "partialReverseTranslate", "patternTapComplete", "radioBinary", "radioImageSelect", "radioListenMatch", "radioListenRecognize", "radioSelect", "readComprehension", "reverseAssist", "sameDifferent", "select", "selectPronunciation", "selectTranscription", "svgPuzzle", "syllableTap", "syllableListenTap", "speak", "tapCloze", "tapClozeTable", "tapComplete", "tapCompleteTable", "tapDescribe", "translate", "transliterate", "transliterationAssist", "typeCloze", "typeClozeTable", "typeComplete", "typeCompleteTable", "writeComprehension"];
+        let farmStart;
+        try {
+            const s = new Date(_user.streakData?.currentStreak?.startDate || Date.now());
+            s.setDate(s.getDate() - 1);
+            farmStart = s;
+        } catch {
+            farmStart = new Date();
+            farmStart.setDate(farmStart.getDate() - 1);
+        }
+        let dayIdx = 0;
+        let loopPct = 0;
+
+        while (_v1Running && _v1Task === 'streak') {
+            const simDay = new Date(farmStart);
+            simDay.setDate(simDay.getDate() - dayIdx);
+            const end = Math.floor(simDay.getTime() / 1000);
+            try {
+                const sr = await _gm('POST', 'https://www.duolingo.com/2023-05-23/sessions', {
+                    challengeTypes: CH,
+                    fromLanguage: _user.fromLanguage,
+                    isFinalLevel: false,
+                    isV2: true,
+                    juicy: true,
+                    learningLanguage: _user.learningLanguage,
+                    smartTipsVersion: 2,
+                    type: 'GLOBAL_PRACTICE'
+                });
+                if (sr.status === 200) {
+                    const sess = JSON.parse(sr.responseText);
+                    await new Promise((res, rej) => GM_xmlhttpRequest({
+                        method: 'PUT',
+                        url: `https://www.duolingo.com/2023-05-23/sessions/${sess.id}`,
+                        headers: _hdrs,
+                        data: JSON.stringify({
+                            ...sess,
+                            heartsLeft: 5,
+                            startTime: end - 1,
+                            endTime: end,
+                            enableBonusPoints: false,
+                            failed: false,
+                            maxInLessonStreak: 9,
+                            shouldLearnThings: true
+                        }),
+                        onload: r => res(r),
+                        onerror: () => rej(new Error('net')),
+                        timeout: 15000,
+                        ontimeout: () => rej(new Error('timeout'))
+                    }));
+                    _v1Earned.streak++;
+                    _v1UpdateDisplayNow();
+                    loopPct = (loopPct + 1) % 99 + 1;
+                    _v1SetProg('DH_V1_Streak', loopPct);
+                }
+            } catch {}
+            dayIdx++;
+            await _sleep(_delay);
+        }
+
+        _v1ClearProg('DH_V1_Streak');
+        _v1SetBtnState('DH_V1_Streak_Btn', _C_BLUE, 'RUN');
+        document.getElementById('DH_V1_Streak_Btn').disabled = !_user;
+        _v1Running = false;
+        _v1Task = null;
+        if (_v1Earned.streak > 0) {
+            _notif('🔥', 'Streak Farm Done!', `Farmed ${_v1Earned.streak} streak days.`);
+            setTimeout(_connect, 1500);
+        }
     }
-    all.push({ id:_sub, username:_user.username||'User', pic, token:_jwt });
-    _accSetAll(all);
-    _notif('✅','Account Saved',`Saved account: ${_user.username}`);
-    _renderAccounts();
-}
 
-function _accRemove(id){
-    const all=_accGetAll().filter(a=>a.id!=id);
-    _accSetAll(all);
-    _renderAccounts();
-    _notif('🗑️','Removed','Account removed from list.');
-}
-
-function _accLogin(id){
-    const acc=_accGetAll().find(a=>a.id==id);
-    if(!acc){ _notif('⚠️','Not found','Account not found.'); return; }
-    document.cookie=`jwt_token=${acc.token}; domain=.duolingo.com; path=/; max-age=31536000`;
-    window.location.reload();
-}
-
-function _renderAccounts(){
-    const wrap=document.getElementById('DH_AccList_Wrap'); if(!wrap) return;
-    const all=_accGetAll();
-    const saveBtn=document.getElementById('DH_AccSave_Btn');
-    if(saveBtn) saveBtn.disabled=!_user;
-
-    if(all.length===0){
-        wrap.innerHTML=`<p class="DH_T2 DH_NoSel" style="text-align:center;padding:8px 0;">No saved accounts.</p>`;
-        return;
+    function _v1RunToggle(task) {
+        if (_v1Running && _v1Task === task) {
+            _v1Running = false;
+            _v1Task = null;
+            return;
+        }
+        if (_v1Running) {
+            _notif('⚠️', 'Busy', 'Stop current V1 farm first.');
+            return;
+        }
+        if (!_user) {
+            _notif('⚠️', 'Not connected', 'Please wait.');
+            return;
+        }
+        _v1Running = true;
+        _v1Task = task;
+        if (task === 'xp') _v1FarmXP();
+        if (task === 'gems') _v1FarmGems();
+        if (task === 'streak') _v1FarmStreak();
     }
-    wrap.innerHTML='';
-    all.forEach(acc=>{
-        const card=document.createElement('div');
-        card.className='DH_Acc_Card';
-        const isCurrentUser=_sub&&acc.id==_sub;
-        const picHtml=acc.pic
-            ?`<img src="${acc.pic}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentNode.innerHTML='👤'">`
-            :'👤';
-        card.innerHTML=`
+
+
+    async function _run(type, val) {
+        if (_running) {
+            _running = false;
+            _notif('⏹️', 'Stopped', 'Farm stopped.');
+            return;
+        }
+        if (!_user) {
+            _notif('⚠️', 'Not connected', 'Please wait.');
+            return;
+        }
+        _running = true;
+        _task = type;
+        try {
+            if (type === 'xp') await _farmXP(val);
+            if (type === 'gem') await _farmGems();
+            if (type === 'streak') await _farmStreak(val);
+            if (type === 'league') await _farmLeague();
+        } catch (e) {
+            _notif('❌', 'Error', e.message);
+        }
+        // If stopped mid-farm, reset XP/Streak buttons (Gem and League reset themselves)
+        if (!_running) {
+            if (type === 'xp') _resetBtn('DH_XP_Btn', 'GET');
+            if (type === 'streak') _resetBtn('DH_Streak_Btn', 'RUN');
+        }
+        _running = false;
+        _task = null;
+    }
+
+    function _accGetAll() {
+        try {
+            return JSON.parse(localStorage.getItem('dh2_accounts') || '[]');
+        } catch {
+            return [];
+        }
+    }
+
+    function _accSetAll(arr) {
+        localStorage.setItem('dh2_accounts', JSON.stringify(arr));
+    }
+
+    function _accSaveCurrent() {
+        if (!_user || !_jwt || !_sub) {
+            _notif('⚠️', 'Not connected', 'Please wait for connection.');
+            return;
+        }
+        const all = _accGetAll();
+        if (all.find(a => a.id == _sub)) {
+            _notif('ℹ️', 'Already saved', 'This account is already in the list.');
+            return;
+        }
+        let pic = '';
+        if (_user.picture) {
+            pic = _user.picture.replace(/\/(medium|large|small)$/, '/xlarge');
+            if (!pic.endsWith('/xlarge') && pic.includes('duolingo.com/ssr-avatars')) pic += '/xlarge';
+        }
+        all.push({
+            id: _sub,
+            username: _user.username || 'User',
+            pic,
+            token: _jwt
+        });
+        _accSetAll(all);
+        _notif('✅', 'Account Saved', `Saved account: ${_user.username}`);
+        _renderAccounts();
+    }
+
+    function _accRemove(id) {
+        const all = _accGetAll().filter(a => a.id != id);
+        _accSetAll(all);
+        _renderAccounts();
+        _notif('🗑️', 'Removed', 'Account removed from list.');
+    }
+
+    function _accLogin(id) {
+        const acc = _accGetAll().find(a => a.id == id);
+        if (!acc) {
+            _notif('⚠️', 'Not found', 'Account not found.');
+            return;
+        }
+        document.cookie = `jwt_token=${acc.token}; domain=.duolingo.com; path=/; max-age=31536000`;
+        window.location.reload();
+    }
+
+    function _renderAccounts() {
+        const wrap = document.getElementById('DH_AccList_Wrap');
+        if (!wrap) return;
+        const all = _accGetAll();
+        const saveBtn = document.getElementById('DH_AccSave_Btn');
+        if (saveBtn) saveBtn.disabled = !_user;
+
+        if (all.length === 0) {
+            wrap.innerHTML = `<p class="DH_T2 DH_NoSel" style="text-align:center;padding:8px 0;">No saved accounts.</p>`;
+            return;
+        }
+        wrap.innerHTML = '';
+        all.forEach(acc => {
+            const card = document.createElement('div');
+            card.className = 'DH_Acc_Card';
+            const isCurrentUser = _sub && acc.id == _sub;
+            const picHtml = acc.pic ?
+                `<img src="${acc.pic}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentNode.innerHTML='👤'">` :
+                '👤';
+            card.innerHTML = `
             <div class="DH_Acc_Avatar">${picHtml}</div>
             <div class="DH_Acc_Info">
                 <p class="DH_Acc_Name DH_NoSel">${acc.username}</p>
@@ -3411,101 +3875,136 @@ function _renderAccounts(){
                 <button class="DH_Acc_Btn del" data-id="${acc.id}">✕</button>
             </div>
         `;
-        card.querySelector('.del').addEventListener('click',e=>{ e.stopPropagation(); _accRemove(acc.id); });
-        const loginBtn=card.querySelector('.login');
-        if(loginBtn) loginBtn.addEventListener('click',e=>{ e.stopPropagation(); _accLogin(acc.id); });
-        wrap.appendChild(card);
-    });
-}
-
-function _goalHdrsLocal(jwt){
-    return {'Content-Type':'application/json','x-requested-with':'XMLHttpRequest','accept':'application/json; charset=UTF-8','Authorization':'Bearer '+jwt};
-}
-function _mqGm(method,url,data,hdrs){
-    return new Promise((res,rej)=>GM_xmlhttpRequest({
-        method,url,headers:hdrs,
-        data:data?JSON.stringify(data):null,
-        onload:r=>res(r),onerror:()=>rej(new Error('Network')),
-        timeout:15000,ontimeout:()=>rej(new Error('Timeout'))
-    }));
-}
-function _mqGetTimestamp(goalId){
-    const m=goalId.match(/^(\d{4})_(\d{2})_monthly/);
-    if(m){const d=new Date(Date.UTC(parseInt(m[1]),parseInt(m[2])-1,15,12,0,0));return d.toISOString();}
-    return new Date().toISOString();
-}
-
-async function _loadMonthlyQuests(){
-    const cont=document.getElementById('DH_MQ_Container'); if(!cont) return;
-    const claimBtn=document.getElementById('DH_MQ_ClaimAll_Btn');
-    if(!_jwt||!_sub){ cont.innerHTML=`<p class="DH_T2 DH_NoSel" style="text-align:center;padding:8px 0;">Not connected.</p>`; return; }
-    cont.innerHTML=`<p class="DH_T2 DH_NoSel" style="text-align:center;padding:8px 0;">⟳ Loading…</p>`;
-    const gh=_goalHdrsLocal(_jwt);
-    const tz=Intl.DateTimeFormat().resolvedOptions().timeZone;
-    try{
-        const [schemaR,progR]=await Promise.all([
-            _mqGm('GET',`${GOALS_API}/schema?ui_language=en&_=${Date.now()}`,null,gh),
-            _mqGm('GET',`${GOALS_API}/users/${_sub}/progress?timezone=${tz}&ui_language=en`,null,gh)
-        ]);
-        if(schemaR.status!==200||progR.status!==200) throw new Error('API error');
-        const schema=JSON.parse(schemaR.responseText);
-        const prog=JSON.parse(progR.responseText);
-        const progress=prog.goals?.progress||{};
-        const earned=new Set(prog.badges?.earned||[]);
-        _questState={schema,progress,earned};
-        _renderMonthlyQuests(schema,progress,earned,gh);
-        if(claimBtn){ claimBtn.disabled=false; }
-    }catch(e){
-        cont.innerHTML=`<p class="DH_T2 DH_NoSel" style="text-align:center;color:rgb(var(--DH-red));padding:8px 0;">Failed to load quests.</p>`;
+            card.querySelector('.del').addEventListener('click', e => {
+                e.stopPropagation();
+                _accRemove(acc.id);
+            });
+            const loginBtn = card.querySelector('.login');
+            if (loginBtn) loginBtn.addEventListener('click', e => {
+                e.stopPropagation();
+                _accLogin(acc.id);
+            });
+            wrap.appendChild(card);
+        });
     }
-}
 
-function _renderMonthlyQuests(schema,progress,earned,gh){
-    const cont=document.getElementById('DH_MQ_Container'); if(!cont) return;
-    cont.innerHTML='';
-    const now=new Date();
-    const yr=now.getFullYear().toString();
-    const mo=(now.getMonth()+1).toString().padStart(2,'0');
-    const mReg=new RegExp(`^${yr}_${mo}_monthly`);
-    const map=new Map();
-    schema.goals.forEach(g=>{
-        const m2=g.goalId.match(/^(\d{4}_\d{2})_monthly/);
-        if(!m2) return;
-        const key=m2[1];
-        const existing=map.get(key);
-        if(!existing){map.set(key,g);}
-        else{
-            const existIsChallenge=existing.category?.includes('CHALLENGE');
-            const newIsChallenge=g.category?.includes('CHALLENGE');
-            if(!existIsChallenge&&newIsChallenge) map.set(key,g);
-        }
-    });
-    const goals=[...map.values()].filter(g=>g.goalId.match(mReg)||true).reverse();
-    const monthly=goals.filter(g=>g.category&&g.category.includes('MONTHLY'));
-    if(monthly.length===0){
-        cont.innerHTML=`<p class="DH_T2 DH_NoSel" style="text-align:center;padding:8px 0;">No monthly quests found.</p>`;
-        return;
+    function _goalHdrsLocal(jwt) {
+        return {
+            'Content-Type': 'application/json',
+            'x-requested-with': 'XMLHttpRequest',
+            'accept': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ' + jwt
+        };
     }
-    monthly.forEach(g=>{
-        const isEarned=earned.has(g.badgeId)||earned.has(g.goalId);
-        let cur=0;
-        const raw=progress[g.goalId];
-        if(typeof raw==='number') cur=raw;
-        else if(raw&&typeof raw==='object') cur=raw.progress||0;
-        const tgt=g.threshold||10;
-        let pct=Math.min(100,(cur/tgt)*100);
-        if(isEarned){pct=100;cur=tgt;}
-        const remaining=Math.max(0,tgt-cur);
 
-        let icon='https://d35aaqx5ub95lt.cloudfront.net/images/achievement/aca5f82d97f5e67c1acb1ea05a0e6d1a.svg';
-        const badge=schema.badges?.find(x=>x.badgeId===g.badgeId);
-        if(badge&&badge.icon?.enabled?.lightMode){
-            icon=badge.icon.enabled.lightMode.svg||badge.icon.enabled.lightMode.url||icon;
+    function _mqGm(method, url, data, hdrs) {
+        return new Promise((res, rej) => GM_xmlhttpRequest({
+            method,
+            url,
+            headers: hdrs,
+            data: data ? JSON.stringify(data) : null,
+            onload: r => res(r),
+            onerror: () => rej(new Error('Network')),
+            timeout: 15000,
+            ontimeout: () => rej(new Error('Timeout'))
+        }));
+    }
+
+    function _mqGetTimestamp(goalId) {
+        const m = goalId.match(/^(\d{4})_(\d{2})_monthly/);
+        if (m) {
+            const d = new Date(Date.UTC(parseInt(m[1]), parseInt(m[2]) - 1, 15, 12, 0, 0));
+            return d.toISOString();
         }
+        return new Date().toISOString();
+    }
 
-        const item=document.createElement('div');
-        item.className=`DH_Quest_Item${isEarned?' done':''}`;
-        item.innerHTML=`
+    async function _loadMonthlyQuests() {
+        const cont = document.getElementById('DH_MQ_Container');
+        if (!cont) return;
+        const claimBtn = document.getElementById('DH_MQ_ClaimAll_Btn');
+        if (!_jwt || !_sub) {
+            cont.innerHTML = `<p class="DH_T2 DH_NoSel" style="text-align:center;padding:8px 0;">Not connected.</p>`;
+            return;
+        }
+        cont.innerHTML = `<p class="DH_T2 DH_NoSel" style="text-align:center;padding:8px 0;">⟳ Loading…</p>`;
+        const gh = _goalHdrsLocal(_jwt);
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        try {
+            const [schemaR, progR] = await Promise.all([
+                _mqGm('GET', `${GOALS_API}/schema?ui_language=en&_=${Date.now()}`, null, gh),
+                _mqGm('GET', `${GOALS_API}/users/${_sub}/progress?timezone=${tz}&ui_language=en`, null, gh)
+            ]);
+            if (schemaR.status !== 200 || progR.status !== 200) throw new Error('API error');
+            const schema = JSON.parse(schemaR.responseText);
+            const prog = JSON.parse(progR.responseText);
+            const progress = prog.goals?.progress || {};
+            const earned = new Set(prog.badges?.earned || []);
+            _questState = {
+                schema,
+                progress,
+                earned
+            };
+            _renderMonthlyQuests(schema, progress, earned, gh);
+            if (claimBtn) {
+                claimBtn.disabled = false;
+            }
+        } catch (e) {
+            cont.innerHTML = `<p class="DH_T2 DH_NoSel" style="text-align:center;color:rgb(var(--DH-red));padding:8px 0;">Failed to load quests.</p>`;
+        }
+    }
+
+    function _renderMonthlyQuests(schema, progress, earned, gh) {
+        const cont = document.getElementById('DH_MQ_Container');
+        if (!cont) return;
+        cont.innerHTML = '';
+        const now = new Date();
+        const yr = now.getFullYear().toString();
+        const mo = (now.getMonth() + 1).toString().padStart(2, '0');
+        const mReg = new RegExp(`^${yr}_${mo}_monthly`);
+        const map = new Map();
+        schema.goals.forEach(g => {
+            const m2 = g.goalId.match(/^(\d{4}_\d{2})_monthly/);
+            if (!m2) return;
+            const key = m2[1];
+            const existing = map.get(key);
+            if (!existing) {
+                map.set(key, g);
+            } else {
+                const existIsChallenge = existing.category?.includes('CHALLENGE');
+                const newIsChallenge = g.category?.includes('CHALLENGE');
+                if (!existIsChallenge && newIsChallenge) map.set(key, g);
+            }
+        });
+        const goals = [...map.values()].filter(g => g.goalId.match(mReg) || true).reverse();
+        const monthly = goals.filter(g => g.category && g.category.includes('MONTHLY'));
+        if (monthly.length === 0) {
+            cont.innerHTML = `<p class="DH_T2 DH_NoSel" style="text-align:center;padding:8px 0;">No monthly quests found.</p>`;
+            return;
+        }
+        monthly.forEach(g => {
+            const isEarned = earned.has(g.badgeId) || earned.has(g.goalId);
+            let cur = 0;
+            const raw = progress[g.goalId];
+            if (typeof raw === 'number') cur = raw;
+            else if (raw && typeof raw === 'object') cur = raw.progress || 0;
+            const tgt = g.threshold || 10;
+            let pct = Math.min(100, (cur / tgt) * 100);
+            if (isEarned) {
+                pct = 100;
+                cur = tgt;
+            }
+            const remaining = Math.max(0, tgt - cur);
+
+            let icon = 'https://d35aaqx5ub95lt.cloudfront.net/images/achievement/aca5f82d97f5e67c1acb1ea05a0e6d1a.svg';
+            const badge = schema.badges?.find(x => x.badgeId === g.badgeId);
+            if (badge && badge.icon?.enabled?.lightMode) {
+                icon = badge.icon.enabled.lightMode.svg || badge.icon.enabled.lightMode.url || icon;
+            }
+
+            const item = document.createElement('div');
+            item.className = `DH_Quest_Item${isEarned?' done':''}`;
+            item.innerHTML = `
             <img src="${icon}" class="DH_Quest_Icon" onerror="this.src='https://d35aaqx5ub95lt.cloudfront.net/images/achievement/aca5f82d97f5e67c1acb1ea05a0e6d1a.svg'">
             <div class="DH_Quest_Info">
                 <p class="DH_Quest_Title DH_NoSel">${g.title?.uiString||g.goalId}</p>
@@ -3515,367 +4014,519 @@ function _renderMonthlyQuests(schema,progress,earned,gh){
             ${!isEarned&&remaining>0?`<button class="DH_Quest_Get_Btn" data-metric="${g.metric}" data-amount="${remaining}" data-id="${g.goalId}">GET +${remaining}</button>`:''}
             ${isEarned?`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><circle cx="12" cy="12" r="10" fill="rgba(var(--DH-green),0.15)" stroke="rgb(var(--DH-green))" stroke-width="1.5"/><path d="M7.5 12.5l3 3 6-6" stroke="rgb(var(--DH-green))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}
         `;
-        const btn=item.querySelector('.DH_Quest_Get_Btn');
-        if(btn) btn.addEventListener('click',async()=>{
-            btn.disabled=true; btn.textContent='…';
-            try{
-                const payload={
-                    metric_updates:[{metric:btn.dataset.metric,quantity:parseInt(btn.dataset.amount)}],
-                    timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,
-                    timestamp:_mqGetTimestamp(btn.dataset.id)
-                };
-                const r=await _mqGm('POST',`${GOALS_API}/users/${_sub}/progress/batch`,payload,gh);
-                if(r.status===200){
-                    btn.textContent='✓'; btn.classList.add('done');
-                    _notif('✅','Quest Done!','Progress injected successfully.');
-                    setTimeout(()=>_loadMonthlyQuests(),900);
-                } else { btn.textContent='ERR'; btn.disabled=false; }
-            }catch{ btn.textContent='ERR'; btn.disabled=false; }
+            const btn = item.querySelector('.DH_Quest_Get_Btn');
+            if (btn) btn.addEventListener('click', async () => {
+                btn.disabled = true;
+                btn.textContent = '…';
+                try {
+                    const payload = {
+                        metric_updates: [{
+                            metric: btn.dataset.metric,
+                            quantity: parseInt(btn.dataset.amount)
+                        }],
+                        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                        timestamp: _mqGetTimestamp(btn.dataset.id)
+                    };
+                    const r = await _mqGm('POST', `${GOALS_API}/users/${_sub}/progress/batch`, payload, gh);
+                    if (r.status === 200) {
+                        btn.textContent = '✓';
+                        btn.classList.add('done');
+                        _notif('✅', 'Quest Done!', 'Progress injected successfully.');
+                        setTimeout(() => _loadMonthlyQuests(), 900);
+                    } else {
+                        btn.textContent = 'ERR';
+                        btn.disabled = false;
+                    }
+                } catch {
+                    btn.textContent = 'ERR';
+                    btn.disabled = false;
+                }
+            });
+            cont.appendChild(item);
         });
-        cont.appendChild(item);
-    });
-}
-
-async function _claimAllMonthly(){
-    if(!_questState||!_questState.schema){ _notif('⚠️','Not loaded','Open Monthly Quests first.'); return; }
-    const claimBtn=document.getElementById('DH_MQ_ClaimAll_Btn');
-    if(claimBtn){ claimBtn.disabled=true; const lbl=claimBtn.querySelector('.DH_Sm_Btn_Label'); if(lbl) lbl.textContent='…'; }
-    const gh=_goalHdrsLocal(_jwt);
-    const uniqueMetrics=new Set();
-    _questState.schema.goals.forEach(g=>{
-        if(g.category&&g.category.includes('MONTHLY')&&g.metric) uniqueMetrics.add(g.metric);
-    });
-    if(uniqueMetrics.size>0){
-        const updates=[...uniqueMetrics].map(m=>({metric:m,quantity:2000}));
-        updates.push({metric:'QUESTS',quantity:1});
-        const payload={metric_updates:updates,timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,timestamp:new Date().toISOString()};
-        try{
-            await _mqGm('POST',`${GOALS_API}/users/${_sub}/progress/batch`,payload,gh);
-            _notif('✅','Monthly Quests','All monthly quests claimed!');
-            setTimeout(()=>_loadMonthlyQuests(),900);
-        }catch{ _notif('❌','Error','Failed to claim quests.'); }
-    } else { _notif('ℹ️','Nothing to do','No monthly metrics found.'); }
-    if(claimBtn){ claimBtn.disabled=false; const lbl=claimBtn.querySelector('.DH_Sm_Btn_Label'); if(lbl) lbl.textContent='CLAIM'; }
-}
-
-document.getElementById('DH_Hide_Btn').addEventListener('click',()=>_doHide(!_hidden));
-
-
-document.getElementById('DH_SwitchV1_Btn').addEventListener('click',()=>{
-    _v1Mode=true;
-
-    document.getElementById('DH_SwitchV1_Btn').style.display='none';
-    document.getElementById('DH_SwitchV2_Btn').style.display='';
-    _v1SyncUser();
-    _goPage('V1');
-});
-
-document.getElementById('DH_SwitchV2_Btn').addEventListener('click',()=>{
-    _v1Mode=false;
-
-    if(_v1Running){_v1Running=false;_v1Task=null;}
-
-    document.getElementById('DH_SwitchV2_Btn').style.display='none';
-    document.getElementById('DH_SwitchV1_Btn').style.display='';
-    _goPage(1);
-});
-
-
-document.getElementById('DH_V1_XP_Btn').addEventListener('click',()=>_v1RunToggle('xp'));
-document.getElementById('DH_V1_Gem_Btn').addEventListener('click',()=>_v1RunToggle('gems'));
-document.getElementById('DH_V1_Streak_Btn').addEventListener('click',()=>_v1RunToggle('streak'));
-
-// ── Free Super Duolingo ──
-function _getSuperJWT() {
-    const match = document.cookie.split('; ').find(r => r.startsWith('jwt_token='));
-    return match ? match.split('=')[1] : null;
-}
-
-async function _activateFreeSuper(btnId, lblId, progId, fillId) {
-    const jwt = _getSuperJWT();
-    if (!jwt) {
-        _notif('⚠️', 'Not logged in', 'Could not find your Duolingo token. Please log in first.', 5);
-        return;
     }
 
-    const btn  = document.getElementById(btnId);
-    const lbl  = document.getElementById(lblId);
-    const prog = document.getElementById(progId);
-    const fill = document.getElementById(fillId);
-
-    btn.disabled = true;
-    lbl.textContent = '...';
-    prog.classList.add('on');
-    fill.style.width = '30%';
-
-    const _resetBtn = () => { lbl.textContent = 'ACTIVATE'; btn.disabled = false; };
-    const _endProg  = () => { fill.style.width = '100%'; setTimeout(() => { prog.classList.remove('on'); fill.style.width = '0%'; }, 800); };
-    const _failProg = () => { fill.style.width = '0%'; prog.classList.remove('on'); };
-
-    if (!_user || !_sub || !_hdrs) {
-        _failProg(); _resetBtn();
-        _notif('⚠️', 'Not connected', 'Please wait for connection and try again.', 5);
-        return;
-    }
-
-    fill.style.width = '60%';
-    try {
-        const payload = {
-            itemName: 'immersive_subscription',
-            isFree: true,
-            consumed: true,
-            fromLanguage: _user.fromLanguage,
-            learningLanguage: _user.learningLanguage,
-            productId: 'com.duolingo.immersive_free_trial_subscription'
-        };
-        const r = await _gm('POST', `https://www.duolingo.com/2017-06-30/users/${_sub}/shop-items`, payload);
-        if (r.status === 200 || r.status === 201) {
-            _endProg(); _resetBtn();
-            _notif('✅', 'Super Activated!', 'Free Super Duolingo activated!', 7);
-        } else {
-            _failProg(); _resetBtn();
-            _notif('❌', 'Failed', 'Activation failed. You may already have Super.', 6);
+    async function _claimAllMonthly() {
+        if (!_questState || !_questState.schema) {
+            _notif('⚠️', 'Not loaded', 'Open Monthly Quests first.');
+            return;
         }
-    } catch (_) {
-        _failProg(); _resetBtn();
-        _notif('❌', 'Network error', 'Could not reach Duolingo API.', 5);
-    }
-}
-
-// Enable Super buttons after user connects (jwt available from cookie)
-// V2 Extra Features (page 2)
-const superBtn = document.getElementById('DH_Super_Activate_Btn');
-superBtn.disabled = false;
-superBtn.addEventListener('click', () => _activateFreeSuper('DH_Super_Activate_Btn','DH_Super_Activate_Lbl','DH_Super_Prog','DH_Super_Fill'));
-
-// V1
-const superV1Btn = document.getElementById('DH_V1_Super_Activate_Btn');
-superV1Btn.disabled = false;
-superV1Btn.addEventListener('click', () => _activateFreeSuper('DH_V1_Super_Activate_Btn','DH_V1_Super_Activate_Lbl','DH_V1_Super_Prog','DH_V1_Super_Fill'));
-document.getElementById('DH_V1_Settings_Btn').addEventListener('click',()=>{ _goPage(4); _initHideProfileToggle(); });
-document.getElementById('DH_Discord_Btn').addEventListener('click',()=>window.open('https://discord.gg/VjxjT47UFv','_blank'));
-document.getElementById('DH_GitHub_Btn').addEventListener('click',()=>window.open('https://github.com/not2pixel/DuoHacker','_blank'));
-document.getElementById('DH_YouTube_Btn').addEventListener('click',()=>window.open('https://www.youtube.com/@duohacker-hack-cheat','_blank'));
-document.getElementById('DH_TopSettings_Btn').addEventListener('click',()=>{ _goPage(4); _initHideProfileToggle(); });
-document.getElementById('DH_Support_Btn').addEventListener('click',()=>{ _goPage(8); _initSupportChat(); });
-
-async function _getPrivacy(){
-    if(!_sub||!_hdrs) return null;
-    try{
-        const r=await _gm('GET',`https://www.duolingo.com/2023-05-23/users/${_sub}/privacy-settings?fields=privacySettings`);
-        if(r.status!==200) return null;
-        const data=JSON.parse(r.responseText);
-        const social=data.privacySettings?.find(x=>x.id==='disable_social');
-        return social?social.enabled:null;
-    }catch(e){ return null; }
-}
-async function _setPrivacy(hide){
-    if(!_sub||!_hdrs) return false;
-    try{
-        const r=await _gm('PATCH',`https://www.duolingo.com/2023-05-23/users/${_sub}/privacy-settings?fields=privacySettings`,{DISABLE_SOCIAL:hide});
-        return r.status===200||r.status===204;
-    }catch(e){ return false; }
-}
-function _applyHideProfileToggle(){
-    const tog=document.getElementById('DH_HideProfile_Toggle');
-    const lbl=document.getElementById('DH_HideProfile_Status');
-    if(!tog||!lbl) return;
-    if(_privacy===null){ lbl.textContent='Unavailable'; tog.disabled=true; return; }
-
-    if(!tog.dataset.dhBound){
-        tog.dataset.dhBound='1';
-        tog.addEventListener('change',async function(){
-            tog.disabled=true;
-            lbl.textContent='Saving\u2026';
-            const ok=await _setPrivacy(tog.checked);
-            if(ok){
-                _privacy=tog.checked;
-                lbl.textContent=tog.checked?'Profile is private':'Profile is public';
-            }else{
-                tog.checked=!tog.checked;
-                lbl.textContent='Failed \u2014 try again';
+        const claimBtn = document.getElementById('DH_MQ_ClaimAll_Btn');
+        if (claimBtn) {
+            claimBtn.disabled = true;
+            const lbl = claimBtn.querySelector('.DH_Sm_Btn_Label');
+            if (lbl) lbl.textContent = '…';
+        }
+        const gh = _goalHdrsLocal(_jwt);
+        const uniqueMetrics = new Set();
+        _questState.schema.goals.forEach(g => {
+            if (g.category && g.category.includes('MONTHLY') && g.metric) uniqueMetrics.add(g.metric);
+        });
+        if (uniqueMetrics.size > 0) {
+            const updates = [...uniqueMetrics].map(m => ({
+                metric: m,
+                quantity: 2000
+            }));
+            updates.push({
+                metric: 'QUESTS',
+                quantity: 1
+            });
+            const payload = {
+                metric_updates: updates,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                timestamp: new Date().toISOString()
+            };
+            try {
+                await _mqGm('POST', `${GOALS_API}/users/${_sub}/progress/batch`, payload, gh);
+                _notif('✅', 'Monthly Quests', 'All monthly quests claimed!');
+                setTimeout(() => _loadMonthlyQuests(), 900);
+            } catch {
+                _notif('❌', 'Error', 'Failed to claim quests.');
             }
-            tog.disabled=false;
+        } else {
+            _notif('ℹ️', 'Nothing to do', 'No monthly metrics found.');
+        }
+        if (claimBtn) {
+            claimBtn.disabled = false;
+            const lbl = claimBtn.querySelector('.DH_Sm_Btn_Label');
+            if (lbl) lbl.textContent = 'CLAIM';
+        }
+    }
+
+    document.getElementById('DH_Hide_Btn').addEventListener('click', () => _doHide(!_hidden));
+
+
+    document.getElementById('DH_SwitchV1_Btn').addEventListener('click', () => {
+        _v1Mode = true;
+
+        document.getElementById('DH_SwitchV1_Btn').style.display = 'none';
+        document.getElementById('DH_SwitchV2_Btn').style.display = '';
+        _v1SyncUser();
+        _goPage('V1');
+    });
+
+    document.getElementById('DH_SwitchV2_Btn').addEventListener('click', () => {
+        _v1Mode = false;
+
+        if (_v1Running) {
+            _v1Running = false;
+            _v1Task = null;
+        }
+
+        document.getElementById('DH_SwitchV2_Btn').style.display = 'none';
+        document.getElementById('DH_SwitchV1_Btn').style.display = '';
+        _goPage(1);
+    });
+
+
+    document.getElementById('DH_V1_XP_Btn').addEventListener('click', () => _v1RunToggle('xp'));
+    document.getElementById('DH_V1_Gem_Btn').addEventListener('click', () => _v1RunToggle('gems'));
+    document.getElementById('DH_V1_Streak_Btn').addEventListener('click', () => _v1RunToggle('streak'));
+
+    // ── Free Super Duolingo ──
+    function _getSuperJWT() {
+        const match = document.cookie.split('; ').find(r => r.startsWith('jwt_token='));
+        return match ? match.split('=')[1] : null;
+    }
+
+    async function _activateFreeSuper(btnId, lblId, progId, fillId) {
+        const jwt = _getSuperJWT();
+        if (!jwt) {
+            _notif('⚠️', 'Not logged in', 'Could not find your Duolingo token. Please log in first.', 5);
+            return;
+        }
+
+        const btn = document.getElementById(btnId);
+        const lbl = document.getElementById(lblId);
+        const prog = document.getElementById(progId);
+        const fill = document.getElementById(fillId);
+
+        btn.disabled = true;
+        lbl.textContent = '...';
+        prog.classList.add('on');
+        fill.style.width = '30%';
+
+        const _resetBtn = () => {
+            lbl.textContent = 'ACTIVATE';
+            btn.disabled = false;
+        };
+        const _endProg = () => {
+            fill.style.width = '100%';
+            setTimeout(() => {
+                prog.classList.remove('on');
+                fill.style.width = '0%';
+            }, 800);
+        };
+        const _failProg = () => {
+            fill.style.width = '0%';
+            prog.classList.remove('on');
+        };
+
+        if (!_user || !_sub || !_hdrs) {
+            _failProg();
+            _resetBtn();
+            _notif('⚠️', 'Not connected', 'Please wait for connection and try again.', 5);
+            return;
+        }
+
+        fill.style.width = '60%';
+        try {
+            const payload = {
+                itemName: 'immersive_subscription',
+                isFree: true,
+                consumed: true,
+                fromLanguage: _user.fromLanguage,
+                learningLanguage: _user.learningLanguage,
+                productId: 'com.duolingo.immersive_free_trial_subscription'
+            };
+            const r = await _gm('POST', `https://www.duolingo.com/2017-06-30/users/${_sub}/shop-items`, payload);
+            if (r.status === 200 || r.status === 201) {
+                _endProg();
+                _resetBtn();
+                _notif('✅', 'Super Activated!', 'Free Super Duolingo activated!', 7);
+            } else {
+                _failProg();
+                _resetBtn();
+                _notif('❌', 'Failed', 'Activation failed. You may already have Super.', 6);
+            }
+        } catch (_) {
+            _failProg();
+            _resetBtn();
+            _notif('❌', 'Network error', 'Could not reach Duolingo API.', 5);
+        }
+    }
+
+    // Enable Super buttons after user connects (jwt available from cookie)
+    // V2 Extra Features (page 2)
+    const superBtn = document.getElementById('DH_Super_Activate_Btn');
+    superBtn.disabled = false;
+    superBtn.addEventListener('click', () => _activateFreeSuper('DH_Super_Activate_Btn', 'DH_Super_Activate_Lbl', 'DH_Super_Prog', 'DH_Super_Fill'));
+
+    // V1
+    const superV1Btn = document.getElementById('DH_V1_Super_Activate_Btn');
+    superV1Btn.disabled = false;
+    superV1Btn.addEventListener('click', () => _activateFreeSuper('DH_V1_Super_Activate_Btn', 'DH_V1_Super_Activate_Lbl', 'DH_V1_Super_Prog', 'DH_V1_Super_Fill'));
+    document.getElementById('DH_V1_Settings_Btn').addEventListener('click', () => {
+        _goPage(4);
+        _initHideProfileToggle();
+    });
+    document.getElementById('DH_Discord_Btn').addEventListener('click', () => window.open('https://twisk.fun/discord', '_blank'));
+    document.getElementById('DH_GitHub_Btn').addEventListener('click', () => window.open('https://twisk.fun/github', '_blank'));
+    document.getElementById('DH_YouTube_Btn').addEventListener('click', () => window.open('https://twisk.fun/youtube', '_blank'));
+    document.getElementById('DH_TopSettings_Btn').addEventListener('click', () => {
+        _goPage(4);
+        _initHideProfileToggle();
+    });
+    document.getElementById('DH_Donate_Btn').addEventListener('click', () => {
+        window.open('https://www.patreon.com/cw/DuoHacker/membership', '_blank');
+    });
+
+    async function _getPrivacy() {
+        if (!_sub || !_hdrs) return null;
+        try {
+            const r = await _gm('GET', `https://www.duolingo.com/2023-05-23/users/${_sub}/privacy-settings?fields=privacySettings`);
+            if (r.status !== 200) return null;
+            const data = JSON.parse(r.responseText);
+            const social = data.privacySettings?.find(x => x.id === 'disable_social');
+            return social ? social.enabled : null;
+        } catch (e) {
+            return null;
+        }
+    }
+    async function _setPrivacy(hide) {
+        if (!_sub || !_hdrs) return false;
+        try {
+            const r = await _gm('PATCH', `https://www.duolingo.com/2023-05-23/users/${_sub}/privacy-settings?fields=privacySettings`, {
+                DISABLE_SOCIAL: hide
+            });
+            return r.status === 200 || r.status === 204;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function _applyHideProfileToggle() {
+        const tog = document.getElementById('DH_HideProfile_Toggle');
+        const lbl = document.getElementById('DH_HideProfile_Status');
+        if (!tog || !lbl) return;
+        if (_privacy === null) {
+            lbl.textContent = 'Unavailable';
+            tog.disabled = true;
+            return;
+        }
+
+        if (!tog.dataset.dhBound) {
+            tog.dataset.dhBound = '1';
+            tog.addEventListener('change', async function() {
+                tog.disabled = true;
+                lbl.textContent = 'Saving\u2026';
+                const ok = await _setPrivacy(tog.checked);
+                if (ok) {
+                    _privacy = tog.checked;
+                    lbl.textContent = tog.checked ? 'Profile is private' : 'Profile is public';
+                } else {
+                    tog.checked = !tog.checked;
+                    lbl.textContent = 'Failed \u2014 try again';
+                }
+                tog.disabled = false;
+            });
+        }
+        tog.checked = _privacy;
+        tog.disabled = false;
+        lbl.textContent = _privacy ? 'Profile is private' : 'Profile is public';
+    }
+
+    function _initHideProfileToggle() {
+        const tog = document.getElementById('DH_HideProfile_Toggle');
+        const lbl = document.getElementById('DH_HideProfile_Status');
+        if (!tog || !lbl) return;
+        if (!_sub || !_hdrs) {
+            lbl.textContent = 'Not connected';
+            tog.disabled = true;
+            return;
+        }
+        if (_privacy !== null) {
+            _applyHideProfileToggle();
+            return;
+        }
+
+        lbl.textContent = 'Loading\u2026';
+        tog.disabled = true;
+        _getPrivacy().then(v => {
+            _privacy = v;
+            _applyHideProfileToggle();
         });
     }
-    tog.checked=_privacy;
-    tog.disabled=false;
-    lbl.textContent=_privacy?'Profile is private':'Profile is public';
-}
-function _initHideProfileToggle(){
-    const tog=document.getElementById('DH_HideProfile_Toggle');
-    const lbl=document.getElementById('DH_HideProfile_Status');
-    if(!tog||!lbl) return;
-    if(!_sub||!_hdrs){ lbl.textContent='Not connected'; tog.disabled=true; return; }
-    if(_privacy!==null){ _applyHideProfileToggle(); return; }
 
-    lbl.textContent='Loading\u2026'; tog.disabled=true;
-    _getPrivacy().then(v=>{ _privacy=v; _applyHideProfileToggle(); });
-}
-
-document.getElementById('DH_Settings_Btn').addEventListener('click',()=>{_goPage(2);_initHideProfileToggle();});
-document.getElementById('DH_Back_Btn').addEventListener('click',()=>_goBack());
-document.getElementById('DH_Shop_Btn').addEventListener('click',()=>{_goPage(3);_loadShop();});
-document.getElementById('DH_Shop_Back_Btn').addEventListener('click',()=>_goBack());
-document.getElementById('DH_Settings_Back_Btn').addEventListener('click',()=>{
-    _initHideProfileToggle();
-    _goBack();
-});
-
-document.getElementById('DH_AccSettings_Btn').addEventListener('click',()=>_goPage(5));
-document.getElementById('DH_AccMgr_Back_Btn').addEventListener('click',()=>_goBack());
-document.getElementById('DH_AccSave_Btn').addEventListener('click',()=>_accSaveCurrent());
-
-document.getElementById('DH_MonthlyQuest_Nav_Btn').addEventListener('click',e=>{
-    if(!e.target.closest('#DH_MonthlyQuest_Claim_Btn')) _goPage(6);
-});
-document.getElementById('DH_MonthlyQuest_Claim_Btn').addEventListener('click',e=>{
-    e.stopPropagation();
-    _goPage(6);
-});
-document.getElementById('DH_MQ_Back_Btn').addEventListener('click',()=>_goBack());
-document.getElementById('DH_Credits_Back_Btn').addEventListener('click',()=>_goBack());
-document.getElementById('DH_Credits_Btn').addEventListener('click',()=>{
-    const container=document.getElementById('DH_Credits_Container');
-    container.innerHTML='';
-    CREDITS.forEach(c=>{
-        const card=document.createElement('div');
-        card.className='DH_Credit_Card';
-        const header=document.createElement('div');
-        header.className='DH_Credit_Card_Header';
-        const img=document.createElement('img');
-        img.className='DH_Credit_Thumb';
-        img.src=c.thumbnail;
-        img.alt='';
-        img.onerror=function(){this.style.display='none';};
-        const info=document.createElement('div');
-        info.style.cssText='display:flex;flex-direction:column;gap:1px;min-width:0;';
-        const name=document.createElement('p');
-        name.className='DH_Credit_Script DH_NoSel';
-        name.textContent=c.script;
-        const author=document.createElement('p');
-        author.className='DH_Credit_Author DH_NoSel';
-        author.textContent='by '+c.author;
-        info.appendChild(name);
-        info.appendChild(author);
-        header.appendChild(img);
-        header.appendChild(info);
-        const task=document.createElement('p');
-        task.className='DH_Credit_Task DH_NoSel';
-        task.textContent=c.task;
-        const link=document.createElement('a');
-        link.className='DH_Credit_Link';
-        link.href=c.url;
-        link.target='_blank';
-        link.rel='noopener';
-        link.textContent='View Script \u2197';
-        card.appendChild(header);
-        card.appendChild(task);
-        card.appendChild(link);
-        container.appendChild(card);
+    document.getElementById('DH_Settings_Btn').addEventListener('click', () => {
+        _goPage(2);
+        _initHideProfileToggle();
     });
-    _goPage(7);
-});
-document.getElementById('DH_MQ_ClaimAll_Btn').addEventListener('click',()=>_claimAllMonthly());
+    document.getElementById('DH_Back_Btn').addEventListener('click', () => _goBack());
+    document.getElementById('DH_Shop_Btn').addEventListener('click', () => _goPage(3));
+    document.getElementById('DH_Shop_Back_Btn').addEventListener('click', () => _goBack());
+    document.getElementById('DH_Settings_Back_Btn').addEventListener('click', () => {
+        _initHideProfileToggle();
+        _goBack();
+    });
 
-const xpI=document.getElementById('DH_XP_Input'),xpB=document.getElementById('DH_XP_Btn');
-xpI.addEventListener('input',()=>{xpB.disabled=!_user||!xpI.value||+xpI.value<30;});
-xpB.addEventListener('click',()=>{
-    if(_running&&_task==='xp'){_run('xp',0);return;}
-    if(_running){_notif('⚠️','Busy','Stop current farm first.');return;}
-    const v=+xpI.value;if(v<30){_notif('⚠️','Min 30 XP','Enter at least 30 XP.');return;}_run('xp',v);
-});
-xpI.addEventListener('keydown',e=>{if(e.key==='Enter'&&!xpB.disabled)xpB.click();});
+    document.getElementById('DH_AccSettings_Btn').addEventListener('click', () => _goPage(5));
+    document.getElementById('DH_AccMgr_Back_Btn').addEventListener('click', () => _goBack());
+    document.getElementById('DH_AccSave_Btn').addEventListener('click', () => _accSaveCurrent());
 
-const gmB=document.getElementById('DH_Gem_Btn');
-gmB.addEventListener('click',()=>{
-    if(_running&&_task==='gem'){_run('gem',0);return;}
-    if(_running){_notif('⚠️','Busy','Stop current farm first.');return;}
-    _run('gem',0);
-});
+    document.getElementById('DH_MonthlyQuest_Nav_Btn').addEventListener('click', e => {
+        if (!e.target.closest('#DH_MonthlyQuest_Claim_Btn')) _goPage(6);
+    });
+    document.getElementById('DH_MonthlyQuest_Claim_Btn').addEventListener('click', e => {
+        e.stopPropagation();
+        _goPage(6);
+    });
+    document.getElementById('DH_MQ_Back_Btn').addEventListener('click', () => _goBack());
+    document.getElementById('DH_Credits_Back_Btn').addEventListener('click', () => _goBack());
+    document.getElementById('DH_Credits_Btn').addEventListener('click', () => {
+        const container = document.getElementById('DH_Credits_Container');
+        container.innerHTML = '';
+        CREDITS.forEach(c => {
+            const card = document.createElement('div');
+            card.className = 'DH_Credit_Card';
+            const header = document.createElement('div');
+            header.className = 'DH_Credit_Card_Header';
+            const img = document.createElement('img');
+            img.className = 'DH_Credit_Thumb';
+            img.src = c.thumbnail;
+            img.alt = '';
+            img.onerror = function() {
+                this.style.display = 'none';
+            };
+            const info = document.createElement('div');
+            info.style.cssText = 'display:flex;flex-direction:column;gap:1px;min-width:0;';
+            const name = document.createElement('p');
+            name.className = 'DH_Credit_Script DH_NoSel';
+            name.textContent = c.script;
+            const author = document.createElement('p');
+            author.className = 'DH_Credit_Author DH_NoSel';
+            author.textContent = 'by ' + c.author;
+            info.appendChild(name);
+            info.appendChild(author);
+            header.appendChild(img);
+            header.appendChild(info);
+            const task = document.createElement('p');
+            task.className = 'DH_Credit_Task DH_NoSel';
+            task.textContent = c.task;
+            const link = document.createElement('a');
+            link.className = 'DH_Credit_Link';
+            link.href = c.url;
+            link.target = '_blank';
+            link.rel = 'noopener';
+            link.textContent = 'View Script \u2197';
+            card.appendChild(header);
+            card.appendChild(task);
+            card.appendChild(link);
+            container.appendChild(card);
+        });
+        _goPage(7);
+    });
+    document.getElementById('DH_MQ_ClaimAll_Btn').addEventListener('click', () => _claimAllMonthly());
 
-const stI=document.getElementById('DH_Streak_Input'),stB=document.getElementById('DH_Streak_Btn');
-stI.addEventListener('input',()=>{stB.disabled=!_user||!stI.value||+stI.value<1;});
-stB.addEventListener('click',()=>{
-    if(_running&&_task==='streak'){_run('streak',0);return;}
-    if(_running){_notif('⚠️','Busy','Stop current farm first.');return;}
-    const v=+stI.value;if(v<1)return;_run('streak',v);
-});
-stI.addEventListener('keydown',e=>{if(e.key==='Enter'&&!stB.disabled)stB.click();});
+    const xpI = document.getElementById('DH_XP_Input'),
+        xpB = document.getElementById('DH_XP_Btn');
+    xpI.addEventListener('input', () => {
+        xpB.disabled = !_user || !xpI.value || +xpI.value < 30;
+    });
+    xpB.addEventListener('click', () => {
+        if (_running && _task === 'xp') {
+            _run('xp', 0);
+            return;
+        }
+        if (_running) {
+            _notif('⚠️', 'Busy', 'Stop current farm first.');
+            return;
+        }
+        const v = +xpI.value;
+        if (v < 30) {
+            _notif('⚠️', 'Min 30 XP', 'Enter at least 30 XP.');
+            return;
+        }
+        _run('xp', v);
+    });
+    xpI.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !xpB.disabled) xpB.click();
+    });
 
-const prI=document.getElementById('DH_Practice_Input'),prB=document.getElementById('DH_Practice_Btn');
-prI.addEventListener('input',()=>{prB.disabled=!_user;});
-prB.addEventListener('click',()=>{
-    if(_lessonSolving){
+    const gmB = document.getElementById('DH_Gem_Btn');
+    gmB.addEventListener('click', () => {
+        if (_running && _task === 'gem') {
+            _run('gem', 0);
+            return;
+        }
+        if (_running) {
+            _notif('⚠️', 'Busy', 'Stop current farm first.');
+            return;
+        }
+        _run('gem', 0);
+    });
 
-        _stopPractice();
-        sessionStorage.removeItem('dh2_practice');
-        _notif('⏹️','Stopped','Practice farm stopped.');
-        return;
-    }
-    if(_running){_notif('⚠️','Busy','Stop current farm first.');return;}
-    if(!_user){_notif('⚠️','Not connected','Please wait.');return;}
-    const v=parseInt(prI.value)||0;
+    const stI = document.getElementById('DH_Streak_Input'),
+        stB = document.getElementById('DH_Streak_Btn');
+    stI.addEventListener('input', () => {
+        stB.disabled = !_user || !stI.value || +stI.value < 1;
+    });
+    stB.addEventListener('click', () => {
+        if (_running && _task === 'streak') {
+            _run('streak', 0);
+            return;
+        }
+        if (_running) {
+            _notif('⚠️', 'Busy', 'Stop current farm first.');
+            return;
+        }
+        const v = +stI.value;
+        if (v < 1) return;
+        _run('streak', v);
+    });
+    stI.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !stB.disabled) stB.click();
+    });
 
-    sessionStorage.setItem('dh2_practice',JSON.stringify({active:true,count:v,done:0}));
-    _farmPractice(v);
-});
+    const prI = document.getElementById('DH_Practice_Input'),
+        prB = document.getElementById('DH_Practice_Btn');
+    prI.addEventListener('input', () => {
+        prB.disabled = !_user;
+    });
+    prB.addEventListener('click', () => {
+        if (_lessonSolving) {
 
-document.getElementById('DH_League_Btn').addEventListener('click',()=>{
-    if(_running&&_task==='league'){_run('league',0);return;}
-    if(_running){_notif('⚠️','Busy','Stop current farm first.');return;}
-    _run('league',0);
-});
+            _stopPractice();
+            sessionStorage.removeItem('dh2_practice');
+            _notif('⏹️', 'Stopped', 'Practice farm stopped.');
+            return;
+        }
+        if (_running) {
+            _notif('⚠️', 'Busy', 'Stop current farm first.');
+            return;
+        }
+        if (!_user) {
+            _notif('⚠️', 'Not connected', 'Please wait.');
+            return;
+        }
+        const v = parseInt(prI.value) || 0;
 
-document.getElementById('DH_Quest_Btn').addEventListener('click',async()=>{
-    if(_running){_notif('⚠️','Busy','Stop current farm first.');return;}
-    await _farmDailyQuest();
-});
+        sessionStorage.setItem('dh2_practice', JSON.stringify({
+            active: true,
+            count: v,
+            done: 0
+        }));
+        _farmPractice(v);
+    });
 
-const delI=document.getElementById('DH_Delay_Input'),delB=document.getElementById('DH_Delay_Btn');
-delB.addEventListener('click',()=>{
-    const v=parseInt(delI.value);
-    if(!isNaN(v)&&v>=0){
-        _delay=v; localStorage.setItem('dh2_delay',v);
-        _setBtnState('DH_Delay_Btn',_C_GREEN,'SAVED ✓');
-        setTimeout(()=>_setBtnState('DH_Delay_Btn',_C_BLUE,'SAVE'),1500);
-    }
-});
+    document.getElementById('DH_League_Btn').addEventListener('click', () => {
+        if (_running && _task === 'league') {
+            _run('league', 0);
+            return;
+        }
+        if (_running) {
+            _notif('⚠️', 'Busy', 'Stop current farm first.');
+            return;
+        }
+        if (!confirm('⚠️ Warning\n\nOverusing this feature may result in your account being permanently banned from the leaderboard.\n\nDo you wish to continue?')) return;
+        _run('league', 0);
+    });
 
-const supT=document.getElementById('DH_Super_Toggle');
-supT.checked=localStorage.getItem('dh2_super')==='true';
-supT.addEventListener('change',()=>{ localStorage.setItem('dh2_super',supT.checked?'true':'false');
-    _notif('ℹ️','Reload required','Refresh page to apply.',4);
-});
+    document.getElementById('DH_Quest_Btn').addEventListener('click', async () => {
+        if (_running) {
+            _notif('⚠️', 'Busy', 'Stop current farm first.');
+            return;
+        }
+        await _farmDailyQuest();
+    });
 
-const solverT=document.getElementById('DH_Solver_Toggle');
-solverT.checked=localStorage.getItem('duohacker_inject_solver')==='true';
-_INJECT_SOLVER_ENABLED=solverT.checked;
-solverT.addEventListener('change',()=>{
-    _INJECT_SOLVER_ENABLED=solverT.checked;
-    localStorage.setItem('duohacker_inject_solver',solverT.checked?'true':'false');
-    if(!_INJECT_SOLVER_ENABLED){
-        _autoSolver.removeUI();
-    } else {
-        const inLesson=window.location.pathname.includes('/lesson')||window.location.pathname.includes('/practice');
-        if(inLesson) setTimeout(()=>_autoSolver.createUI(),300);
-    }
-});
+    const delI = document.getElementById('DH_Delay_Input'),
+        delB = document.getElementById('DH_Delay_Btn');
+    delB.addEventListener('click', () => {
+        const v = parseInt(delI.value);
+        if (!isNaN(v) && v >= 0) {
+            _delay = v;
+            localStorage.setItem('dh2_delay', v);
+            _setBtnState('DH_Delay_Btn', _C_GREEN, 'SAVED ✓');
+            setTimeout(() => _setBtnState('DH_Delay_Btn', _C_BLUE, 'SAVE'), 1500);
+        }
+    });
 
-document.getElementById('DH_Shop_Search').addEventListener('input',e=>{
-    _renderShop(_allShopItems,e.target.value);
-});
+    const supT = document.getElementById('DH_Super_Toggle');
+    supT.checked = localStorage.getItem('dh2_super') === 'true';
+    supT.addEventListener('change', () => {
+        localStorage.setItem('dh2_super', supT.checked ? 'true' : 'false');
+        _notif('ℹ️', 'Reload required', 'Refresh page to apply.', 4);
+    });
 
-let _hideAnimObserver=null;
-const _HIDE_ANIM_STYLE_ID='DH_HideAnim_Style';
-const _HIDE_ANIM_KEY='duohacker_hide_animation';
-const _HIDE_PROTECT=['#DH_Root','#DH_Root *'];
+    const solverT = document.getElementById('DH_Solver_Toggle');
+    solverT.checked = localStorage.getItem('duohacker_inject_solver') === 'true';
+    _INJECT_SOLVER_ENABLED = solverT.checked;
+    solverT.addEventListener('change', () => {
+        _INJECT_SOLVER_ENABLED = solverT.checked;
+        localStorage.setItem('duohacker_inject_solver', solverT.checked ? 'true' : 'false');
+        if (!_INJECT_SOLVER_ENABLED) {
+            _autoSolver.removeUI();
+        } else {
+            const inLesson = window.location.pathname.includes('/lesson') || window.location.pathname.includes('/practice');
+            if (inLesson) setTimeout(() => _autoSolver.createUI(), 300);
+        }
+    });
 
-function _applyHideAnim(){
-    if(document.getElementById(_HIDE_ANIM_STYLE_ID)) return;
-    const s=document.createElement('style');
-    s.id=_HIDE_ANIM_STYLE_ID;
-    s.textContent=`
+    document.getElementById('DH_Shop_Search').addEventListener('input', e => {
+        _renderShop(_allShopItems, e.target.value);
+    });
+
+    let _hideAnimObserver = null;
+    const _HIDE_ANIM_STYLE_ID = 'DH_HideAnim_Style';
+    const _HIDE_ANIM_KEY = 'duohacker_hide_animation';
+    const _HIDE_PROTECT = ['#DH_Root', '#DH_Root *'];
+
+    function _applyHideAnim() {
+        if (document.getElementById(_HIDE_ANIM_STYLE_ID)) return;
+        const s = document.createElement('style');
+        s.id = _HIDE_ANIM_STYLE_ID;
+        s.textContent = `
 body img:not(#DH_Root img),
 body svg:not(#DH_Root svg),
 body [role="img"]:not(#DH_Root [role="img"]),
@@ -3898,534 +4549,138 @@ body * {
     visibility:visible!important;
     transition:unset!important;
 }`;
-    document.head.appendChild(s);
-}
-
-function _removeHideAnim(){
-    document.getElementById(_HIDE_ANIM_STYLE_ID)?.remove();
-}
-
-const _hideAnimT=document.getElementById('DH_HideAnim_Toggle');
-_hideAnimT.checked=localStorage.getItem(_HIDE_ANIM_KEY)==='true';
-if(_hideAnimT.checked) _applyHideAnim();
-_hideAnimT.addEventListener('change',()=>{
-    localStorage.setItem(_HIDE_ANIM_KEY,_hideAnimT.checked?'true':'false');
-    _hideAnimT.checked?_applyHideAnim():_removeHideAnim();
-});
-
-const CREDITS = [
-    {
-        script: 'DuoHacker V1',
-        url: 'https://github.com/not2pixel/DuoHacker',
-        thumbnail: 'https://raw.githubusercontent.com/not2pixel/DuoHacker/refs/heads/main/images/DuoHacker_Logo_NoBG_PNG.png',
-        author: 'not2pixel',
-        task: 'Original script - The main cores are being used in V2'
-    },
-    {
-        script: 'Duolingo PRO',
-        url: 'https://github.com/anonymoushackerIV/Duolingo-PRO',
-        thumbnail: 'https://www.duolingopro.net/static/favicons/duo/128/light/primary.png',
-        author: 'anonymoushackerIV',
-        task: 'The V2 UI was inspired by this script'
+        document.head.appendChild(s);
     }
-];
 
-const main=document.getElementById('DH_Main');
-const box=document.getElementById('DH_Main_Box');
+    function _removeHideAnim() {
+        document.getElementById(_HIDE_ANIM_STYLE_ID)?.remove();
+    }
 
-main.style.bottom=`-${box.offsetHeight-8}px`;
-box.style.opacity='0'; box.style.filter='blur(8px)';
+    const _hideAnimT = document.getElementById('DH_HideAnim_Toggle');
+    _hideAnimT.checked = localStorage.getItem(_HIDE_ANIM_KEY) === 'true';
+    if (_hideAnimT.checked) _applyHideAnim();
+    _hideAnimT.addEventListener('change', () => {
+        localStorage.setItem(_HIDE_ANIM_KEY, _hideAnimT.checked ? 'true' : 'false');
+        _hideAnimT.checked ? _applyHideAnim() : _removeHideAnim();
+    });
 
-_doHide(false);
-setTimeout(()=>{
-    main.style.transition='0.8s cubic-bezier(0.16,1,0.32,1)';
-    box.style.transition='0.8s cubic-bezier(0.16,1,0.32,1)';
-    main.style.bottom='16px'; box.style.opacity=''; box.style.filter='';
-    setTimeout(()=>{main.style.transition='';box.style.transition='';},800);
-},600);
-let _licenseLoaded=false;
-function _loadLicense(){
-    if(_licenseLoaded) return;
-    const txt=document.getElementById('DH_License_Text');
-    if(!txt) return;
-    GM_xmlhttpRequest({
-        method:'GET',
-        url:'https://raw.githubusercontent.com/not2pixel/DuoHacker/refs/heads/main/LICENSE',
-        onload:r=>{
-            if(!document.getElementById('DH_License_Text')) return;
-            document.getElementById('DH_License_Text').textContent=
-                r.status===200?r.responseText:'Could not load license. Please check your connection.';
-            _licenseLoaded=true;
+    const CREDITS = [{
+            script: 'DuoHacker V1',
+            url: 'https://github.com/not2pixel/DuoHacker/tree/main/v1',
+            thumbnail: 'https://raw.githubusercontent.com/not2pixel/DuoHacker/refs/heads/main/images/DuoHacker_Logo_NoBG_PNG.png',
+            author: 'not2pixel',
+            task: 'Original script - The main cores are being used in V2'
         },
-        onerror:()=>{
-            const t=document.getElementById('DH_License_Text');
-            if(t) t.textContent='Could not load license. Please check your connection.';
+        {
+            script: 'Duolingo PRO',
+            url: 'https://github.com/anonymoushackerIV/Duolingo-PRO',
+            thumbnail: 'https://www.duolingopro.net/static/favicons/duo/128/light/primary.png',
+            author: 'anonymoushackerIV',
+            task: 'The V2 UI was inspired by this script'
         }
-    });
-}
-document.getElementById('DH_License_Open_Btn').addEventListener('click',()=>_goPage(9));
-document.getElementById('DH_License_Back_Btn').addEventListener('click',()=>_goBack());
-document.getElementById('DH_Support_Back_Btn').addEventListener('click',()=>_goBack());
+    ];
 
-// ── Support Chat ──────────────────────────────────────────────────────────
-const _SUPPORT_API   = 'https://api.twisk.fun/support';
-const _SUPPORT_SK_KEY = 'dh2_support_session';
+    const main = document.getElementById('DH_Main');
+    const box = document.getElementById('DH_Main_Box');
 
-let _chatInited     = false;
-let _chatIsClosed   = false;
-let _chatSessionId  = localStorage.getItem(_SUPPORT_SK_KEY) || null;
-let _chatLastMsgId  = null;
-let _chatPollTimer  = null;
-let _chatInputBound = false;
-let _chatPendingImg = null;
+    main.style.bottom = `-${box.offsetHeight-8}px`;
+    box.style.opacity = '0';
+    box.style.filter = 'blur(8px)';
 
-// ── simple markdown → text/html (agent bubbles only) ────────────────────
-function _mdToHtml(text) {
-    // 1. escape entire raw input first — neutralises all raw HTML/XSS
-    text = _htmlEsc(text);
-    // 2. code blocks (content already escaped above)
-    text = text.replace(/```([\s\S]*?)```/g, (_,c) =>
-        `<pre><code>${c.trim()}</code></pre>`);
-    // 3. inline code
-    text = text.replace(/`([^`]+)`/g, (_,c) => `<code>${c}</code>`);
-    // 4. bold
-    text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    // 5. italic
-    text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
-    // 6. links — only http/https allowed
-    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => {
-        const safeHref = /^https?:\/\//i.test(href) ? href : '#';
-        return `<a href="${_attrEsc(safeHref)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
-    });
-    // 7. unordered list lines
-    text = text.replace(/^[ \t]*[-*] (.+)$/gm, '<li>$1</li>');
-    text = text.replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>');
-    // 8. line breaks
-    text = text.replace(/\n/g, '<br>');
-    return text;
-}
-// escape for text content
-function _htmlEsc(s) {
-    return String(s)
-        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-        .replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
-}
-// escape for attribute values (href, src)
-function _attrEsc(s) {
-    return String(s)
-        .replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;')
-        .replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
+    _doHide(false);
+    setTimeout(() => {
+        main.style.transition = '0.8s cubic-bezier(0.16,1,0.32,1)';
+        box.style.transition = '0.8s cubic-bezier(0.16,1,0.32,1)';
+        main.style.bottom = '16px';
+        box.style.opacity = '';
+        box.style.filter = '';
+        setTimeout(() => {
+            main.style.transition = '';
+            box.style.transition = '';
+        }, 800);
+    }, 600);
+    let _licenseLoaded = false;
 
-// strip all HTML tags from a string (used to sanitize server m.html before re-rendering)
-function _stripHtml(html) {
-    const tmp = document.createElement('div');
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
-}
-
-// ── API helpers (use GM_xmlhttpRequest so CORS is bypassed by Tampermonkey) ─
-function _supportPost(path, body) {
-    return new Promise((res, rej) => GM_xmlhttpRequest({
-        method: 'POST',
-        url: _SUPPORT_API + path,
-        headers: { 'Content-Type': 'application/json' },
-        data: JSON.stringify(body),
-        onload: r => res(r),
-        onerror: () => rej(new Error('Network')),
-        timeout: 10000, ontimeout: () => rej(new Error('Timeout'))
-    }));
-}
-function _supportGet(path) {
-    return new Promise((res, rej) => GM_xmlhttpRequest({
-        method: 'GET',
-        url: _SUPPORT_API + path,
-        onload: r => res(r),
-        onerror: () => rej(new Error('Network')),
-        timeout: 10000, ontimeout: () => rej(new Error('Timeout'))
-    }));
-}
-
-// ── init — called when user opens the chat page ──────────────────────────
-async function _initSupportChat() {
-    const scroll = document.getElementById('DH_Chat_Scroll');
-    if (!scroll) return;
-
-    if (!_chatInputBound) {
-        _chatInputBound = true;
-        const input = document.getElementById('DH_Chat_Input');
-        if (input) {
-            input.addEventListener('input', () => {
-                input.style.height = 'auto';
-                input.style.height = Math.min(input.scrollHeight, 80) + 'px';
-            });
-            input.addEventListener('keydown', e => {
-                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); _chatSend(); }
-            });
-        }
-        document.getElementById('DH_Chat_Send_Btn').addEventListener('click', _chatSend);
-
-        // attach button → trigger hidden file input
-        const attachBtn  = document.getElementById('DH_Chat_Attach_Btn');
-        const fileInput  = document.getElementById('DH_Chat_File_Input');
-        const removeBtn  = document.getElementById('DH_Chat_Img_Remove_Btn');
-        if (attachBtn && fileInput) {
-            attachBtn.addEventListener('click', () => fileInput.click());
-            fileInput.addEventListener('change', () => {
-                const file = fileInput.files && fileInput.files[0];
-                fileInput.value = '';
-                if (!file) return;
-                if (!['image/png','image/jpeg','image/jpg'].includes(file.type)) {
-                    _chatAppendSystem('⚠️ Only PNG and JPEG images are supported.');
-                    return;
-                }
-                if (file.size > 5 * 1024 * 1024) {
-                    _chatAppendSystem('⚠️ Image must be under 5 MB.');
-                    return;
-                }
-                const reader = new FileReader();
-                reader.onload = e => {
-                    _chatPendingImg = { dataUrl: e.target.result, name: file.name };
-                    const thumb = document.getElementById('DH_Chat_Img_Thumb');
-                    const nameEl = document.getElementById('DH_Chat_Img_Name');
-                    const previewRow = document.getElementById('DH_Chat_Img_Preview_Row');
-                    if (thumb) thumb.src = _chatPendingImg.dataUrl;
-                    if (nameEl) nameEl.textContent = file.name;
-                    if (previewRow) previewRow.style.display = 'flex';
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-        if (removeBtn) {
-            removeBtn.addEventListener('click', _chatClearImg);
-        }
-    }
-
-    if (_chatInited) {
-        scroll.scrollTop = scroll.scrollHeight;
-        // f
-        if (!_chatIsClosed) {
-            _chatStartPoll();
-        }
-        return;
-    }
-    _chatInited = true;
-
-    // show loading state
-    _chatAppendSystem('Connecting to support…');
-
-    try {
-        const body = {
-            sessionId:  _chatSessionId || undefined,
-            userId:     _user ? String(_user.id || _sub || '') : 'anonymous',
-            username:   _user ? (_user.username || 'User') : 'User',
-            avatarUrl:  _user && _user.picture
-                ? ((_p => { let hq = _p.replace(/\/(medium|large|small)$/, '/xlarge'); if (!hq.endsWith('/xlarge') && hq.includes('duolingo.com/ssr-avatars')) hq += '/xlarge'; return hq; })(_user.picture))
-                : '',
-        };
-        const r = await _supportPost('/session', body);
-        const data = JSON.parse(r.responseText);
-
-        if (r.status === 503) {
-            scroll.innerHTML = '';
-            _chatAppendSystem(`⚠️ ${data.error || 'Support is currently full.'}`);
-            _chatInited = false;
-            return;
-        }
-        if (r.status !== 200) throw new Error('status ' + r.status);
-
-        _chatSessionId = data.sessionId;
-        localStorage.setItem(_SUPPORT_SK_KEY, _chatSessionId);
-
-        // fix
-        const input = document.getElementById('DH_Chat_Input');
-        const btn = document.getElementById('DH_Chat_Send_Btn');
-        const attachBtn = document.getElementById('DH_Chat_Attach_Btn');
-
-        if (input) {
-            input.disabled = false;
-            input.placeholder = 'Type a message…';
-        }
-        if (btn) btn.disabled = false;
-        if (attachBtn) attachBtn.disabled = false;
-
-        // c
-        scroll.innerHTML = '';
-
-        for (const m of (data.messages || [])) {
-            _chatRenderMsg(m);
-            _chatLastMsgId = m.id;
-        }
-        scroll.scrollTop = scroll.scrollHeight;
-    } catch(e) {
-        scroll.innerHTML = '';
-        _chatAppendSystem('⚠️ Could not connect. Check your connection and try again.');
-        _chatInited = false;
-        return;
-    }
-
-    _chatStartPoll();
-}
-
-// ── long-poll for new agent messages ─────────────────────────────────────
-function _chatStartPoll() {
-    if (_chatPollTimer) return;
-    _chatPollTimer = setInterval(_chatPoll, 4000);
-}
-function _chatStopPoll() {
-    clearInterval(_chatPollTimer);
-    _chatPollTimer = null;
-}
-async function _chatPoll() {
-    if (!_chatSessionId) return;
-    try {
-        const after = _chatLastMsgId ? `?after=${_chatLastMsgId}` : '';
-        const r = await _supportGet(`/messages/${_chatSessionId}${after}`);
-        if (r.status !== 200) return;
-        const { messages, status } = JSON.parse(r.responseText);
-        for (const m of (messages || [])) {
-            _chatRenderMsg(m);
-            _chatLastMsgId = m.id;
-        }
-        const scroll = document.getElementById('DH_Chat_Scroll');
-        if (scroll && messages && messages.length) scroll.scrollTop = scroll.scrollHeight;
-
-        // closed ui sync
-        if (status === 'closed') {
-            const input = document.getElementById('DH_Chat_Input');
-            const btn   = document.getElementById('DH_Chat_Send_Btn');
-            const attachBtn = document.getElementById('DH_Chat_Attach_Btn');
-
-            if (input && !input.disabled) {
-                input.disabled = true;
-                input.placeholder = 'Closed by admin.';
-                if (btn) btn.disabled = true;
-                if (attachBtn) attachBtn.disabled = true;
-
-                _chatAppendSystem('This conversation closed by admin.');
-
-                _chatStopPoll();
-                localStorage.removeItem(_SUPPORT_SK_KEY);
-
-                // reset
-                // _chatSessionId = null;
-                // _chatInited    = false;
-                // _chatLastMsgId = null;
-
-                _chatIsClosed = true;
+    function _loadLicense() {
+        if (_licenseLoaded) return;
+        const txt = document.getElementById('DH_License_Text');
+        if (!txt) return;
+        GM_xmlhttpRequest({
+            method: 'GET',
+            url: 'https://raw.githubusercontent.com/not2pixel/DuoHacker/refs/heads/main/LICENSE',
+            onload: r => {
+                if (!document.getElementById('DH_License_Text')) return;
+                document.getElementById('DH_License_Text').textContent =
+                    r.status === 200 ? r.responseText : 'Could not load license. Please check your connection.';
+                _licenseLoaded = true;
+            },
+            onerror: () => {
+                const t = document.getElementById('DH_License_Text');
+                if (t) t.textContent = 'Could not load license. Please check your connection.';
             }
-        }
-    } catch (e) {
-        // c re
+        });
     }
-}
+    document.getElementById('DH_License_Open_Btn').addEventListener('click', () => _goPage(9));
+    document.getElementById('DH_License_Back_Btn').addEventListener('click', () => _goBack());
+    document.getElementById('DH_Changelog_Back_Btn').addEventListener('click', () => _goBack());
+    document.getElementById('DH_Conn_Btn').addEventListener('click', () => {
+        _renderChangelog();
+        _goPage(10);
+    });
 
-// ── send user message ─────────────────────────────────────────────────────
-function _chatClearImg() {
-    _chatPendingImg = null;
-    const thumb = document.getElementById('DH_Chat_Img_Thumb');
-    const previewRow = document.getElementById('DH_Chat_Img_Preview_Row');
-    if (thumb) thumb.src = '';
-    if (previewRow) previewRow.style.display = 'none';
-}
+    function _renderChangelog() {
+        const list = document.getElementById('DH_Changelog_List');
+        if (!list || list.dataset.rendered) return;
+        list.dataset.rendered = '1';
+        _CHANGELOG.forEach((entry, i) => {
+            const isLatest = i === 0;
+            const block = document.createElement('div');
+            block.style.cssText = 'display:flex;flex-direction:column;gap:8px;align-self:stretch;';
 
-async function _chatSend() {
-    const input = document.getElementById('DH_Chat_Input');
-    if (!input) return;
-    const text = input.value.trim();
-    const img  = _chatPendingImg;
+            const vRow = document.createElement('div');
+            vRow.style.cssText = 'display:flex;align-items:center;gap:8px;';
+            vRow.innerHTML = `
+            <p class="DH_T1 DH_NoSel" style="font-size:15px;font-weight:800;color:rgb(var(--color-eel,88,88,88));">v${entry.version}</p>
+            ${isLatest ? `<span style="background:rgb(var(--DH-blue));color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;">CURRENT</span>` : ''}
+        `;
 
-    if (text.length > 2000) {
-        _chatAppendSystem('⚠️ The message exceeds 2000 characters.');
-        return;
-    }
+            const changeList = document.createElement('div');
+            changeList.style.cssText = 'display:flex;flex-direction:column;gap:6px;';
+            entry.changes.forEach(c => {
+                const item = document.createElement('p');
+                item.className = 'DH_T2 DH_NoSel';
+                item.style.cssText = `
+                font-size:13px;font-weight:600;line-height:1.5;
+                background:rgba(var(--color-eel,88,88,88),0.06);
+                border-radius:10px;padding:9px 12px;
+                color:rgb(var(--color-eel,88,88,88));
+            `;
+                item.textContent = c;
+                changeList.appendChild(item);
+            });
 
-    if (!text && !img) return;
+            block.appendChild(vRow);
+            block.appendChild(changeList);
 
-    if (!_chatSessionId) {
-        input.disabled = true;
-        await _initSupportChat();
-        input.disabled = false;
-        if (!_chatSessionId) return;
-    }
-
-    input.value = '';
-    input.style.height = 'auto';
-    _chatClearImg();
-
-    const optId = 'opt_' + Date.now();
-    _chatRenderMsg({ id: optId, role: 'user', text: text || '', imageDataUrl: img ? img.dataUrl : null, ts: new Date().toISOString() });
-
-    const payload = { sessionId: _chatSessionId };
-    if (text) payload.text = text;
-    if (img) {
-        payload.imageDataUrl = img.dataUrl;
-        payload.imageName    = img.name;
-        if (!payload.text) payload.text = '[image]';
-    }
-
-    const typing = _chatShowTyping();
-
-    try {
-        const r = await _supportPost('/message', payload);
-        if (typing && typing.parentNode) typing.parentNode.removeChild(typing);
-
-        // ratelimits
-        if (r.status === 429 || r.status === 400 || r.status === 403) {
-            const data = JSON.parse(r.responseText);
-            _chatAppendSystem(`⚠️ ${data.error || 'Failed to send message.'}`);
-            const optBubble = document.getElementById('dh-msg-' + optId);
-            if (optBubble) optBubble.remove(); // del err msg
-            return;
-        }
-
-        if (r.status !== 200) {
-            _chatAppendSystem('⚠️ Failed to send message.');
-            const optBubble = document.getElementById('dh-msg-' + optId);
-            if (optBubble) optBubble.remove();
-        } else {
-            const data = JSON.parse(r.responseText);
-            _chatLastMsgId = data.message.id;
-        }
-    } catch {
-        if (typing && typing.parentNode) typing.parentNode.removeChild(typing);
-        _chatAppendSystem('⚠️ Network error — message may not have been sent.');
-    }
-}
-
-// ── render helpers ────────────────────────────────────────────────────────
-function _chatRenderMsg(m) {
-    const scroll = document.getElementById('DH_Chat_Scroll');
-    if (!scroll) return;
-
-    // don't render duplicate IDs
-    if (m.id && document.getElementById('dh-msg-' + m.id)) return;
-
-    const isUser = m.role === 'user';
-    const row = document.createElement('div');
-    row.className = 'DH_Chat_Row' + (isUser ? ' user' : '');
-    if (m.id) row.id = 'dh-msg-' + m.id;
-
-    const av = document.createElement('div');
-    av.className = 'DH_Chat_Bubble_Avatar';
-    if (isUser) {
-        // _chatUserAvatar() returns safe DOM string (src attr-escaped, no JS)
-        av.innerHTML = _chatUserAvatar();
-    } else {
-        const agentImg = document.createElement('img');
-        agentImg.src = 'https://assets.twisk.fun/images/DuoHacker_Logo_NoBG_PNG.png';
-        agentImg.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
-        agentImg.onerror = function(){ this.parentNode.textContent = '🦉'; };
-        av.appendChild(agentImg);
-    }
-
-    const wrap = document.createElement('div');
-    wrap.className = 'DH_Chat_Bubble_Wrap';
-
-    const nameTag = document.createElement('p');
-    nameTag.className = 'DH_Chat_Name_Tag DH_NoSel';
-    nameTag.textContent = isUser ? _chatUserName() : 'DuoHacker Support';
-
-    const bubble = document.createElement('div');
-    bubble.className = 'DH_Chat_Bubble ' + (isUser ? 'user' : 'agent');
-    if (!isUser) {
-        // m.html comes from our own server (marked.parse) — use directly.
-        // Only run _mdToHtml on raw m.text when m.html is absent (e.g. optimistic local msgs).
-        const html = m.html ? m.html : _mdToHtml(m.text);
-        bubble.innerHTML = html;
-    } else {
-        if (m.imageDataUrl) {
-            const img = document.createElement('img');
-            img.className = 'DH_Chat_Sent_Img';
-            img.src = m.imageDataUrl;
-            img.alt = 'image';
-            bubble.appendChild(img);
-            if (m.text && m.text !== '[image]') {
-                const t = document.createElement('span');
-                t.style.cssText = 'display:block;margin-top:4px;';
-                t.textContent = m.text;
-                bubble.appendChild(t);
+            if (i < _CHANGELOG.length - 1) {
+                const div = document.createElement('div');
+                div.className = 'DH_Divider';
+                block.appendChild(div);
             }
-        } else {
-            bubble.textContent = m.text;
+
+            list.appendChild(block);
+        });
+    }
+
+    _connect();
+
+    setTimeout(() => {
+        if (!_v1Mode) {
+            const sb = document.getElementById('DH_SwitchV1_Btn');
+            if (sb && !_hidden) sb.style.display = '';
         }
-    }
+    }, 700);
 
-    wrap.appendChild(nameTag);
-    wrap.appendChild(bubble);
-    row.appendChild(av);
-    row.appendChild(wrap);
-    scroll.appendChild(row);
-    scroll.scrollTop = scroll.scrollHeight;
-    if (m.id) _chatLastMsgId = m.id;
-}
-
-function _chatAppendSystem(text) {
-    const scroll = document.getElementById('DH_Chat_Scroll');
-    if (!scroll) return;
-    const p = document.createElement('p');
-    p.className = 'DH_T2 DH_NoSel';
-    p.style.cssText = 'text-align:center;padding:6px 0;font-size:11px;opacity:0.5;';
-    p.textContent = text;
-    scroll.appendChild(p);
-}
-
-function _chatShowTyping() {
-    const scroll = document.getElementById('DH_Chat_Scroll');
-    if (!scroll) return null;
-    const row = document.createElement('div');
-    row.className = 'DH_Chat_Row';
-    row.id = 'DH_Chat_Typing_Row';
-    const av = document.createElement('div');
-    av.className = 'DH_Chat_Bubble_Avatar';
-    const typingImg = document.createElement('img');
-    typingImg.src = 'https://assets.twisk.fun/images/DuoHacker_Logo_NoBG_PNG.png';
-    typingImg.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
-    typingImg.onerror = function(){ this.parentNode.textContent = '🦉'; };
-    av.appendChild(typingImg);
-    const bubble = document.createElement('div');
-    bubble.className = 'DH_Chat_Bubble agent';
-    const typingDots = document.createElement('div');
-    typingDots.className = 'DH_Chat_Typing';
-    typingDots.appendChild(document.createElement('span'));
-    typingDots.appendChild(document.createElement('span'));
-    typingDots.appendChild(document.createElement('span'));
-    bubble.appendChild(typingDots);
-    row.appendChild(av);
-    row.appendChild(bubble);
-    scroll.appendChild(row);
-    scroll.scrollTop = scroll.scrollHeight;
-    return row;
-}
-
-function _chatUserAvatar() {
-    if (_user && _user.picture) {
-        let hq = _user.picture.replace(/\/(medium|large|small)$/, '/xlarge');
-        if (!hq.endsWith('/xlarge') && hq.includes('duolingo.com/ssr-avatars')) hq += '/xlarge';
-        // _attrEsc prevents quote-breakout in src attribute
-        return `<img src="${_attrEsc(hq)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" onerror="this.parentNode.textContent='👤'">`;
-    }
-    return '👤';
-}
-function _chatUserName() {
-    return (_user && _user.username) ? _user.username : 'You';
-}
-
-// stop poll when user leaves the support page
-document.getElementById('DH_Support_Back_Btn').addEventListener('click', () => {
-    _chatStopPoll();
-    _goBack();
-});
-
-_connect();
-
-setTimeout(()=>{
-    if(!_v1Mode){
-        const sb=document.getElementById('DH_SwitchV1_Btn');
-        if(sb&&!_hidden) sb.style.display='';
-    }
-},700);
-
-_resumePracticeIfNeeded();
+    _resumePracticeIfNeeded();
 
 })();
