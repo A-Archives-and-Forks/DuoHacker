@@ -51,8 +51,8 @@
 // @name:lo             Duolingo DuoHacker
 // @name:ur             Duolingo DuoHacker
 
-// @namespace           https://github.com/not2pixel/DuoHacker
-// @version             2026.06.15
+// @namespace           https://github.com/DuoHacker/DuoHacker
+// @version             2026.06.21
 // @description         The #1 Duolingo hack - Farm XP, Gems, Streaks and unlock Duolingo Max for free.
 // @description:vi      Công cụ hack Duolingo #1 - Farm XP, Gems, Streaks và mở khóa Duolingo Max miễn phí.
 // @description:zh-CN   最强 Duolingo 辅助工具 - 自动刷 XP、宝石、连胜，免费解锁 Duolingo Max。
@@ -110,7 +110,7 @@
 // @match               https://*.duolingo.com/*
 // @match               https://*.duolingo.cn/*
 
-// @icon                https://github.com/not2pixel/DuoHacker/blob/main/images/DuoHacker_Logo_NoBG_PNG.png?raw=true
+// @icon                https://raw.githubusercontent.com/DuoHacker/DuoHacker/refs/heads/main/images/DuoHacker_Logo_NoBG_PNG.png
 // @run-at              document-end
 
 // @grant               GM_xmlhttpRequest
@@ -133,7 +133,7 @@
 // @compatible          brave    Supported via Tampermonkey
 // @homepageURL         https://duohacker.io.vn
 // @supportURL          https://duohacker.io.vn/discord
-// @copyright           2026, DuoHacker (https://github.com/not2pixel)
+// @copyright           2026, DuoHacker (https://github.com/DuoHacker)
 // @license             BY-NC-ND 4.0
 // @downloadURL https://update.greasyfork.org/scripts/561041/Duolingo%20DuoHacker.user.js
 // @updateURL https://update.greasyfork.org/scripts/561041/Duolingo%20DuoHacker.meta.js
@@ -201,6 +201,8 @@
             lesson_shortener_sub: 'Replace lessons with 1 instant question',
             stories_shortener: 'Story Skip Challenges',
             stories_shortener_sub: 'Skip all challenges in stories',
+            safe_mode: 'Safe Mode',
+            safe_mode_sub: 'Adds more delay between clicks while solving lessons/practices',
             view_credits: 'View Credits',
 
             // ── Page 3 (shop) ──
@@ -310,6 +312,8 @@
             lesson_shortener_sub: 'Thay thế các bài học bằng 1 câu hỏi',
             stories_shortener: 'Skip toàn bộ câu hỏi Stories',
             stories_shortener_sub: 'Bỏ qua tất cả câu hỏi trong stories',
+            safe_mode: 'Chế độ an toàn',
+            safe_mode_sub: 'Tăng độ trễ giữa các lượt click khi giải lesson/farm practice',
             view_credits: 'Xem credit',
 
             // ── Page 3 (shop) ──
@@ -421,6 +425,8 @@
             'DH_LessonShortener_Sub': 'lesson_shortener_sub',
             'DH_StoriesShortener_Lbl': 'stories_shortener',
             'DH_StoriesShortener_Sub': 'stories_shortener_sub',
+            'DH_SafeMode_Lbl': 'safe_mode',
+            'DH_SafeMode_Sub': 'safe_mode_sub',
             'DH_Credits_Btn': 'view_credits',
             // Page 9 (license) / Page 10 (changelog)
             'DH_License_Back_Txt': 'back',
@@ -1680,7 +1686,7 @@
 
             <div class="DH_HStack_Auto">
                 <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">duohacker.io.vn</p>
-                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">v2026.06.15</p>
+                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">v2026.06.21</p>
             </div>
         </div>
 
@@ -1785,7 +1791,7 @@
                 <svg width="8" height="14" viewBox="0 0 9 16" fill="none"><path d="M8 1L2 8l6 7" stroke="rgb(var(--color-wolf,60,60,67))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 <p class="DH_T1" id="DH_Settings_Back_Txt">Back</p>
             </div>
-            <div style="width:100%;gap:8px;display:flex;flex-direction:column;align-items:flex-start;overflow-y:auto;max-height:460px;padding-right:2px;" class="DH_Scroll_Inner">
+            <div style="width:100%;gap:8px;display:flex;flex-direction:column;align-items:flex-start;overflow-y:auto;max-height:520px;padding-right:2px;" class="DH_Scroll_Inner">
 
             <!-- Loop Delay -->
             <div class="DH_VStack_8" style="align-self:stretch;">
@@ -1871,6 +1877,18 @@
                 </div>
                 <label class="DH_Toggle">
                     <input type="checkbox" id="DH_SS_Toggle">
+                    <span class="DH_Toggle_Slider"></span>
+                </label>
+            </div>
+
+            <!-- Safe Mode toggle -->
+            <div class="DH_HStack_Auto" style="align-self:stretch;padding:4px 0;">
+                <div style="display:flex;flex-direction:column;gap:2px;">
+                    <p class="DH_T1 DH_NoSel" id="DH_SafeMode_Lbl">Safe Mode</p>
+                    <p class="DH_T2 DH_NoSel" id="DH_SafeMode_Sub" style="font-size:11px;">Adds more delay between clicks while solving lessons/practices</p>
+                </div>
+                <label class="DH_Toggle">
+                    <input type="checkbox" id="DH_SafeMode_Toggle">
                     <span class="DH_Toggle_Slider"></span>
                 </label>
             </div>
@@ -2179,6 +2197,10 @@
         let _delay = parseInt(localStorage.getItem('dh2_delay') || '500', 10);
         let _shopItems = [];
         const _sleep = ms => new Promise(r => setTimeout(r, ms));
+        let _SAFE_MODE = localStorage.getItem('duohacker_safe_mode') === 'true';
+        // When Safe Mode is on, click/solve cadence is slowed down + randomized
+        // to look more human and reduce risk of desync (e.g. RESULT_CODE_HUNG).
+        const _safeWait = (baseMs) => _SAFE_MODE ? Math.round(baseMs * 2.5 + Math.random() * 500) : baseMs;
         const GOALS_API = 'https://goals-api.duolingo.com';
 
         let _pageHistory = [1];
@@ -2212,6 +2234,20 @@
                     compFiber = GetCompFiber(compFiber);
                 }
                 return compFiber.stateNode;
+            },
+            // Lấy hàm continueStory() qua React fiber — bền hơn việc dò selector DOM
+            // (cách Autolingo content_scripts dùng để tự lướt qua các màn story không có challenge)
+            findStoryContinue: () => {
+                try {
+                    const node = document.getElementsByClassName('_2neC7')[0];
+                    if (!node) return null;
+                    const key = Object.keys(node).find(k => k.startsWith('__reactFiber$') || k.startsWith('__reactInternalInstance$'));
+                    if (!key) return null;
+                    const fn = node[key]?.return?.memoizedProps?.continueStory;
+                    return typeof fn === 'function' ? fn : null;
+                } catch {
+                    return null;
+                }
             },
             findStoryChallenge: (dom) => {
                 // Walk fiber tree upward looking for story challenge props (type in uppercase like MULTIPLE_CHOICE)
@@ -2343,6 +2379,44 @@
                     bubbles: true
                 }));
             },
+            // Word-by-word "humanized" typing for text-input challenges.
+            // Falls back to instant fill when Safe Mode is off (no behavior change).
+            typeHumanized: async (element, value) => {
+                if (!_SAFE_MODE || !value) {
+                    _autoSolver.setInputValue(element, value);
+                    return;
+                }
+                const isTextarea = element.tagName === 'TEXTAREA';
+                const prototype = isTextarea ? window.HTMLTextAreaElement : window.HTMLInputElement;
+                const setter = Object.getOwnPropertyDescriptor(prototype.prototype, "value").set;
+                const words = String(value).split(' ');
+                let typed = '';
+                for (let i = 0; i < words.length; i++) {
+                    typed += (i > 0 ? ' ' : '') + words[i];
+                    setter.call(element, typed);
+                    element.dispatchEvent(new Event('input', {
+                        bubbles: true
+                    }));
+                    await _autoSolver.delay(110 + Math.random() * 180);
+                }
+            },
+            // Same idea but for contenteditable spans (Partial Reverse Translate).
+            typeHumanizedCE: async (element, value) => {
+                const setter = Object.getOwnPropertyDescriptor(Node.prototype, "textContent").set;
+                if (!_SAFE_MODE || !value) {
+                    setter.call(element, value);
+                    element.dispatchEvent(new Event('input', { bubbles: true }));
+                    return;
+                }
+                const words = String(value).split(' ');
+                let typed = '';
+                for (let i = 0; i < words.length; i++) {
+                    typed += (i > 0 ? ' ' : '') + words[i];
+                    setter.call(element, typed);
+                    element.dispatchEvent(new Event('input', { bubbles: true }));
+                    await _autoSolver.delay(110 + Math.random() * 180);
+                }
+            },
             delay: ms => new Promise(resolve => setTimeout(resolve, ms)),
             handleChallengeName: async () => {
                 const articles = window.sol.articles;
@@ -2354,10 +2428,10 @@
                     const selectedElement = document.querySelector(`[data-test="challenge-choice"]:nth-child(${matchingIndex + 1})`);
                     if (selectedElement) {
                         selectedElement.click();
-                        await _autoSolver.delay(50);
+                        await _autoSolver.delay(_safeWait(50));
                     }
                     const input = document.querySelector('[data-test="challenge-text-input"]');
-                    if (input) _autoSolver.setInputValue(input, remainingValue);
+                    if (input) await _autoSolver.typeHumanized(input, remainingValue);
                 }
             },
             handlePairs: async () => {
@@ -2375,7 +2449,7 @@
                             text === pair.fromToken?.toLowerCase().trim();
                         if (matches) {
                             button.click();
-                            await _autoSolver.delay(50);
+                            await _autoSolver.delay(_safeWait(50));
                         }
                     }
                 }
@@ -2395,7 +2469,14 @@
                         }
                     }
                 }
-                tokensToClick.forEach(token => token.click());
+                if (!_SAFE_MODE) {
+                    tokensToClick.forEach(token => token.click());
+                } else {
+                    for (const token of tokensToClick) {
+                        token.click();
+                        await _autoSolver.delay(_safeWait(50));
+                    }
+                }
             },
             handleIndicesRun: async () => {
                 if (!window.sol.correctIndices) return;
@@ -2407,7 +2488,7 @@
                         const button = bankButtons[index];
                         if (!button.disabled && button.getAttribute('aria-disabled') !== 'true') {
                             button.click();
-                            await _autoSolver.delay(50);
+                            await _autoSolver.delay(_safeWait(50));
                         }
                     }
                 }
@@ -2431,7 +2512,7 @@
                             const buttonTextElm = button.querySelector('[data-test="challenge-tap-token-text"]');
                             if (buttonTextElm && buttonTextElm.innerText.trim() === correctAnswerText && !button.disabled) {
                                 button.click();
-                                await _autoSolver.delay(50);
+                                await _autoSolver.delay(_safeWait(50));
                                 clicked = true;
                                 break;
                             }
@@ -2443,7 +2524,7 @@
                                 const buttonTextElm = button.querySelector('[data-test="challenge-tap-token-text"]');
                                 if (buttonTextElm && buttonTextElm.innerText.trim() === correctAnswerText && !button.disabled) {
                                     button.click();
-                                    await _autoSolver.delay(50);
+                                    await _autoSolver.delay(_safeWait(50));
                                     usedWordBankIndexes.add(i);
                                     break;
                                 }
@@ -2477,7 +2558,7 @@
                                 const buttons = document.querySelectorAll('[data-test="word-bank"] [data-test*="challenge-tap-token"]:not(span)');
                                 if (buttons[choiceIdx]) {
                                     buttons[choiceIdx].click();
-                                    await _autoSolver.delay(50);
+                                    await _autoSolver.delay(_safeWait(50));
                                 }
                             }
                             break;
@@ -2532,14 +2613,14 @@
                                         if (tokens[i].innerText.trim() === word.trim() && !tokens[i].disabled) {
                                             tokens[i].click();
                                             usedIndexes.push(i);
-                                            await _autoSolver.delay(40);
+                                            await _autoSolver.delay(_safeWait(40));
                                             break;
                                         }
                                     }
                                 }
                             } else if (correctSolutions) {
                                 const ta = document.querySelector('textarea[data-test="challenge-translate-input"]');
-                                if (ta) _autoSolver.setInputValue(ta, correctSolutions[0]);
+                                if (ta) await _autoSolver.typeHumanized(ta, correctSolutions[0]);
                             }
                             break;
                         }
@@ -2553,7 +2634,7 @@
                                     if (tokens[i].innerText.trim() === word.trim() && !tokens[i].disabled) {
                                         tokens[i].click();
                                         usedIdx.push(i);
-                                        await _autoSolver.delay(40);
+                                        await _autoSolver.delay(_safeWait(40));
                                         break;
                                     }
                                 }
@@ -2565,7 +2646,7 @@
                             const answer = window.sol.prompt || window.sol.correctSolutions?.[0] || '';
                             const ta = document.querySelector('textarea[data-test="challenge-translate-input"]') ||
                                 document.querySelector('[data-test="challenge-text-input"]');
-                            if (ta) _autoSolver.setInputValue(ta, answer);
+                            if (ta) await _autoSolver.typeHumanized(ta, answer);
                             break;
                         }
 
@@ -2574,16 +2655,16 @@
                             const inputFields = document.querySelectorAll('[data-test="challenge-text-input"]');
                             if (blankTokens && blankTokens.length > 1 && inputFields.length > 1) {
                                 // Multi-blank support
-                                inputFields.forEach((input, index) => {
+                                for (let index = 0; index < inputFields.length; index++) {
                                     if (blankTokens[index]) {
-                                        _autoSolver.setInputValue(input, blankTokens[index].text);
+                                        await _autoSolver.typeHumanized(inputFields[index], blankTokens[index].text);
                                     }
-                                });
+                                }
                             } else {
                                 // Single blank (fallback)
                                 const answer = blankTokens?.[0]?.text || window.sol.correctSolutions?.[0] || '';
                                 const input = document.querySelector('[data-test="challenge-text-input"]');
-                                if (input) _autoSolver.setInputValue(input, answer);
+                                if (input) await _autoSolver.typeHumanized(input, answer);
                             }
                             break;
                         }
@@ -2595,7 +2676,7 @@
                             const choiceInput = document.querySelector('[data-test="challenge-text-input"]');
                             if (choiceInput) {
                                 const answer = window.sol.correctSolutions ? window.sol.correctSolutions[0].split(/(?<=^\S+)\s/)[1] : (window.sol.displayTokens ? window.sol.displayTokens.find(t => t.isBlank)?.text : window.sol.prompt);
-                                _autoSolver.setInputValue(choiceInput, answer);
+                                await _autoSolver.typeHumanized(choiceInput, answer);
                             }
                             break;
                         }
@@ -2603,24 +2684,20 @@
                             const input = document.querySelector('[data-test="challenge-text-input"]');
                             if (input) {
                                 const answer = window.sol.correctSolutions?.[0] || (window.sol.displayTokens ? window.sol.displayTokens.find(t => t.isBlank)?.text : window.sol.prompt);
-                                _autoSolver.setInputValue(input, answer);
+                                await _autoSolver.typeHumanized(input, answer);
                             }
                             break;
                         }
                         case 'Challenge Translate Input': {
                             const textarea = document.querySelector('textarea[data-test="challenge-translate-input"]');
-                            if (textarea) _autoSolver.setInputValue(textarea, window.sol.correctSolutions?.[0] || window.sol.prompt);
+                            if (textarea) await _autoSolver.typeHumanized(textarea, window.sol.correctSolutions?.[0] || window.sol.prompt);
                             break;
                         }
                         case 'Partial Reverse': {
                             const partialElm = document.querySelector('[data-test*="challenge-partialReverseTranslate"]')?.querySelector("span[contenteditable]");
                             if (partialElm) {
                                 const text = window.sol?.displayTokens?.filter(t => t.isBlank)?.map(t => t.text)?.join('')?.trim();
-                                const setter = Object.getOwnPropertyDescriptor(Node.prototype, "textContent").set;
-                                setter.call(partialElm, text);
-                                partialElm.dispatchEvent(new Event('input', {
-                                    bubbles: true
-                                }));
+                                await _autoSolver.typeHumanizedCE(partialElm, text);
                             }
                             break;
                         }
@@ -2630,23 +2707,24 @@
                                 const targetToken = window.sol.displayTokens.find(t => t.damageStart !== undefined);
                                 if (targetToken) {
                                     const correctEnding = targetToken.text.slice(targetToken.damageStart);
-                                    _autoSolver.setInputValue(clozeInput, correctEnding);
+                                    await _autoSolver.typeHumanized(clozeInput, correctEnding);
                                 }
                             }
                             break;
                         }
                         case 'Type Cloze Table': {
                             const tableRows = document.querySelectorAll('tbody tr');
-                            window.sol.displayTableTokens.slice(1).forEach((rowTokens, i) => {
-                                const answerCell = rowTokens[1]?.find(t => typeof t.damageStart === "number");
+                            const tcRows = window.sol.displayTableTokens.slice(1);
+                            for (let i = 0; i < tcRows.length; i++) {
+                                const answerCell = tcRows[i][1]?.find(t => typeof t.damageStart === "number");
                                 if (answerCell && tableRows[i]) {
                                     const input = tableRows[i].querySelector('input[type="text"].b4jqk');
                                     if (input) {
                                         const correctEnding = answerCell.text.slice(answerCell.damageStart);
-                                        _autoSolver.setInputValue(input, correctEnding);
+                                        await _autoSolver.typeHumanized(input, correctEnding);
                                     }
                                 }
-                            });
+                            }
                             break;
                         }
                         case 'Tap Cloze Table': {
@@ -2670,12 +2748,13 @@
                         }
                         case 'Type Complete Table': {
                             const completeTableRows = document.querySelectorAll('tbody tr');
-                            window.sol.displayTableTokens.slice(1).forEach((rowTokens, i) => {
-                                const answerCell = rowTokens[1]?.find(t => t.isBlank);
-                                if (!answerCell || !completeTableRows[i]) return;
+                            const tctRows = window.sol.displayTableTokens.slice(1);
+                            for (let i = 0; i < tctRows.length; i++) {
+                                const answerCell = tctRows[i][1]?.find(t => t.isBlank);
+                                if (!answerCell || !completeTableRows[i]) continue;
                                 const input = completeTableRows[i].querySelector('input[type="text"].b4jqk');
-                                if (input) _autoSolver.setInputValue(input, answerCell.text);
-                            });
+                                if (input) await _autoSolver.typeHumanized(input, answerCell.text);
+                            }
                             break;
                         }
                         case 'Pattern Tap Complete': {
@@ -2692,7 +2771,7 @@
                             const arrangeChoices = document.querySelectorAll('[data-test*="challenge-tap-token"]:not(span)');
                             for (let i = 0; i < window.sol.phraseOrder.length; i++) {
                                 arrangeChoices[window.sol.phraseOrder[i]].click();
-                                await _autoSolver.delay(50);
+                                await _autoSolver.delay(_safeWait(50));
                             }
                             break;
                         }
@@ -2728,7 +2807,7 @@
                                 for (const btn of gapBtns) {
                                     if (btn.innerText.trim() === targetText.trim() && !btn.disabled && btn.getAttribute('aria-disabled') !== 'true') {
                                         btn.click();
-                                        await _autoSolver.delay(50);
+                                        await _autoSolver.delay(_safeWait(50));
                                         break;
                                     }
                                 }
@@ -2752,11 +2831,11 @@
                                     const element2 = textToElementMap.get(normalizedValue);
                                     if (element1 && !element1.disabled) {
                                         element1.click();
-                                        await _autoSolver.delay(50);
+                                        await _autoSolver.delay(_safeWait(50));
                                     }
                                     if (element2 && !element2.disabled) {
                                         element2.click();
-                                        await _autoSolver.delay(50);
+                                        await _autoSolver.delay(_safeWait(50));
                                     }
                                 }
                             }
@@ -2784,11 +2863,22 @@
                             const correctIndices = window.sol.correctIndices;
                             const choicesData = window.sol.choices;
                             const domButtons = Array.from(document.querySelectorAll('[data-test="word-bank"] [data-test$="challenge-tap-token"]'));
-                            correctIndices.forEach(index => {
-                                const correctText = choicesData[index].text;
-                                const matchingButton = domButtons.find(btn => btn.innerText.trim() === correctText);
-                                if (matchingButton) matchingButton.click();
-                            });
+                            if (!_SAFE_MODE) {
+                                correctIndices.forEach(index => {
+                                    const correctText = choicesData[index].text;
+                                    const matchingButton = domButtons.find(btn => btn.innerText.trim() === correctText);
+                                    if (matchingButton) matchingButton.click();
+                                });
+                            } else {
+                                for (const index of correctIndices) {
+                                    const correctText = choicesData[index].text;
+                                    const matchingButton = domButtons.find(btn => btn.innerText.trim() === correctText);
+                                    if (matchingButton) {
+                                        matchingButton.click();
+                                        await _autoSolver.delay(_safeWait(50));
+                                    }
+                                }
+                            }
                             break;
                         }
 
@@ -2931,6 +3021,22 @@
                 }
             },
             clickNext: () => {
+                const inStory = location.hostname.includes('stories.duolingo.com') ||
+                    location.pathname.includes('/stories') ||
+                    !!document.querySelector('.FmlUF') ||
+                    !!document.querySelector('[data-test="stories-choice"]') ||
+                    !!document.querySelector('[data-test="story-start"]') ||
+                    !!document.querySelector('[data-test="stories-player-continue"]') ||
+                    !!document.querySelector('[data-test="stories-player-done"]');
+
+                if (inStory) {
+                    const continueStory = _autoSolver.findStoryContinue();
+                    if (continueStory) {
+                        continueStory();
+                        return;
+                    }
+                }
+
                 const nextBtn = document.querySelector('[data-test="player-next"]') ||
                     document.querySelector('[data-test="stories-player-continue"]') ||
                     document.querySelector('[data-test="stories-player-done"]');
@@ -2977,9 +3083,9 @@
                     if (challengeType && challengeType !== 'Challenge Speak' && challengeType !== 'Listen Match' && challengeType !== 'Listen Speak') {
                         await Promise.race([
                             _autoSolver.handleChallenge(challengeType),
-                            new Promise(r => setTimeout(r, 2000))
+                            new Promise(r => setTimeout(r, _SAFE_MODE ? 9000 : 2000))
                         ]);
-                        await sleep(80);
+                        if (_SAFE_MODE) await sleep(80);
                     } else if (challengeType === 'Challenge Speak' || challengeType === 'Listen Match' || challengeType === 'Listen Speak') {
                         // Dismiss "Đọc câu này sau" / "Tôi không thể nói lúc này" modal trước
                         const speakModalSelectors = ['.vpDIE', '._8AMBh._2vfJy._3Qy5R._28UWu._3h0lA._1S2uf._1E9sc', '._1Qh5D._36g4N._2YF0P._28UWu._3h0lA._1S2uf._1E9sc'];
@@ -3001,7 +3107,7 @@
                         await sleep(150);
                     }
                     _autoSolver.clickNext();
-                    await sleep(120);
+                    if (_SAFE_MODE) await sleep(120);
                 } catch (error) {
                     _autoSolver.clickNext();
                 }
@@ -3024,10 +3130,10 @@
                             }
                             const t0 = Date.now();
                             await _autoSolver.solve();
-                            await new Promise(r => setTimeout(r, 100));
+                            await new Promise(r => setTimeout(r, _safeWait(100)));
                             if (!_isAutoMode) break;
                             const elapsed = Date.now() - t0;
-                            const wait = Math.max(0, 400 - elapsed);
+                            const wait = Math.max(0, _safeWait(400) - elapsed);
                             if (wait > 0) await new Promise(r => setTimeout(r, wait));
                         }
                         _autoSolver._solveLoopRunning = false;
@@ -3233,17 +3339,15 @@
         }
 
         const _GF_SCRIPT_URL = 'https://greasyfork.org/en/scripts/561041-duolingo-duohacker';
-        const _CURRENT_VER = '2026.06.15';
+        const _CURRENT_VER = '2026.06.21';
 
         /* ── Changelog Popup ── */
         const _CHANGELOG = [{
-            version: '2026.06.15',
+            version: '2026.06.21',
             changes: [
-                'Improved Gem Farming & Streak Farming',
-                'Updated donation link',
-                'Added Lesson Shortener',
-                'Added Skip Stories Challange',
-                'Added Languages Switcher',
+                'Added Story Challenges support for Auto Solver',
+                'Added Safe Mode',
+                'Improved Auto Solver',
             ]
         }, ];
 
@@ -3477,6 +3581,9 @@
                 if (to === 4) {
                     const delI = document.getElementById('DH_Delay_Input');
                     if (delI) delI.value = _delay;
+                    box.style.width = '340px';
+                } else {
+                    box.style.width = '';
                 }
                 // Đã preload rồi nên không cần load lại khi chuyển page
                 setTimeout(() => {
@@ -3959,6 +4066,18 @@
                     ticks = 0;
                 const MAX = 240;
                 const clickNext = () => {
+                    const inStory = location.hostname.includes('stories.duolingo.com') ||
+                        location.pathname.includes('/stories') ||
+                        !!document.querySelector('[data-test="stories-choice"]') ||
+                        !!document.querySelector('[data-test="stories-player-continue"]') ||
+                        !!document.querySelector('[data-test="stories-player-done"]');
+                    if (inStory) {
+                        const continueStory = _autoSolver.findStoryContinue();
+                        if (continueStory) {
+                            continueStory();
+                            return;
+                        }
+                    }
                     const nb = document.querySelector('[data-test="player-next"]') || document.querySelector('[data-test="stories-player-continue"]') || document.querySelector('[data-test="stories-player-done"]');
                     if (!nb || nb.getAttribute('aria-disabled') === 'true' || nb.disabled) return;
                     nb.click();
@@ -3988,7 +4107,7 @@
                                 s.done = _currentLessonCount;
                                 sessionStorage.setItem('dh2_practice', JSON.stringify(s));
                             } catch {}
-                            await _sleep(500);
+                            await _sleep(_safeWait(500));
                             resolve();
                             return;
                         }
@@ -4021,14 +4140,14 @@
                         try {
                             await _autoSolver.handleChallenge(type);
                         } catch {}
-                        await _sleep(350);
+                        if (_SAFE_MODE) await _sleep(_safeWait(350));
                         clickNext();
-                        await _sleep(600);
+                        if (_SAFE_MODE) await _sleep(_safeWait(600));
                         solving = false;
                     } catch {
                         solving = false;
                     }
-                }, 500);
+                }, _safeWait(500));
                 setTimeout(() => {
                     clearInterval(iv);
                     resolve();
@@ -5685,9 +5804,9 @@ body * {
 
         const CREDITS = [{
                 script: 'DuoHacker V1',
-                url: 'https://github.com/not2pixel/DuoHacker/tree/main/v1',
-                thumbnail: 'https://raw.githubusercontent.com/not2pixel/DuoHacker/refs/heads/main/images/DuoHacker_Logo_NoBG_PNG.png',
-                author: 'not2pixel',
+                url: 'https://github.com/DuoHacker/DuoHacker/tree/main/v1',
+                thumbnail: 'https://raw.githubusercontent.com/DuoHacker/DuoHacker/refs/heads/main/images/DuoHacker_Logo_NoBG_PNG.png',
+                author: 'DuoHacker',
                 task: 'Original script - The main cores are being used in V2'
             },
             {
@@ -5726,7 +5845,7 @@ body * {
             if (!txt) return;
             GM_xmlhttpRequest({
                 method: 'GET',
-                url: 'https://raw.githubusercontent.com/not2pixel/DuoHacker/refs/heads/main/LICENSE',
+                url: 'https://raw.githubusercontent.com/DuoHacker/DuoHacker/refs/heads/main/LICENSE',
                 onload: r => {
                     if (!document.getElementById('DH_License_Text')) return;
                     document.getElementById('DH_License_Text').textContent =
@@ -5803,6 +5922,15 @@ body * {
         _ssTog.checked = localStorage.getItem(_SS_KEY) === 'true';
         _ssTog.addEventListener('change', () => {
             localStorage.setItem(_SS_KEY, _ssTog.checked ? 'true' : 'false');
+        });
+        // ──────────────────────────────────────────────────────────────────
+
+        // ── Safe Mode toggle ─────────────────────────────────────────────
+        const _safeTog = document.getElementById('DH_SafeMode_Toggle');
+        _safeTog.checked = _SAFE_MODE;
+        _safeTog.addEventListener('change', () => {
+            _SAFE_MODE = _safeTog.checked;
+            localStorage.setItem('duohacker_safe_mode', _SAFE_MODE ? 'true' : 'false');
         });
         // ──────────────────────────────────────────────────────────────────
 
