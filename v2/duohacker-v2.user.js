@@ -52,7 +52,7 @@
 // @name:ur             Duolingo DuoHacker
 
 // @namespace           https://github.com/DuoHacker/DuoHacker
-// @version             2026.06.21
+// @version             2026.07.07.22
 // @description         The #1 Duolingo hack - Farm XP, Gems, Streaks and unlock Duolingo Max for free.
 // @description:vi      Công cụ hack Duolingo #1 - Farm XP, Gems, Streaks và mở khóa Duolingo Max miễn phí.
 // @description:zh-CN   最强 Duolingo 辅助工具 - 自动刷 XP、宝石、连胜，免费解锁 Duolingo Max。
@@ -86,7 +86,7 @@
 // @description:he      ההאק הטוב ביותר ל-Duolingo - צבור XP, אבנים יקרות, רצפים ופתח את Duolingo Max בחינם.
 // @description:ms      Hack Duolingo terbaik - Farm XP, Permata, Streak dan buka kunci Duolingo Max secara percuma.
 // @description:fil     Ang pinakamahusay na Duolingo hack - Mag-farm ng XP, Gems, Streaks at i-unlock ang Duolingo Max nang libre.
-// @description:el      Το καλύτερο hack για το Duolingo - Κάντε farm XP, Πετράδια, Σειρές και ξεκλειδώστε το Duolingo Max δωρεάν.
+// @description:el      Το καλύτερο hack ���ια το Duolingo - Κάντε farm XP, Πετράδια, Σειρές και ξεκλειδώστε το Duolingo Max δωρεάν.
 // @description:hr      Najbolji Duolingo hack - Farmajte XP, Dragulje, Nizove i otključajte Duolingo Max besplatno.
 // @description:sk      Najlepší hack na Duolingo - Farmujte XP, Drahokamy, Série a odomknite Duolingo Max zadarmo.
 // @description:bg      Най-добрият хак за Duolingo - Фармете XP, Скъпоценни камъни, Серии и отключете Duolingo Max безплатно.
@@ -110,7 +110,7 @@
 // @match               https://*.duolingo.com/*
 // @match               https://*.duolingo.cn/*
 
-// @icon                https://raw.githubusercontent.com/DuoHacker/DuoHacker/refs/heads/main/images/DuoHacker_Logo_NoBG_PNG.png
+// @icon                https://assets.duohacker.io.vn/images/DuoHacker_Logo_NoBG_PNG.png
 // @run-at              document-end
 
 // @grant               GM_xmlhttpRequest
@@ -123,6 +123,7 @@
 // @connect             avatars.githubusercontent.com
 // @connect             greasyfork.org
 // @connect             assets.duohacker.io.vn
+// @connect             d35aaqx5ub95lt.cloudfront.net
 // @connect             font.duohacker.io.vn
 
 // @compatible          chrome   Tested on Chrome 120+ with Tampermonkey
@@ -136,7 +137,7 @@
 // @copyright           2026, DuoHacker (https://github.com/DuoHacker)
 // @license             BY-NC-ND 4.0
 // @downloadURL https://update.greasyfork.org/scripts/561041/Duolingo%20DuoHacker.user.js
-// @updateURL https://update.greasyfork.org/scripts/561041/Duolingo%20DuoHacker.meta.js
+// @updateURL   https://update.greasyfork.org/scripts/561041/Duolingo%20DuoHacker.meta.js
 // ==/UserScript==
 
 (function() {
@@ -240,7 +241,7 @@
             btn_stop: 'STOP',
             btn_save: 'SAVE',
             btn_saved: 'SAVED ✓',
-            btn_claim: 'CLAIM',
+            btn_claim: 'CLAIM ALL',
             btn_activate: 'ACTIVATE',
             btn_done: 'DONE ✓',
             btn_save_current: 'SAVE CURRENT',
@@ -259,6 +260,18 @@
             status_failed_retry: 'Failed \u2014 try again',
             status_not_connected: 'Not connected',
             status_loading: 'Loading\u2026',
+
+            // ── Page 11 (leaderboard) ──
+            leaderboard: 'Leaderboard',
+            leaderboard_sub: 'View your current league',
+            your_current_league: 'Your current league',
+            lb_loading: 'Loading leaderboard...',
+            lb_failed: 'Failed to load leaderboard.',
+            choose_reaction: 'Choose Reaction',
+            lb_promoted: '⬆ Promoted',
+            lb_demoted: '⬇ Demoted',
+            lb_safe: '🟡 Safe',
+            lb_ended: 'Contest ended',
         },
         vi: {
             // ── Language selector ──
@@ -351,7 +364,7 @@
             btn_stop: 'DỪNG',
             btn_save: 'LƯU',
             btn_saved: 'ĐÃ LƯU ✓',
-            btn_claim: 'NHẬN',
+            btn_claim: 'NHẬN TẤT CẢ',
             btn_activate: 'KÍCH HOẠT',
             btn_done: 'XONG ✓',
             btn_save_current: 'LƯU HIỆN TẠI',
@@ -370,6 +383,18 @@
             status_failed_retry: 'Lỗi — thử lại',
             status_not_connected: 'Chưa kết nối',
             status_loading: 'Đang tải…',
+
+            // ── Page 11 (leaderboard) ──
+            leaderboard: 'Bảng xếp hạng',
+            leaderboard_sub: 'Xem giải đấu hiện tại',
+            your_current_league: 'Giải đấu hiện tại',
+            lb_loading: 'Đang tải bảng xếp hạng...',
+            lb_failed: 'Không tải được bảng xếp hạng.',
+            choose_reaction: 'Chọn Reaction',
+            lb_promoted: '⬆ Thăng hạng',
+            lb_demoted: '⬇ Xuống hạng',
+            lb_safe: '🟡 An toàn',
+            lb_ended: 'Giải đấu đã kết thúc',
         }
     };
 
@@ -409,8 +434,6 @@
             'DH_Quest_Sub': 'auto_daily_sub',
             'DH_Monthly_Title': 'claim_monthly',
             'DH_Monthly_Sub': 'claim_monthly_sub',
-            'DH_FreeSuper_Title': 'free_super',
-            'DH_FreeSuper_Sub': 'free_super_sub',
             // Page 4
             'DH_Settings_Back_Txt': 'back',
             'DH_LoopDelay_Lbl': 'loop_delay',
@@ -445,7 +468,6 @@
             'DH_V1_XP_Title': 'xp_farming',
             'DH_V1_Gem_Title': 'farm_gems',
             'DH_V1_Streak_Title': 'streak_farming',
-            'DH_V1_Super_Q': 'activate_super_q',
             'DH_V1_Settings_Lbl': 'settings',
             'DH_V1_Settings_Back_Txt': 'back',
             // Switch buttons
@@ -459,7 +481,6 @@
             'DH_League_Lbl': 'btn_run',
             'DH_Quest_Lbl': 'btn_run',
             'DH_MonthlyQuest_Claim_Lbl': 'btn_get',
-            'DH_Super_Activate_Lbl': 'btn_activate',
             'DH_Delay_Lbl': 'btn_save',
 
             // Account / Monthly Quest
@@ -470,11 +491,17 @@
             'DH_V1_XP_Lbl': 'btn_run',
             'DH_V1_Gem_Lbl': 'btn_run',
             'DH_V1_Streak_Lbl': 'btn_run',
-            'DH_V1_Super_Activate_Lbl': 'btn_activate',
-
             // Static initial state text
             'DH_AccNoSaved_Txt': 'no_saved_accounts',
             'DH_ShopLoading_Txt': 'loading_shop',
+            // Page 11 (leaderboard)
+            'DH_LB_Back_Txt': 'back',
+            // Page 12 (reaction picker)
+            'DH_React_Title': 'choose_reaction',
+            'DH_LB_Title': 'leaderboard',
+            'DH_React_Title': 'choose_reaction',
+            'DH_LB_Loading_Txt': 'lb_loading',
+            'DH_LB_Nav_Lbl': 'leaderboard',
         };
 
         for (const [id, key] of Object.entries(_ID_MAP)) {
@@ -499,107 +526,14 @@
         const lb = document.getElementById('DH_LangSelector_Lbl');
         if (lb) {
             lb.innerHTML = _lang === 'vi' ?
-                `
-            <svg
-                width="20"
-                height="14"
-                viewBox="0 0 60 40"
-                style="border-radius:2px; vertical-align:middle; flex-shrink:0;"
-                aria-hidden="true"
-            >
-                <rect width="60" height="40" fill="#DA251D"></rect>
-
-                <polygon
-                    points="
-                        30,9
-                        32.59,16.44
-                        40.46,16.60
-                        34.18,21.36
-                        36.47,28.90
-                        30,24.40
-                        23.53,28.90
-                        25.82,21.36
-                        19.54,16.60
-                        27.41,16.44
-                    "
-                    fill="#FFCD00"
-                ></polygon>
-            </svg>
-            VI
-        ` :
-                `
-            <svg
-                width="20"
-                height="14"
-                viewBox="0 0 60 40"
-                style="border-radius:2px; vertical-align:middle; flex-shrink:0;"
-                aria-hidden="true"
-            >
-                <rect width="60" height="40" fill="#012169"></rect>
-
-                <line
-                    x1="0"
-                    y1="0"
-                    x2="60"
-                    y2="40"
-                    stroke="#fff"
-                    stroke-width="6.5"
-                ></line>
-
-                <line
-                    x1="60"
-                    y1="0"
-                    x2="0"
-                    y2="40"
-                    stroke="#fff"
-                    stroke-width="6.5"
-                ></line>
-
-                <line
-                    x1="0"
-                    y1="0"
-                    x2="60"
-                    y2="40"
-                    stroke="#C8102E"
-                    stroke-width="4"
-                ></line>
-
-                <line
-                    x1="60"
-                    y1="0"
-                    x2="0"
-                    y2="40"
-                    stroke="#C8102E"
-                    stroke-width="4"
-                ></line>
-
-                <rect x="0" y="15" width="60" height="10" fill="#fff"></rect>
-                <rect x="25" y="0" width="10" height="40" fill="#fff"></rect>
-
-                <rect
-                    x="0"
-                    y="16.5"
-                    width="60"
-                    height="7"
-                    fill="#C8102E"
-                ></rect>
-
-                <rect
-                    x="26.5"
-                    y="0"
-                    width="7"
-                    height="40"
-                    fill="#C8102E"
-                ></rect>
-            </svg>
-            EN
-        `;
+                `<img src="https://d35aaqx5ub95lt.cloudfront.net/vendor/2b077d42185bc45d4896ed55f15c4fea.svg" style="width:20px;height:14px;border-radius:2px;vertical-align:middle;flex-shrink:0;object-fit:cover;" aria-hidden="true"> VI` :
+                `<img src="https://d35aaqx5ub95lt.cloudfront.net/vendor/bbe17e16aa4a106032d8e3521eaed13e.svg" style="width:20px;height:14px;border-radius:2px;vertical-align:middle;flex-shrink:0;object-fit:cover;" aria-hidden="true"> EN`
         }
         // Dropdown option labels
         const opEn = document.getElementById('DH_LangOpt_en');
         const opVi = document.getElementById('DH_LangOpt_vi');
-        if (opEn) opEn.innerHTML = '<svg width="20" height="14" viewBox="0 0 60 40" style="border-radius:2px;vertical-align:middle;flex-shrink:0;" aria-hidden="true"><rect width="60" height="40" fill="#012169"/><line x1="0" y1="0" x2="60" y2="40" stroke="#fff" stroke-width="6.5"/><line x1="60" y1="0" x2="0" y2="40" stroke="#fff" stroke-width="6.5"/><line x1="0" y1="0" x2="60" y2="40" stroke="#C8102E" stroke-width="4"/><line x1="60" y1="0" x2="0" y2="40" stroke="#C8102E" stroke-width="4"/><rect x="0" y="15" width="60" height="10" fill="#fff"/><rect x="25" y="0" width="10" height="40" fill="#fff"/><rect x="0" y="16.5" width="60" height="7" fill="#C8102E"/><rect x="26.5" y="0" width="7" height="40" fill="#C8102E"/></svg> ' + _t('lang_en');
-        if (opVi) opVi.innerHTML = '<svg width="20" height="14" viewBox="0 0 60 40" style="border-radius:2px;display:block;flex-shrink:0;" aria-hidden="true"><rect width="60" height="40" fill="#DA251D"></rect><polygon points="30,9 32.59,16.44 40.46,16.60 34.18,21.36 36.47,28.90 30,24.40 23.53,28.90 25.82,21.36 19.54,16.60 27.41,16.44" fill="#FFCD00"></polygon></svg><span>' + _t('lang_vi') + '</span>';
+        if (opEn) opEn.innerHTML = '<img src="https://d35aaqx5ub95lt.cloudfront.net/vendor/bbe17e16aa4a106032d8e3521eaed13e.svg" style="width:20px;height:14px;border-radius:2px;vertical-align:middle;flex-shrink:0;object-fit:cover;" aria-hidden="true"> ' + _t('lang_en');
+        if (opVi) opVi.innerHTML = '<img src="https://d35aaqx5ub95lt.cloudfront.net/vendor/2b077d42185bc45d4896ed55f15c4fea.svg" style="width:20px;height:14px;border-radius:2px;vertical-align:middle;flex-shrink:0;object-fit:cover;" aria-hidden="true"> ' + _t('lang_vi');
     }
     // ── End i18n ──────────────────────────────────────────────────────
 
@@ -666,8 +600,9 @@
                 try {
                     var d = JSON.parse(j);
                     if (Array.isArray(d.elements)) {
+                        // [PATCHED] chỉ giữ HEADER, bỏ hết LINE + challenge
                         d.elements = d.elements.filter(function(el) {
-                            return !STORY_CHALLENGES.has(el.type);
+                            return el.type === 'HEADER';
                         });
                     }
                     return JSON.stringify(d);
@@ -726,16 +661,20 @@
                             var fl = (window._dhUser && window._dhUser.fromLanguage)    || data.fromLanguage    || 'en';
                             var lsChallenge = {
                                 character: {
-                                    url: 'https://d2pur3iezf4d1j.cloudfront.net/images/51d3bded9ecbd8bf6e9869041c437ba9',
+                                    url: 'https://d2pur3iezf4d1j.cloudfront.net/images/61e19bb4a1ff1d94e58d58b33db58c36',
+                                    image: { pdf: 'https://d2pur3iezf4d1j.cloudfront.net/images/61e19bb4a1ff1d94e58d58b33db58c36', svg: 'https://d2pur3iezf4d1j.cloudfront.net/images/52a5a774c4de18f4a4e8c91d91788347' },
                                     gender: 'MALE',
-                                    correctAnimation:  'https://simg-ssl.duolingo.com/lottie/Falstaff_CORRECT_Cropped_NotBad.json',
-                                    incorrectAnimation:'https://simg-ssl.duolingo.com/lottie/Bear_INCORRECT_Cropped.json',
-                                    idleAnimation:     'https://simg-ssl.duolingo.com/lottie/Falstaff_IDLE_Cropped.json',
-                                    name: 'FALSTAFF'
+                                    correctAnimation:  'https://simg-ssl.duolingo.com/lottie/Vikram_CORRECT_Cropped_SpiritFingers.json',
+                                    incorrectAnimation:'https://simg-ssl.duolingo.com/lottie/Dan_INCORRECT_Cropped.json',
+                                    idleAnimation:     'https://simg-ssl.duolingo.com/lottie/Vikram_IDLE_Cropped.json',
+                                    name: 'VIKRAM'
                                 },
-                                prompt: 'Thanks for using our tool 🥰',
+                                prompt: 'Thank you for using our script! 🥰',
+                                choices: ['https://duohacker.io.vn'],
                                 correctIndex: 0,
-                                options: [{ text: 'Our website : https://duohacker.io.vn' }],
+                                options: [
+                                    { text: 'https://duohacker.io.vn' }
+                                ],
                                 type: 'assist',
                                 id: 'duohacker',
                                 newWords: [],
@@ -830,18 +769,20 @@
                     const fl = unsafeWindow._dhUser?.fromLanguage || data.fromLanguage || 'en';
                     const lsChallenge = {
                         character: {
-                            url: 'https://d2pur3iezf4d1j.cloudfront.net/images/51d3bded9ecbd8bf6e9869041c437ba9',
+                            url: 'https://d2pur3iezf4d1j.cloudfront.net/images/61e19bb4a1ff1d94e58d58b33db58c36',
+                            image: { pdf: 'https://d2pur3iezf4d1j.cloudfront.net/images/61e19bb4a1ff1d94e58d58b33db58c36', svg: 'https://d2pur3iezf4d1j.cloudfront.net/images/52a5a774c4de18f4a4e8c91d91788347' },
                             gender: 'MALE',
-                            correctAnimation: 'https://simg-ssl.duolingo.com/lottie/Falstaff_CORRECT_Cropped_NotBad.json',
-                            incorrectAnimation: 'https://simg-ssl.duolingo.com/lottie/Bear_INCORRECT_Cropped.json',
-                            idleAnimation: 'https://simg-ssl.duolingo.com/lottie/Falstaff_IDLE_Cropped.json',
-                            name: 'FALSTAFF'
+                            correctAnimation: 'https://simg-ssl.duolingo.com/lottie/Vikram_CORRECT_Cropped_SpiritFingers.json',
+                            incorrectAnimation: 'https://simg-ssl.duolingo.com/lottie/Dan_INCORRECT_Cropped.json',
+                            idleAnimation: 'https://simg-ssl.duolingo.com/lottie/Vikram_IDLE_Cropped.json',
+                            name: 'VIKRAM'
                         },
-                        prompt: 'Thanks for using our tool 🥰',
+                        prompt: 'Thank you for using our script! 🥰',
+                        choices: ['https://duohacker.io.vn'],
                         correctIndex: 0,
-                        options: [{
-                            text: 'Our website : https://duohacker.io.vn'
-                        }],
+                        options: [
+                            { text: 'https://duohacker.io.vn' }
+                        ],
                         type: 'assist',
                         id: 'duohacker',
                         newWords: [],
@@ -885,8 +826,8 @@
                     const res = await _storyFetch.call(this, resource, options);
                     const data = await res.clone().json();
                     if (Array.isArray(data.elements)) {
-                        const CHALLENGES = new Set(['MULTIPLE_CHOICE', 'ARRANGE', 'MATCH', 'SELECT_PHRASE', 'POINT_TO_PHRASE', 'CHALLENGE_PROMPT']);
-                        data.elements = data.elements.filter(el => !CHALLENGES.has(el.type));
+                        // [PATCHED] chỉ giữ HEADER, bỏ hết LINE + challenge
+                        data.elements = data.elements.filter(el => el.type === 'HEADER');
                     }
                     return new Response(JSON.stringify(data), {
                         status: res.status,
@@ -1280,6 +1221,129 @@
 .DH_Quest_Get_Btn:hover  { filter:brightness(0.88); transform:scale(1.06); }
 .DH_Quest_Get_Btn:active { transform:scale(0.95); }
 .DH_Quest_Get_Btn.done { background:rgba(var(--DH-green),0.10); color:rgb(var(--DH-green)); outline-color:rgba(var(--DH-green),0.20); pointer-events:none; }
+
+
+/* ── PAGE 12: Reaction Picker ── */
+.DH_LB_Reaction {
+    position:absolute; top:-4px; right:-4px;
+    width:19px; height:19px; object-fit:contain;
+    border-radius:50%;
+    background:rgba(var(--color-swan,255,255,255),1);
+    box-shadow:0 1px 4px rgba(0,0,0,0.18);
+    pointer-events:none;
+}
+.DH_LB_Reaction.me {
+    cursor:pointer; pointer-events:auto;
+    transition:transform 0.15s;
+}
+.DH_LB_Reaction.me:hover { transform:scale(1.22); }
+.DH_React_Btn {
+    width:100%; height:28px; border-radius:7px; border:none; cursor:pointer;
+    font-size:11px; font-weight:800; color:#fff;
+    background:rgb(var(--DH-blue));
+    outline:2px solid rgba(0,0,0,0.20); outline-offset:-2px;
+    transition:filter 0.4s cubic-bezier(0.16,1,0.32,1), transform 0.4s cubic-bezier(0.16,1,0.32,1), background 0.4s;
+}
+.DH_React_Btn:hover  { filter:brightness(0.88); transform:scale(1.03); }
+.DH_React_Btn:active { transform:scale(0.97); }
+.DH_React_Btn.active  { background:rgba(var(--DH-green),0.12); color:rgb(var(--DH-green)); outline-color:rgba(var(--DH-green),0.25); pointer-events:none; }
+.DH_React_Btn.loading { background:rgb(var(--color-eel,117,117,117),0.12); color:rgb(var(--color-eel,117,117,117),0.50); outline-color:rgb(var(--color-eel,117,117,117),0.18); pointer-events:none; }
+.DH_React_Btn.success { background:rgba(var(--DH-green),0.12); color:rgb(var(--DH-green)); outline-color:rgba(var(--DH-green),0.25); pointer-events:none; }
+/* ── PAGE 11: Leaderboard ── */
+.DH_LB_Row {
+    display:flex; align-items:center; gap:10px;
+    padding:9px 10px; border-radius:14px;
+    transition:background 0.15s;
+}
+.DH_LB_Row.me {
+    outline:2px solid rgba(var(--DH-blue),0.50); outline-offset:-2px;
+    background:rgba(var(--DH-blue),0.07);
+}
+.DH_LB_RankWrap {
+    width:31px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+}
+.DH_LB_RankNum {
+    font-size:13px; font-weight:800;
+    color:rgba(var(--color-wolf,60,60,67),0.55);
+}
+.DH_LB_RankMedal { width:29px; height:29px; object-fit:contain; display:block; }
+.DH_LB_AvatarWrap {
+    position:relative; flex-shrink:0;
+    width:44px; height:44px;
+}
+.DH_LB_AvatarImg {
+    width:44px; height:44px; border-radius:50%;
+    object-fit:cover; display:block;
+    border:2px solid rgba(var(--color-eel,117,117,117),0.18);
+    background:rgba(var(--DH-blue),0.08);
+}
+.DH_LB_AvatarFallback {
+    width:44px; height:44px; border-radius:50%;
+    background:rgba(var(--DH-blue),0.10);
+    display:flex; align-items:center; justify-content:center;
+    font-size:17px;
+    border:2px solid rgba(var(--color-eel,117,117,117),0.18);
+}
+.DH_LB_AvatarWrap.prom .DH_LB_AvatarImg,
+.DH_LB_AvatarWrap.prom .DH_LB_AvatarFallback { border-color:rgba(var(--DH-green),0.55); }
+.DH_LB_AvatarWrap.dem  .DH_LB_AvatarImg,
+.DH_LB_AvatarWrap.dem  .DH_LB_AvatarFallback { border-color:rgba(var(--DH-red),0.40); }
+.DH_LB_ZoneIcon {
+    position:absolute; bottom:-3px; right:-3px;
+    width:17px; height:17px; object-fit:contain;
+}
+.DH_LB_Info {
+    flex:1; min-width:0;
+    display:flex; flex-direction:column; gap:1px;
+}
+.DH_LB_Name {
+    font-size:12px; font-weight:700;
+    color:rgb(var(--color-wolf,60,60,67));
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.DH_LB_Row.me .DH_LB_Name { color:rgb(var(--DH-blue)); }
+.DH_LB_Status {
+    font-size:10px; font-weight:600;
+    color:rgba(var(--color-wolf,60,60,67),0.40);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.DH_LB_Status.active { color:rgba(28,176,246,0.80); }
+.DH_LB_ScoreWrap {
+    flex-shrink:0; text-align:right;
+}
+.DH_LB_Score {
+    font-size:12px; font-weight:800;
+    color:rgba(var(--color-wolf,60,60,67),0.70);
+    white-space:nowrap;
+}
+.DH_LB_Row.me .DH_LB_Score { color:rgb(var(--DH-blue)); }
+.DH_LB_ScoreUnit {
+    font-size:9px; font-weight:600;
+    color:rgba(var(--color-wolf,60,60,67),0.40);
+}
+.DH_LB_Row.me .DH_LB_ScoreUnit { color:rgba(var(--DH-blue),0.70); }
+.DH_LB_Sep {
+    display:flex; align-items:center; gap:8px;
+    margin:4px 2px; height:14px;
+}
+.DH_LB_SepLine { flex:1; height:1px; border-radius:1px; }
+.DH_LB_SepLine.prom { background:rgba(var(--DH-green),0.30); }
+.DH_LB_SepLine.dem  { background:rgba(var(--DH-red),0.25); }
+.DH_LB_SepIcon { width:14px; height:14px; object-fit:contain; flex-shrink:0; }
+.DH_LB_SepTxt {
+    font-size:9px; font-weight:700; flex-shrink:0;
+}
+.DH_LB_SepTxt.prom { color:rgb(var(--DH-green)); }
+.DH_LB_SepTxt.dem  { color:rgb(var(--DH-red)); }
+.DH_LB_Header {
+    display:flex; align-items:center; gap:10px; align-self:stretch;
+    padding:10px 12px; border-radius:14px;
+    background:rgba(var(--color-eel,117,117,117),0.05);
+    outline:1.5px solid rgba(var(--color-eel,117,117,117),0.10); outline-offset:-1px;
+}
+.DH_LB_LeagueImg { width:36px; height:36px; object-fit:contain; flex-shrink:0; }
+.DH_LB_LeagueName { font-size:15px; font-weight:800; color:rgb(var(--color-wolf,60,60,67)); }
 
 #DH_AccSettings_Btn        { transform-origin: right center; }
 #DH_AccSettings_Btn:hover  { filter:brightness(0.85); transform:scale(1.1); }
@@ -1686,7 +1750,7 @@
 
             <div class="DH_HStack_Auto">
                 <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">duohacker.io.vn</p>
-                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">v2026.06.21</p>
+                <p class="DH_T2 DH_NoSel" style="color:rgba(var(--DH-blue),0.45);">v2026.07.09</p>
             </div>
         </div>
 
@@ -1738,6 +1802,16 @@
     </svg>
 </div>
 
+            <!-- Leaderboard nav -->
+            <div class="DH_Btn DH_Btn_Blue_Ghost DH_NoSel"
+     id="DH_LB_Nav_Btn"
+     style="align-self:stretch;justify-content:space-between;padding:10px 12px;">
+    <p class="DH_T1 DH_NoSel" id="DH_LB_Nav_Lbl" style="color:rgb(var(--DH-blue));">Leaderboard</p>
+    <svg width="8" height="13" viewBox="0 0 8 13" fill="none">
+        <path d="M1 1l6 5.5L1 12" stroke="rgb(var(--DH-blue))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+</div>
+
             <!-- Auto League -->
             <div class="DH_HStack_Auto" style="align-self:stretch;">
                 <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;">
@@ -1771,18 +1845,6 @@
                     <span class="DH_Sm_Btn_Label" id="DH_MonthlyQuest_Claim_Lbl" style="color:#fff;">GET</span>
                 </button>
             </div>
-
-            <!-- Activate Free Super Duolingo -->
-            <div class="DH_HStack_Auto" style="align-self:stretch;">
-                <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;">
-                    <p class="DH_T1 DH_NoSel" id="DH_FreeSuper_Title">Free Super Duolingo</p>
-                    <p class="DH_T2 DH_NoSel" id="DH_FreeSuper_Sub" style="font-size:11px;">Activate Super Duolingo for free</p>
-                </div>
-                <button class="DH_Sm_Btn DH_NoSel" id="DH_Super_Activate_Btn" disabled>
-                    <span class="DH_Sm_Btn_Label" id="DH_Super_Activate_Lbl" style="color:#fff;">ACTIVATE</span>
-                </button>
-            </div>
-            <div class="DH_Prog_Wrap" id="DH_Super_Prog" style="align-self:stretch;"><div class="DH_Prog_Fill" id="DH_Super_Fill"></div></div>
 
             <div class="DH_Divider"></div>
         </div>
@@ -1981,6 +2043,7 @@
             </div>
 
             <div class="DH_Divider"></div>
+            <div class="DH_Prog_Wrap" id="DH_MQ_Prog" style="align-self:stretch;"><div class="DH_Prog_Fill" id="DH_MQ_Fill"></div></div>
 
             <div id="DH_MQ_Container" class="DH_Scroll_Inner" style="max-height:300px;width:100%;">
                 <p class="DH_T2 DH_NoSel" style="text-align:center;padding:8px 0;">Loading quests...</p>
@@ -2061,17 +2124,6 @@
                 <div class="DH_Prog_Wrap" id="DH_V1_Streak_Prog"><div class="DH_Prog_Fill" id="DH_V1_Streak_Fill"></div></div>
             </div>
 
-            <!-- Activate Free Super Duolingo V1 -->
-            <div class="DH_VStack_8" style="align-self:stretch;">
-                <p class="DH_T1 DH_NoSel" id="DH_V1_Super_Q" style="align-self:stretch;">Would you like to activate Free Super Duolingo?</p>
-                <div class="DH_HStack_8">
-                    <button class="DH_Input_Btn DH_NoSel" id="DH_V1_Super_Activate_Btn" style="flex:1 0 0;" disabled>
-                        <span class="DH_Btn_Label" id="DH_V1_Super_Activate_Lbl" style="color:#fff;">ACTIVATE</span>
-                    </button>
-                </div>
-                <div class="DH_Prog_Wrap" id="DH_V1_Super_Prog"><div class="DH_Prog_Fill" id="DH_V1_Super_Fill"></div></div>
-            </div>
-
             <div class="DH_Divider"></div>
 
             <!-- Settings (same as V2 settings page) -->
@@ -2107,6 +2159,34 @@
             </div>
         </div>
 
+        <!-- PAGE 11: Leaderboard -->
+        <div class="DH_Page" id="DH_Page_11">
+            <div class="DH_HStack_4 DH_NoSel" id="DH_LB_Back_Btn" style="align-self:flex-start;cursor:pointer;opacity:0.55;">
+                <svg width="8" height="14" viewBox="0 0 9 16" fill="none"><path d="M8 1L2 8l6 7" stroke="rgb(var(--color-wolf,60,60,67))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <p class="DH_T1" id="DH_LB_Back_Txt">Back</p>
+            </div>
+
+            <!-- League header card -->
+            <div class="DH_LB_Header">
+                <img id="DH_LB_LeagueImg" class="DH_LB_LeagueImg" src="" alt="" onerror="this.style.display='none'">
+                <p class="DH_LB_LeagueName DH_NoSel" id="DH_LB_LeagueName">—</p>
+            </div>
+
+            <!-- Rankings list -->
+            <div class="DH_Scroll_Inner" id="DH_LB_List" style="max-height:408px;display:flex;flex-direction:column;gap:3px;align-self:stretch;">
+                <p class="DH_T2 DH_NoSel" id="DH_LB_Loading_Txt" style="text-align:center;padding:16px 0;">Loading leaderboard...</p>
+            </div>
+        </div>
+
+        <!-- PAGE 12: Reaction Picker -->
+        <div class="DH_Page" id="DH_Page_12">
+            <div class="DH_HStack_4 DH_NoSel" id="DH_React_Back_Btn" style="align-self:flex-start;cursor:pointer;opacity:0.55;">
+                <svg width="8" height="14" viewBox="0 0 9 16" fill="none"><path d="M8 1L2 8l6 7" stroke="rgb(var(--color-wolf,60,60,67))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <p class="DH_T1">Back</p>
+            </div>
+            <p class="DH_T1 DH_NoSel" id="DH_React_Title" style="font-weight:700;">Choose Reaction</p>
+            <div class="DH_Scroll_Inner" id="DH_React_Container" style="max-height:300px;"></div>
+        </div>
     </div>
 </div>
 `;
@@ -2143,6 +2223,9 @@
 
         let _jwt = null,
             _sub = null,
+            _lbCache = null,
+            _lbPrefetching = false,
+            _lbCohortId = null,
             _hdrs = null,
             _user = null,
             _privacy = null;
@@ -2202,6 +2285,426 @@
         // to look more human and reduce risk of desync (e.g. RESULT_CODE_HUNG).
         const _safeWait = (baseMs) => _SAFE_MODE ? Math.round(baseMs * 2.5 + Math.random() * 500) : baseMs;
         const GOALS_API = 'https://goals-api.duolingo.com';
+
+        // ── Leaderboard ──────────────────────────────────────────────────────
+        const _LB_ID = '7d9f5dd1-8423-491a-91f2-2532052038ce';
+        const _LB_IMG = 'https://d35aaqx5ub95lt.cloudfront.net/images/leagues/';
+        const _LEAGUE_TIERS = [
+            { name: 'Bronze',   emoji: '🥉', img: _LB_IMG + '192181672ada150becd83a74a4266ae9.svg' },
+            { name: 'Silver',   emoji: '🥈', img: _LB_IMG + '8148b17e32d8706a82c02688f559e9ef.svg'  },
+            { name: 'Gold',     emoji: '🏅', img: _LB_IMG + '0e249b5f869b806da7406b815f4d60c6.svg' },
+            { name: 'Sapphire', emoji: '💎', img: _LB_IMG + '3ced84eb1f0274ec0f02b24ae6e3d29b.svg' },
+            { name: 'Ruby',     emoji: '❤️‍🔥', img: _LB_IMG + '74d6ab6e5b6f92e7d16a4a6664d1fafd.svg' },
+            { name: 'Emerald',  emoji: '💚', img: _LB_IMG + 'f480e032c5222395e73dac88ce3592bb.svg' },
+            { name: 'Amethyst', emoji: '💜', img: _LB_IMG + '7f895707cd44583692d20481dcd9e0d0.svg' },
+            { name: 'Pearl',    emoji: '🤍', img: _LB_IMG + 'f902954eeaa88fd2cb12f9168b4f68cb.svg'  },
+            { name: 'Obsidian', emoji: '🖤', img: _LB_IMG + '57f0c6b260d33493a0cddc4ab38d6833.svg' },
+            { name: 'Diamond',  emoji: '💠', img: _LB_IMG + 'afe5c7067cd5fb7de936d3928ea7add6.svg'  },
+        ];
+
+        async function _fetchLeaderboard() {
+            if (!_jwt || !_sub) return null;
+            try {
+                const r = await _gm('GET',
+                    `https://duolingo-leaderboards-prod.duolingo.com/leaderboards/${_LB_ID}/users/${_sub}?client_unlocked=true&get_reactions=true&_=${Date.now()}`,
+                    null, _hdrs);
+                if (r.status !== 200) return null;
+                const data = JSON.parse(r.responseText);
+                const raw = Array.isArray(data) ? data[0] : data;
+                // Validate structure like DuoXPy — banned/unjoined accounts
+                // return status 200 but with missing active/cohort/rankings.
+                if (!raw?.active?.cohort?.rankings?.length) return null;
+                if (!raw?.active?.contest?.ruleset) return null;
+                // user_id / is_demoted / is_promoted live at TOP LEVEL of the
+                // response, NOT inside `active`. Merge both so _renderLeaderboard
+                // can destructure cleanly.
+                const merged = Object.assign({}, raw.active);
+                if (raw.user_id    != null) merged.user_id    = raw.user_id;
+                if (raw.is_demoted != null) merged.is_demoted = raw.is_demoted;
+                if (raw.is_promoted!= null) merged.is_promoted= raw.is_promoted;
+                if (raw.score      != null) merged.score      = raw.score;
+                if (raw.tier       != null) merged.tier       = raw.tier;
+                // Store cohort_id for reaction PATCH
+                if (merged.cohort?.cohort_id) _lbCohortId = merged.cohort.cohort_id;
+                return merged;
+            } catch { return null; }
+        }
+
+        const _LB_MEDAL = [
+            'https://d35aaqx5ub95lt.cloudfront.net/images/leagues/9e4f18c0bc42c7508d5fa5b18346af11.svg',
+            'https://d35aaqx5ub95lt.cloudfront.net/images/leagues/cc7b8f8582e9cfb88408ab851ec2e9bd.svg',
+            'https://d35aaqx5ub95lt.cloudfront.net/images/leagues/eef523c872b71178ef5acb2442d453a2.svg',
+        ];
+        const _LB_REACT_BASE = 'https://d35aaqx5ub95lt.cloudfront.net/images/leagues/';
+        const _LB_VENDOR_BASE = 'https://d35aaqx5ub95lt.cloudfront.net/vendor/';
+        const _REACTION_ICONS = {
+            'TROPHY':         _LB_REACT_BASE + '22df4cb957e6cf2d7198b6e5449a342e.svg',
+            'TROPHY,winner':  _LB_REACT_BASE + '1795aa8b3b10d243e5d138a79bde360a.svg',
+            'POPPER':         _LB_REACT_BASE + '2ceb401cae52712705b66a77df83ce40.svg',
+            'SUNGLASSES':     _LB_REACT_BASE + '2439bac00452e99ba7bf6a7ed0b04196.svg',
+            'ONE_HUNDRED':    _LB_REACT_BASE + '5642e1e72813a88e8973b551a2004c7f.svg',
+            'CAT':            _LB_REACT_BASE + '535fc27de224cc7d311dbb5de4f33be6.svg',
+            'POOP':           _LB_REACT_BASE + 'beb0df263d0f696bc7095d56b448ca78.svg',
+            'POPCORN':        _LB_REACT_BASE + '573de2bc90b2499eeb2b3738cff90133.svg',
+            'EYES':           _LB_REACT_BASE + 'a8e5c18e80054228b2c61168846ff643.svg',
+            'ANGRY':          _LB_REACT_BASE + 'f12703218fc80de76a63e650726f742e.svg',
+            'DUMPSTER_FIRE':  _LB_REACT_BASE + '9fadb349c2ece257386a0e576359c867.svg',
+            'FLEX':           _LB_REACT_BASE + '6b8a8db5ac7f847e7e87efe97c8b451a.svg',
+            'FLAG,chess':     _LB_VENDOR_BASE + 'c8bad7c09aaf7bc29ddddc50808adb54.svg',
+            'FLAG,math':      _LB_VENDOR_BASE + '395c8a6ee9783610b578b02fda405e85.svg',
+            'FLAG,music':     _LB_VENDOR_BASE + '7fee27d21187165ccb88aef0234b6101.svg',
+            'NONE':           _LB_REACT_BASE + 'a35f1db4398fd29e66f1abc33a0d11a2.svg',
+        };
+        // Reaction icon names for picker display
+        const _REACTION_NAMES = {
+            'TROPHY': 'Trophy', 'TROPHY,winner': 'Diamond Trophy',
+            'POPPER': 'Popper', 'SUNGLASSES': 'Sunglasses',
+            'ONE_HUNDRED': '100', 'CAT': 'Cat', 'POOP': 'Poop', 'POPCORN': 'Popcorn',
+            'EYES': 'Eyes', 'ANGRY': 'Angry', 'DUMPSTER_FIRE': 'Fire', 'FLEX': 'Flex',
+            'FLAG,chess': 'Chess', 'FLAG,math': 'Math', 'FLAG,music': 'Music',
+            'NONE': 'None',
+        };
+
+        // Get best avatar URL: prefer custom picture, fallback to lb avatar_url, then default
+        function _bestAvatarUrl(picture, userId) {
+            const isDefault = !picture || picture.includes('/avatar/default');
+            if (!isDefault) {
+                let hq = picture.replace(/\/(medium|large|small)$/, '/xlarge');
+                if (!hq.endsWith('/xlarge') && hq.includes('duolingo.com/ssr-avatars')) hq += '/xlarge';
+                return hq;
+            }
+            // Try leaderboard cache for league-assigned avatar
+            const rankings = _lbCache?.cohort?.rankings || [];
+            const lbUser = rankings.find(u => String(u.user_id) === String(userId));
+            if (lbUser?.avatar_url && !lbUser.avatar_url.includes('/avatar/default')) {
+                return lbUser.avatar_url + '/large';
+            }
+            return '';
+        }
+        function _reactionIconUrl(r) {
+            if (!r || r === 'NONE') return _REACTION_ICONS['NONE'];
+            return _REACTION_ICONS[r] || _REACTION_ICONS['NONE'];
+        }
+                const _LB_PROM_ICON = 'https://d35aaqx5ub95lt.cloudfront.net/images/leagues/577cf633b59ce72791f725d0cb973061.svg';
+        const _LB_DEM_ICON  = 'https://d35aaqx5ub95lt.cloudfront.net/images/leagues/248453c5e2d9de19fba7a2f4fef7f016.svg';
+
+
+        async function _renderReactionPicker() {
+            const container = document.getElementById('DH_React_Container');
+            if (!container) return;
+            container.innerHTML = '';
+            const myRank = (_lbCache?.cohort?.rankings || []).find(u => String(u.user_id) === String(_sub));
+            const curReact = myRank?.reaction || 'NONE';
+
+            const GROUPS = [
+                {
+                    label: 'League Emojis',
+                    keys: ['TROPHY','TROPHY,winner','POPPER','SUNGLASSES','ONE_HUNDRED',
+                           'CAT','POOP','POPCORN','EYES','ANGRY','DUMPSTER_FIRE','FLEX','NONE']
+                },
+                {
+                    label: 'Course Emojis',
+                    keys: ['FLAG,chess','FLAG,math','FLAG,music']
+                }
+            ];
+
+            GROUPS.forEach(group => {
+                const header = document.createElement('div');
+                header.className = 'DH_Cat_Header DH_NoSel';
+                header.textContent = group.label;
+                container.appendChild(header);
+
+                const grid = document.createElement('div');
+                grid.className = 'DH_Shop_Grid';
+
+                group.keys.forEach(key => {
+                    const isActive = key === curReact;
+                    const card = document.createElement('div');
+                    card.className = 'DH_Shop_Card';
+
+                    const ico = document.createElement('img');
+                    ico.className = 'DH_Shop_Ico';
+                    ico.src = _REACTION_ICONS[key];
+                    ico.alt = key;
+
+                    const lbl = document.createElement('div');
+                    lbl.className = 'DH_Shop_Name DH_NoSel';
+                    lbl.textContent = _REACTION_NAMES[key] || key;
+
+                    const btn = document.createElement('button');
+                    btn.className = 'DH_React_Btn' + (isActive ? ' active' : '');
+                    btn.textContent = isActive ? 'ACTIVE' : 'EQUIP';
+
+                    btn.addEventListener('click', async () => {
+                        if (btn.classList.contains('loading') || btn.classList.contains('active')) return;
+                        btn.className = 'DH_React_Btn loading';
+                        btn.textContent = '...';
+                        try {
+                            const cohortId = _lbCohortId || _lbCache?.cohort?.cohort_id;
+                            if (!cohortId) throw new Error('no cohort');
+                            const url = `https://duolingo-leaderboards-prod.duolingo.com/reactions/${cohortId}/users/${_sub}`;
+                            const patchHdrs = Object.assign({}, _hdrs, {'Content-Type':'application/json'});
+                            const r = await _gm('PATCH', url, { reaction: key }, patchHdrs);
+                            if (r.status === 200) {
+                                if (_lbCache?.cohort?.rankings) {
+                                    const me = _lbCache.cohort.rankings.find(u => String(u.user_id) === String(_sub));
+                                    if (me) me.reaction = key;
+                                }
+                                btn.className = 'DH_React_Btn success';
+                                btn.textContent = 'ACTIVE';
+                                setTimeout(() => _goBack(), 700);
+                            } else {
+                                btn.className = 'DH_React_Btn';
+                                btn.textContent = 'EQUIP';
+                            }
+                        } catch(e) {
+                            btn.className = 'DH_React_Btn';
+                            btn.textContent = 'EQUIP';
+                        }
+                    });
+
+                    card.appendChild(ico);
+                    card.appendChild(lbl);
+                    card.appendChild(btn);
+                    grid.appendChild(card);
+                });
+
+                container.appendChild(grid);
+            });
+        }
+
+        // Preload reaction SVG icons so they're cached before picker opens
+        (function _preloadReactionIcons() {
+            Object.values(_REACTION_ICONS).forEach(url => {
+                const img = new Image();
+                img.src = url;
+            });
+        })();
+        // Update #DH_Avatar and #DH_V1_Avatar from leaderboard data.
+        // Called right after pre-fetch so the avatar appears without opening the LB tab.
+        let _panelAvatarLoaded = false;
+        function _updatePanelAvatar(lb) {
+            if (_panelAvatarLoaded) return;
+            const rankings = lb?.cohort?.rankings || [];
+            const me = rankings.find(u => String(u.user_id) === String(_sub));
+            if (!me || !me.avatar_url) return;
+            GM_xmlhttpRequest({
+                method: 'GET', url: me.avatar_url + '/large',
+                responseType: 'blob', timeout: 8000,
+                onload: function(r) {
+                    if (r.status !== 200 || !r.response) return;
+                    var blobUrl = URL.createObjectURL(r.response);
+                    _panelAvatarLoaded = true;
+                    ['DH_Avatar', 'DH_V1_Avatar'].forEach(function(elId) {
+                        var el = document.getElementById(elId);
+                        if (!el) return;
+                        el.innerHTML = '';
+                        var img = document.createElement('img');
+                        img.src = blobUrl;
+                        img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;';
+                        img.draggable = false;
+                        el.appendChild(img);
+                    });
+                },
+                onerror: function() {}, ontimeout: function() {}
+            });
+        }
+
+        function _renderLeaderboard(lb) {
+            const list    = document.getElementById('DH_LB_List');
+            const nameEl  = document.getElementById('DH_LB_LeagueName');
+            const imgEl   = document.getElementById('DH_LB_LeagueImg');
+            if (!list) return;
+
+            if (!lb) {
+                list.innerHTML = `<p class="DH_T2 DH_NoSel" style="text-align:center;padding:16px 0;">${_t('lb_failed')}</p>`;
+                return;
+            }
+
+            try {
+            const { cohort, contest, user_id: myUserId, is_demoted: myDemoted, is_promoted: myPromoted } = lb;
+            const { rankings, tier } = cohort;
+            const { num_promoted, num_demoted } = contest.ruleset;
+
+            const tierInfo = _LEAGUE_TIERS[tier] || { name: `League ${tier}`, emoji: '🏆', img: null };
+            const nProm    = (num_promoted || [])[tier] || 0;
+            const nDem     = (num_demoted  || [])[tier] || 0;
+            const total    = rankings.length;
+            // _sub is the authenticated user's Duolingo ID ��� always prefer it
+            const myId     = String(_sub ?? myUserId ?? '');
+
+            // League header
+            if (nameEl) nameEl.textContent = tierInfo.name + ' League';
+            if (imgEl) {
+                if (tierInfo.img) { imgEl.src = tierInfo.img; imgEl.style.display = ''; }
+                else imgEl.style.display = 'none';
+            }
+
+            // Update panel avatar (no-op if already done)
+            _updatePanelAvatar(lb);
+
+            // Rank rows
+            const _avatarQueue = [];
+            list.innerHTML = '';
+            rankings.forEach((u, i) => {
+                const rank  = i + 1;
+                const isMe  = String(u.user_id) === myId;
+                // Only show promoted zone; demoted zone removed (too buggy)
+                const inP   = isMe ? !!myPromoted : (rank <= nProm);
+                const inD   = false;
+
+                const row = document.createElement('div');
+                row.className = 'DH_LB_Row DH_NoSel' + (isMe ? ' me' : '');
+
+                // ── Rank wrap (medal img or number) ──
+                const rw = document.createElement('div');
+                rw.className = 'DH_LB_RankWrap';
+                if (rank <= 3 && _LB_MEDAL[rank - 1]) {
+                    const mi = document.createElement('img');
+                    mi.className = 'DH_LB_RankMedal';
+                    mi.src = _LB_MEDAL[rank - 1];
+                    mi.alt = String(rank);
+                    rw.appendChild(mi);
+                } else {
+                    const rn = document.createElement('span');
+                    rn.className = 'DH_LB_RankNum';
+                    rn.textContent = String(rank);
+                    rw.appendChild(rn);
+                }
+                row.appendChild(rw);
+
+                // ── Avatar wrap ──
+                const aw = document.createElement('div');
+                aw.className = 'DH_LB_AvatarWrap' + (inP ? ' prom' : inD ? ' dem' : '');
+                // Reaction icon overlay (top-right of avatar)
+                // Show for isMe always (clickable to change), for others only if they have a reaction
+                const hasReact = u.reaction && u.reaction !== 'NONE';
+                if (isMe || hasReact) {
+                    const ri = document.createElement('img');
+                    ri.className = 'DH_LB_Reaction' + (isMe ? ' me' : '');
+                    ri.src = _reactionIconUrl(hasReact ? u.reaction : 'NONE');
+                    ri.alt = '';
+                    if (isMe) ri.addEventListener('click', () => _goPage(12));
+                    aw.appendChild(ri);
+                }
+                const avUrl = u.avatar_url || '';
+                // Show initial letter as placeholder while avatar loads via GM blob
+                const _makeInitialFb = (name) => {
+                    const fb = document.createElement('div');
+                    fb.className = 'DH_LB_AvatarFallback';
+                    fb.textContent = (name || '?')[0].toUpperCase();
+                    return fb;
+                };
+                aw.appendChild(_makeInitialFb(u.display_name));
+                // Queue for batch load (12 at a time)
+                if (avUrl) _avatarQueue.push({ url: avUrl + '/large', awEl: aw, inP, inD,
+                    reaction: (isMe || hasReact) ? (hasReact ? u.reaction : 'NONE') : null,
+                    isMe: isMe });
+                // Zone icon overlay (↑↓)
+                if (inP || inD) _appendZoneIcon(aw, inP);
+                row.appendChild(aw);
+
+                // ── Name (wrapped in flex:1 container so score stays right) ──
+                const ni = document.createElement('div');
+                ni.className = 'DH_LB_Info';
+                const nm = document.createElement('p');
+                nm.className = 'DH_LB_Name';
+                nm.textContent = u.display_name;
+                ni.appendChild(nm);
+                row.appendChild(ni);
+
+                // ── Score ──
+                const sw = document.createElement('div');
+                sw.className = 'DH_LB_ScoreWrap';
+
+                const sc = document.createElement('p');
+                sc.className = 'DH_LB_Score';
+                sc.textContent = u.score.toLocaleString();
+                sw.appendChild(sc);
+
+                const su = document.createElement('p');
+                su.className = 'DH_LB_ScoreUnit';
+                su.textContent = 'XP';
+                sw.appendChild(su);
+
+                row.appendChild(sw);
+                list.appendChild(row);
+
+                // ── Zone separators ──
+                if (rank === nProm && rank < total) {
+                    list.appendChild(_makeSep('prom'));
+                }
+                // Rank Down separator removed
+            });
+
+            // Batch-load avatars 12 at a time
+            (function _batchAvatars(queue, offset) {
+                var CHUNK = 12;
+                if (offset >= queue.length) return;
+                var slice = queue.slice(offset, offset + CHUNK);
+                var done = 0;
+                function onDone() { if (++done === slice.length) _batchAvatars(queue, offset + CHUNK); }
+                slice.forEach(function(item) {
+                    GM_xmlhttpRequest({
+                        method: 'GET', url: item.url, responseType: 'blob', timeout: 8000,
+                        onload: function(r) {
+                            if (r.status === 200 && r.response) {
+                                var bUrl = URL.createObjectURL(r.response);
+                                item.awEl.innerHTML = '';
+                                var ai = document.createElement('img');
+                                ai.className = 'DH_LB_AvatarImg'; ai.src = bUrl; ai.alt = '';
+                                item.awEl.appendChild(ai);
+                                if (item.inP || item.inD) _appendZoneIcon(item.awEl, item.inP);
+                                // Re-add reaction icon (was cleared by innerHTML='')
+                                if (item.reaction !== null && item.reaction !== undefined) {
+                                    var ri2 = document.createElement('img');
+                                    ri2.className = 'DH_LB_Reaction' + (item.isMe ? ' me' : '');
+                                    ri2.src = _reactionIconUrl(item.reaction);
+                                    ri2.alt = '';
+                                    if (item.isMe) ri2.addEventListener('click', function() { _goPage(12); });
+                                    item.awEl.appendChild(ri2);
+                                }
+                            }
+                            onDone();
+                        },
+                        onerror: onDone, ontimeout: onDone
+                    });
+                });
+            })(_avatarQueue, 0);
+            } catch(e) {
+                // Any crash (e.g. missing cohort/contest) → show failed instead of stuck spinner
+                if (list) list.innerHTML = `<p class="DH_T2 DH_NoSel" style="text-align:center;padding:16px 0;">${_t('lb_failed')}</p>`;
+            }
+        }
+
+        function _appendZoneIcon(wrap, isPromo) {
+            const zi = document.createElement('img');
+            zi.className = 'DH_LB_ZoneIcon';
+            zi.src = isPromo ? _LB_PROM_ICON : _LB_DEM_ICON;
+            zi.alt = '';
+            wrap.appendChild(zi);
+        }
+
+        function _makeSep(type) {
+            const sep = document.createElement('div');
+            sep.className = 'DH_LB_Sep';
+            const l1 = document.createElement('div');
+            l1.className = 'DH_LB_SepLine ' + type;
+            const ic = document.createElement('img');
+            ic.className = 'DH_LB_SepIcon';
+            ic.src = type === 'prom' ? _LB_PROM_ICON : _LB_DEM_ICON;
+            ic.alt = '';
+            const tx = document.createElement('span');
+            tx.className = 'DH_LB_SepTxt ' + type;
+            tx.textContent = type === 'prom' ? 'Rank Up' : 'Rank Down';
+            const l2 = document.createElement('div');
+            l2.className = 'DH_LB_SepLine ' + type;
+            sep.appendChild(l1);
+            sep.appendChild(ic);
+            sep.appendChild(tx);
+            sep.appendChild(l2);
+            return sep;
+        }
 
         let _pageHistory = [1];
 
@@ -3339,15 +3842,16 @@
         }
 
         const _GF_SCRIPT_URL = 'https://greasyfork.org/en/scripts/561041-duolingo-duohacker';
-        const _CURRENT_VER = '2026.06.21';
+        const _CURRENT_VER = '2026.07.09';
 
-        /* ── Changelog Popup ── */
+        /* ── Changelog Popup ─��� */
         const _CHANGELOG = [{
-            version: '2026.06.21',
+            version: '2026.07.09',
             changes: [
-                'Added Story Challenges support for Auto Solver',
-                'Added Safe Mode',
-                'Improved Auto Solver',
+                'Added "Leaderboard" feature',
+                'Fixed "Claim Monthly Quest" feature',
+                'Improved "Skip Stories Challange" feature',
+                'Improved "Lesson Shortner" feature',
             ]
         }, ];
 
@@ -3434,7 +3938,17 @@
             ico.style.display = 'flex';
             ico.style.alignItems = 'center';
             ico.style.justifyContent = 'center';
-            if (state === 'connected') document.getElementById('DH_User_Row').style.display = 'flex';
+            if (state === 'connected') {
+                document.getElementById('DH_User_Row').style.display = 'flex';
+                // Pre-fetch leaderboard in background → instant open + early avatar update
+                if (!_lbCache && !_lbPrefetching) {
+                    _lbPrefetching = true;
+                    _fetchLeaderboard().then(lb => {
+                        _lbCache = lb; _lbPrefetching = false;
+                        if (lb) _updatePanelAvatar(lb);
+                    });
+                }
+            }
         }
 
         async function _checkVersionOnLoad() {
@@ -3544,6 +4058,22 @@
             fromEl.style.display = 'none';
             toEl.classList.add('active');
             toEl.style.opacity = '0';
+            // Pre-render content BEFORE measuring height so animation uses correct size
+            if (to === 11) {
+                box.style.width = '357px';
+                if (_lbCache) _renderLeaderboard(_lbCache);
+                else {
+                    const lbList = document.getElementById('DH_LB_List');
+                    if (lbList) lbList.innerHTML = `<p class="DH_T2 DH_NoSel" style="text-align:center;padding:16px 0;">${_t('lb_loading')}</p>`;
+                }
+            } else if (to === 12) {
+                box.style.width = '357px';
+                _renderReactionPicker();
+            } else if (to === 4) {
+                box.style.width = '340px';
+            } else {
+                box.style.width = '';
+            }
             const newH = box.offsetHeight;
             toEl.classList.remove('active');
             toEl.style.opacity = '';
@@ -3578,12 +4108,12 @@
                     if (_user && lgB) lgB.disabled = false;
                     if (_user && qB) qB.disabled = false;
                 }
-                if (to === 4) {
+                if (to === 11) {
+                    // Already pre-rendered from cache; now fetch fresh data in background
+                    _fetchLeaderboard().then(lb => { _lbCache = lb; _renderLeaderboard(lb); });
+                } else if (to === 4) {
                     const delI = document.getElementById('DH_Delay_Input');
                     if (delI) delI.value = _delay;
-                    box.style.width = '340px';
-                } else {
-                    box.style.width = '';
                 }
                 // Đã preload rồi nên không cần load lại khi chuyển page
                 setTimeout(() => {
@@ -3616,6 +4146,7 @@
         }
 
         async function _connect() {
+            _panelAvatarLoaded = false;
             _setConn('connecting');
             _jwt = _getJwt();
             if (!_jwt) {
@@ -3630,7 +4161,7 @@
             _sub = dec.sub;
             _hdrs = _buildHdrs(_jwt);
             try {
-                const r = await _gm('GET', `https://www.duolingo.com/2017-06-30/users/${_sub}?fields=id,username,fromLanguage,learningLanguage,streak,totalXp,gems,picture,streakData`);
+                const r = await _gm('GET', `https://www.duolingo.com/2017-06-30/users/${_sub}?fields=id,username,fromLanguage,learningLanguage,streak,totalXp,gems,picture,streakData,timezone`);
                 if (r.status !== 200) throw new Error(r.status);
                 _user = JSON.parse(r.responseText);
                 unsafeWindow._dhUser = _user;
@@ -3641,7 +4172,7 @@
                     _applyHideProfileToggle();
                 });
                 _v1FetchSkillId();
-                ['DH_XP_Btn', 'DH_Gem_Btn', 'DH_Streak_Btn', 'DH_League_Btn', 'DH_Quest_Btn', 'DH_Practice_Btn', 'DH_V1_XP_Btn', 'DH_V1_Gem_Btn', 'DH_V1_Streak_Btn', 'DH_Super_Activate_Btn', 'DH_V1_Super_Activate_Btn'].forEach(id => {
+                ['DH_XP_Btn', 'DH_Gem_Btn', 'DH_Streak_Btn', 'DH_League_Btn', 'DH_Quest_Btn', 'DH_Practice_Btn', 'DH_V1_XP_Btn', 'DH_V1_Gem_Btn', 'DH_V1_Streak_Btn'].forEach(id => {
                     const b = document.getElementById(id);
                     if (b) b.disabled = false;
                 });
@@ -3657,6 +4188,8 @@
                     _renderAccounts(); // Load account manager
                     _loadMonthlyQuests(); // Load monthly quests
                     _loadLicense(); // Load license
+                    // Prefetch leaderboard so page 11 opens instantly
+                    _fetchLeaderboard().then(lb => { _lbCache = lb; }).catch(() => {});
                 }, 500);
             } catch (e) {
                 _setConn('error', 'Failed — retrying');
@@ -3671,19 +4204,32 @@
             document.getElementById('DH_UXP').textContent = (u.totalXp || 0).toLocaleString();
             document.getElementById('DH_UGems').textContent = (u.gems || 0).toLocaleString();
             document.getElementById('DH_UStreak').textContent = (u.streak || 0).toLocaleString();
-            if (u.picture) {
-                let hq = u.picture.replace(/\/(medium|large|small)$/, '/xlarge');
-                if (!hq.endsWith('/xlarge') && hq.includes('duolingo.com/ssr-avatars')) hq += '/xlarge';
-                const av = document.getElementById('DH_Avatar');
+            const av = document.getElementById('DH_Avatar');
+            const bestUrl = _bestAvatarUrl(u.picture, _sub);
+            if (bestUrl) {
                 const avImg = document.createElement('img');
-                avImg.src = hq;
+                avImg.src = bestUrl;
                 avImg.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;';
                 avImg.draggable = false;
                 avImg.onerror = function() {
-                    av.innerHTML = '👤';
+                    // picture failed — try league fallback before emoji
+                    const lbUrl = _bestAvatarUrl('', _sub);
+                    if (lbUrl) {
+                        const fb = document.createElement('img');
+                        fb.src = lbUrl;
+                        fb.style.cssText = avImg.style.cssText;
+                        fb.draggable = false;
+                        fb.onerror = function() { av.innerHTML = '👤'; };
+                        av.innerHTML = '';
+                        av.appendChild(fb);
+                    } else {
+                        av.innerHTML = '👤';
+                    }
                 };
                 av.innerHTML = '';
                 av.appendChild(avImg);
+            } else if (av.innerHTML === '' || av.innerHTML === '👤') {
+                av.innerHTML = '👤';
             }
         }
 
@@ -3706,6 +4252,7 @@
                 if (ok) {
                     earned += MAX;
                     cur++;
+                    if (_user) { _user.totalXp = (_user.totalXp || 0) + MAX; _renderUser(_user); }
                 }
                 _setBtnProgress('DH_XP_Btn', Math.floor((cur / total) * 100));
                 await _sleep(_delay);
@@ -3715,6 +4262,7 @@
                 if (ok) {
                     earned += rem;
                     cur++;
+                    if (_user) { _user.totalXp = (_user.totalXp || 0) + rem; _renderUser(_user); }
                 }
                 _setBtnProgress('DH_XP_Btn', 100);
             }
@@ -3867,7 +4415,7 @@
             };
             try {
                 // Use native fetch like Gem Helper instead of _gm wrapper
-                const response = await fetch(`https://www.duolingo.com/2023-05-23/users/${_sub}/rewards/${rewardId}`, {
+                const response = await fetch(`https://www.duolingo.com/2017-06-30/users/${_sub}/rewards/${rewardId}`, {
                     method: 'PATCH',
                     headers: {
                         'authorization': `Bearer ${_jwt}`,
@@ -3961,25 +4509,63 @@
         }
 
 
+
+        // ── Timezone helpers ───────────────────────────────────────────────────────
+        function _accountTimezone() {
+            return (_user && _user.timezone) ? _user.timezone : 'America/New_York';
+        }
+
+        function _tzParts(timeZone, date) {
+            const dtf = new Intl.DateTimeFormat('en-US', {
+                timeZone, hourCycle: 'h23',
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit', second: '2-digit'
+            });
+            const out = {};
+            dtf.formatToParts(date).forEach(p => { if (p.type !== 'literal') out[p.type] = p.value; });
+            return out;
+        }
+
+        function _wallClockToSeconds(timeZone, year, month, day, hour, minute, second) {
+            const guess = Date.UTC(year, month - 1, day, hour, minute, second);
+            const parts = _tzParts(timeZone, new Date(guess));
+            const localAsUtc = Date.UTC(+parts.year, +parts.month - 1, +parts.day,
+                                        +parts.hour, +parts.minute, +parts.second);
+            return Math.floor((guess - (localAsUtc - guess)) / 1000);
+        }
+
+        function _accountToday(timeZone) {
+            const p = _tzParts(timeZone, new Date());
+            return { year: +p.year, month: +p.month, day: +p.day };
+        }
+        // ────────────────────────────────────────────────────────────────────────
+
+
         async function _farmStreak(days) {
-            const CH = ["assist", "characterIntro", "characterMatch", "characterPuzzle", "characterSelect", "characterTrace", "characterWrite", "completeReverseTranslation", "definition", "dialogue", "extendedMatch", "extendedListenMatch", "form", "freeResponse", "gapFill", "judge", "listen", "listenComplete", "listenMatch", "match", "name", "listenComprehension", "listenIsolation", "listenSpeak", "listenTap", "orderTapComplete", "partialListen", "partialReverseTranslate", "patternTapComplete", "radioBinary", "radioImageSelect", "radioListenMatch", "radioListenRecognize", "radioSelect", "readComprehension", "reverseAssist", "sameDifferent", "select", "selectPronunciation", "selectTranscription", "svgPuzzle", "syllableTap", "syllableListenTap", "speak", "tapCloze", "tapClozeTable", "tapComplete", "tapCompleteTable", "tapDescribe", "translate", "transliterate", "transliterationAssist", "typeCloze", "typeClozeTable", "typeComplete", "typeCompleteTable", "writeComprehension"];
-            let farmStart;
-            try {
-                const s = new Date(_user.streakData?.currentStreak?.startDate || Date.now());
-                s.setDate(s.getDate() - 1);
-                farmStart = s;
-            } catch {
-                const n = new Date();
-                n.setDate(n.getDate() - 1);
-                farmStart = n;
+            const CH = ["assist","characterIntro","characterMatch","characterPuzzle","characterSelect","characterTrace","characterWrite","completeReverseTranslation","definition","dialogue","extendedMatch","extendedListenMatch","form","freeResponse","gapFill","judge","listen","listenComplete","listenMatch","match","name","listenComprehension","listenIsolation","listenSpeak","listenTap","orderTapComplete","partialListen","partialReverseTranslate","patternTapComplete","radioBinary","radioImageSelect","radioListenMatch","radioListenRecognize","radioSelect","readComprehension","reverseAssist","sameDifferent","select","selectPronunciation","selectTranscription","svgPuzzle","syllableTap","syllableListenTap","speak","tapCloze","tapClozeTable","tapComplete","tapCompleteTable","tapDescribe","translate","transliterate","transliterationAssist","typeCloze","typeClozeTable","typeComplete","typeCompleteTable","writeComprehension"];
+
+            // Timezone-aware base date
+            const tz = _accountTimezone();
+            let base;
+            const dateStr = _user?.streakData?.currentStreak?.startDate;
+            if (dateStr && /^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+                const [y, m, d] = dateStr.split('-').map(Number);
+                base = { year: y, month: m, day: d };
+            } else {
+                base = _accountToday(tz);
             }
+
+            let doneLoops = 0, savedDays = 0;
             _setBtnRunning('DH_Streak_Btn');
-            for (let i = 0; i < days; i++) {
-                if (!_running) break;
-                _setBtnProgress('DH_Streak_Btn', Math.floor((i / days) * 100));
-                const simDay = new Date(farmStart);
-                simDay.setDate(simDay.getDate() - i);
-                const end = Math.floor(simDay.getTime() / 1000);
+
+            while (_running && doneLoops < days) {
+                _setBtnProgress('DH_Streak_Btn', Math.floor((doneLoops / days) * 100));
+
+                // endTime = 12:00:00 of (base - 1 - doneLoops) theo timezone tài khoản
+                const endSecs = _wallClockToSeconds(
+                    tz, base.year, base.month, base.day - 1 - doneLoops, 12, 0, 0
+                );
+
                 let sess = null;
                 await new Promise(r => GM_xmlhttpRequest({
                     method: 'POST',
@@ -3988,19 +4574,18 @@
                     data: JSON.stringify({
                         challengeTypes: CH,
                         fromLanguage: _user.fromLanguage,
-                        isFinalLevel: false,
-                        isV2: true,
-                        juicy: true,
+                        isFinalLevel: false, isV2: true, juicy: true,
                         learningLanguage: _user.learningLanguage,
-                        smartTipsVersion: 2,
-                        type: 'GLOBAL_PRACTICE'
+                        smartTipsVersion: 2, type: 'GLOBAL_PRACTICE'
                     }),
-                    onload: res => { if (res.status === 200) sess = JSON.parse(res.responseText); r(); },
-                    onerror: () => r(),
-                    timeout: 15000,
-                    ontimeout: () => r()
+                    onload: res => { if (res.status === 200) { try { sess = JSON.parse(res.responseText); } catch {} } r(); },
+                    onerror: () => r(), timeout: 15000, ontimeout: () => r()
                 }));
+
+                if (!_running) break;
+
                 if (sess?.id) {
+                    let ok = false;
                     await new Promise(r => GM_xmlhttpRequest({
                         method: 'PUT',
                         url: `https://www.duolingo.com/2017-06-30/sessions/${sess.id}`,
@@ -4008,27 +4593,44 @@
                         data: JSON.stringify({
                             ...sess,
                             heartsLeft: 5,
-                            startTime: end - 1,
-                            endTime: end,
-                            enableBonusPoints: false,
-                            failed: false,
-                            maxInLessonStreak: 9,
-                            shouldLearnThings: true
+                            startTime: endSecs - 1, endTime: endSecs,
+                            enableBonusPoints: false, failed: false,
+                            maxInLessonStreak: 9, shouldLearnThings: true
                         }),
-                        onload: () => r(),
-                        onerror: () => r(),
-                        timeout: 15000,
-                        ontimeout: () => r()
+                        onload: res => { ok = res.status === 200; r(); },
+                        onerror: () => r(), timeout: 15000, ontimeout: () => r()
                     }));
+
+                    if (ok) {
+                        savedDays++;
+                        if (_user) {
+                            _user.streak = (_user.streak || 0) + 1;
+                            _renderUser(_user);
+                        }
+                    }
                 }
+
+                doneLoops++;
+                await _sleep(_delay);
             }
+
             if (_running) {
                 _setBtnProgress('DH_Streak_Btn', 100);
                 _setBtnDone('DH_Streak_Btn', _t('btn_done'));
-                _notif('🔥', 'Streak Farm Done!', `Restored ${days} streak days.`);
+                if (savedDays > 0) {
+                    _notif('🔥', 'Streak Farm Done!', `Restored ${savedDays} streak days.`);
+                } else {
+                    _notif('⚠️', 'Streak Farm', 'No days could be saved. Please try again.');
+                }
                 setTimeout(_connect, 1500);
                 setTimeout(() => _resetBtn('DH_Streak_Btn', _t('btn_run')), 3000);
+            } else {
+                if (savedDays > 0) {
+                    _notif('⏹', 'Streak Farm Stopped', `Processed ${savedDays} days.`);
+                }
+                _resetBtn('DH_Streak_Btn', _t('btn_run'));
             }
+            _running = false;
         }
 
         async function _farmPractice(count) {
@@ -4219,7 +4821,7 @@
             _setBtnState('DH_League_Btn', _C_RED, _t('btn_stop'));
             while (_running) {
                 try {
-                    const r = await _gm('GET', `${LB}/users/${_sub}?client_unlocked=true&_=${Date.now()}`);
+                    const r = await _gm('GET', `${LB}/users/${_sub}?client_unlocked=true&get_reactions=true&_=${Date.now()}`);
                     if (r.status !== 200) {
                         await _sleep(3000);
                         continue;
@@ -4422,6 +5024,51 @@
         function _renderShop(items, filter = '') {
             const container = document.getElementById('DH_Shop_Container');
             container.innerHTML = '';
+
+            // ── Pinned: Super 3 Days ──
+            const _sSec = document.createElement('div');
+            _sSec.className = 'DH_Cat_Header DH_NoSel';
+            _sSec.textContent = 'Super';
+            container.appendChild(_sSec);
+            const _sGrid = document.createElement('div');
+            _sGrid.className = 'DH_Shop_Grid';
+            const _sCard = document.createElement('div');
+            _sCard.className = 'DH_Shop_Card';
+            _sCard.innerHTML = `<img src="https://d35aaqx5ub95lt.cloudfront.net/images/legendary/158dbe277bf83116d04692b969a27aa3.svg" class="DH_Shop_Ico"><div class="DH_Shop_Name DH_NoSel">Super 3 Days</div><button class="DH_Shop_Btn">GET</button>`;
+            const _sBtn = _sCard.querySelector('.DH_Shop_Btn');
+            _sBtn.onclick = async () => {
+                _sBtn.className = 'DH_Shop_Btn loading';
+                _sBtn.textContent = '...';
+                try {
+                    const payload = {
+                        itemName: 'immersive_subscription',
+                        isFree: true,
+                        consumed: true,
+                        fromLanguage: _user.fromLanguage,
+                        learningLanguage: _user.learningLanguage,
+                        productId: 'com.duolingo.immersive_free_trial_subscription'
+                    };
+                    const r = await _gm('POST', `https://www.duolingo.com/2017-06-30/users/${_sub}/shop-items`, payload);
+                    if (r.status === 200 || r.status === 201) {
+                        _sBtn.className = 'DH_Shop_Btn got';
+                        _sBtn.textContent = _t('btn_got');
+                        _notif('✅', 'Super Activated!', 'Free Super Duolingo activated!', 7);
+                        setTimeout(() => { _sBtn.className = 'DH_Shop_Btn'; _sBtn.textContent = _t('btn_get'); }, 3000);
+                    } else {
+                        _sBtn.className = 'DH_Shop_Btn fail';
+                        _sBtn.textContent = _t('btn_failed');
+                        _notif('❌', 'Failed', 'Activation failed. You may already have Super.', 5);
+                        setTimeout(() => { _sBtn.className = 'DH_Shop_Btn'; _sBtn.textContent = _t('btn_get'); }, 2000);
+                    }
+                } catch {
+                    _sBtn.className = 'DH_Shop_Btn fail';
+                    _sBtn.textContent = _t('btn_failed');
+                    setTimeout(() => { _sBtn.className = 'DH_Shop_Btn'; _sBtn.textContent = _t('btn_get'); }, 2000);
+                }
+            };
+            _sGrid.appendChild(_sCard);
+            container.appendChild(_sGrid);
+
             const valid = items.filter(i => i.currencyType === 'XGM' && !i.id.includes('gift'));
             const f = filter.trim().toLowerCase();
             const filtered = f ? valid.filter(i => (i.name || _formatItem(i.id)).toLowerCase().includes(f)) : valid;
@@ -4731,6 +5378,7 @@
                         fallbackErrors = 0;
                         _v1Earned.xp += 499;
                         _v1UpdateDisplayNow();
+                        if (_user) { _user.totalXp = (_user.totalXp || 0) + 499; _v1SyncUser(); }
                         loopPct = (loopPct + 2) % 99 + 1;
                         _v1SetProg('DH_V1_XP', loopPct);
                     } else if (status === 429) {
@@ -4842,28 +5490,31 @@
         }
 
 
+
         async function _v1FarmStreak() {
+            const CH = ["assist","characterIntro","characterMatch","characterPuzzle","characterSelect","characterTrace","characterWrite","completeReverseTranslation","definition","dialogue","extendedMatch","extendedListenMatch","form","freeResponse","gapFill","judge","listen","listenComplete","listenMatch","match","name","listenComprehension","listenIsolation","listenSpeak","listenTap","orderTapComplete","partialListen","partialReverseTranslate","patternTapComplete","radioBinary","radioImageSelect","radioListenMatch","radioListenRecognize","radioSelect","readComprehension","reverseAssist","sameDifferent","select","selectPronunciation","selectTranscription","svgPuzzle","syllableTap","syllableListenTap","speak","tapCloze","tapClozeTable","tapComplete","tapCompleteTable","tapDescribe","translate","transliterate","transliterationAssist","typeCloze","typeClozeTable","typeComplete","typeCompleteTable","writeComprehension"];
             _v1Earned.streak = 0;
             _v1UpdateDisplayNow();
             _v1SetBtnState('DH_V1_Streak_Btn', _C_RED, _t('btn_stop'));
             _v1SetProg('DH_V1_Streak', 1);
 
-            const CH = ["assist", "characterIntro", "characterMatch", "characterPuzzle", "characterSelect", "characterTrace", "characterWrite", "completeReverseTranslation", "definition", "dialogue", "extendedMatch", "extendedListenMatch", "form", "freeResponse", "gapFill", "judge", "listen", "listenComplete", "listenMatch", "match", "name", "listenComprehension", "listenIsolation", "listenSpeak", "listenTap", "orderTapComplete", "partialListen", "partialReverseTranslate", "patternTapComplete", "radioBinary", "radioImageSelect", "radioListenMatch", "radioListenRecognize", "radioSelect", "readComprehension", "reverseAssist", "sameDifferent", "select", "selectPronunciation", "selectTranscription", "svgPuzzle", "syllableTap", "syllableListenTap", "speak", "tapCloze", "tapClozeTable", "tapComplete", "tapCompleteTable", "tapDescribe", "translate", "transliterate", "transliterationAssist", "typeCloze", "typeClozeTable", "typeComplete", "typeCompleteTable", "writeComprehension"];
-            let farmStart;
-            try {
-                const s = new Date(_user.streakData?.currentStreak?.startDate || Date.now());
-                s.setDate(s.getDate() - 1);
-                farmStart = s;
-            } catch {
-                farmStart = new Date();
-                farmStart.setDate(farmStart.getDate() - 1);
+            // Timezone-aware base date
+            const tz = _accountTimezone();
+            let base;
+            const dateStr = _user?.streakData?.currentStreak?.startDate;
+            if (dateStr && /^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+                const [y, m, d] = dateStr.split('-').map(Number);
+                base = { year: y, month: m, day: d };
+            } else {
+                base = _accountToday(tz);
             }
+
             let dayIdx = 0;
 
             while (_v1Running && _v1Task === 'streak') {
-                const simDay = new Date(farmStart);
-                simDay.setDate(simDay.getDate() - dayIdx);
-                const end = Math.floor(simDay.getTime() / 1000);
+                const endSecs = _wallClockToSeconds(
+                    tz, base.year, base.month, base.day - 1 - dayIdx, 12, 0, 0
+                );
 
                 let sess = null;
                 await new Promise(r => GM_xmlhttpRequest({
@@ -4873,20 +5524,16 @@
                     data: JSON.stringify({
                         challengeTypes: CH,
                         fromLanguage: _user.fromLanguage,
-                        isFinalLevel: false,
-                        isV2: true,
-                        juicy: true,
+                        isFinalLevel: false, isV2: true, juicy: true,
                         learningLanguage: _user.learningLanguage,
-                        smartTipsVersion: 2,
-                        type: 'GLOBAL_PRACTICE'
+                        smartTipsVersion: 2, type: 'GLOBAL_PRACTICE'
                     }),
-                    onload: res => { if (res.status === 200) sess = JSON.parse(res.responseText); r(); },
-                    onerror: () => r(),
-                    timeout: 15000,
-                    ontimeout: () => r()
+                    onload: res => { if (res.status === 200) { try { sess = JSON.parse(res.responseText); } catch {} } r(); },
+                    onerror: () => r(), timeout: 15000, ontimeout: () => r()
                 }));
 
                 if (sess?.id) {
+                    let ok = false;
                     await new Promise(r => GM_xmlhttpRequest({
                         method: 'PUT',
                         url: `https://www.duolingo.com/2017-06-30/sessions/${sess.id}`,
@@ -4894,20 +5541,22 @@
                         data: JSON.stringify({
                             ...sess,
                             heartsLeft: 5,
-                            startTime: end - 1,
-                            endTime: end,
-                            enableBonusPoints: false,
-                            failed: false,
-                            maxInLessonStreak: 9,
-                            shouldLearnThings: true
+                            startTime: endSecs - 1, endTime: endSecs,
+                            enableBonusPoints: false, failed: false,
+                            maxInLessonStreak: 9, shouldLearnThings: true
                         }),
-                        onload: () => r(),
-                        onerror: () => r(),
-                        timeout: 15000,
-                        ontimeout: () => r()
+                        onload: res => { ok = res.status === 200; r(); },
+                        onerror: () => r(), timeout: 15000, ontimeout: () => r()
                     }));
-                    _v1Earned.streak++;
-                    _v1UpdateDisplayNow();
+
+                    if (ok) {
+                        _v1Earned.streak++;
+                        if (_user) {
+                            _user.streak = (_user.streak || 0) + 1;
+                            _v1SyncUser();
+                        }
+                        _v1UpdateDisplayNow();
+                    }
                 }
 
                 const loopPct = (dayIdx % 9) * 11 + 1;
@@ -4923,10 +5572,12 @@
             if (_v1Earned.streak > 0) {
                 _notif('🔥', 'Streak Farm Done!', `Farmed ${_v1Earned.streak} streak days.`);
                 setTimeout(_connect, 1500);
+            } else {
+                _notif('⚠️', 'Streak Farm', 'No days could be saved. Please try again.');
             }
         }
 
-        function _v1RunToggle(task) {
+                function _v1RunToggle(task) {
             if (_v1Running && _v1Task === task) {
                 _v1Running = false;
                 _v1Task = null;
@@ -4999,11 +5650,7 @@
                 _notif('ℹ️', 'Already saved', 'This account is already in the list.');
                 return;
             }
-            let pic = '';
-            if (_user.picture) {
-                pic = _user.picture.replace(/\/(medium|large|small)$/, '/xlarge');
-                if (!pic.endsWith('/xlarge') && pic.includes('duolingo.com/ssr-avatars')) pic += '/xlarge';
-            }
+            const pic = _bestAvatarUrl(_user.picture, _sub);
             all.push({
                 id: _sub,
                 username: _user.username || 'User',
@@ -5054,8 +5701,8 @@
                 card.className = 'DH_Acc_Card';
                 const isCurrentUser = _sub && acc.id == _sub;
                 const picHtml = acc.pic ?
-                    `<img src="${acc.pic}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentNode.innerHTML='👤'">` :
-                    '👤';
+                    `<img src="${acc.pic}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.src='https://raw.githubusercontent.com/DuoHacker/DuoHacker/refs/heads/main/images/avatar-default.jpg'">` :
+                    `<img src="https://raw.githubusercontent.com/DuoHacker/DuoHacker/refs/heads/main/images/avatar-default.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
                 card.innerHTML = `
             <div class="DH_Acc_Avatar">${picHtml}</div>
             <div class="DH_Acc_Info">
@@ -5099,17 +5746,13 @@
                     if (r.status !== 200) return;
                     const fresh = JSON.parse(r.responseText);
 
-                    let pic = '';
-                    if (fresh.picture) {
-                        pic = fresh.picture.replace(/\/(medium|large|small)$/, '/xlarge');
-                        if (!pic.endsWith('/xlarge') && pic.includes('duolingo.com/ssr-avatars')) pic += '/xlarge';
-                    }
+                    const pic = _bestAvatarUrl(fresh.picture, fresh.id || acc.id);
 
                     if (fresh.username && fresh.username !== acc.username) {
                         acc.username = fresh.username;
                         changed = true;
                     }
-                    if (pic && pic !== acc.pic) {
+                    if (pic !== undefined && pic !== acc.pic) {
                         acc.pic = pic;
                         changed = true;
                     }
@@ -5125,9 +5768,12 @@
         function _goalHdrsLocal(jwt) {
             return {
                 'Content-Type': 'application/json',
-                'x-requested-with': 'XMLHttpRequest',
                 'accept': 'application/json; charset=UTF-8',
-                'Authorization': 'Bearer ' + jwt
+                'x-requested-with': 'XMLHttpRequest',
+                'Authorization': 'Bearer ' + jwt,
+                'cookie': 'jwt_token=' + jwt,
+                'origin': 'https://www.duolingo.com',
+                'x-amzn-trace-id': 'User=' + (_sub || ''),
             };
         }
 
@@ -5184,8 +5830,25 @@
                     claimBtn.disabled = false;
                 }
             } catch (e) {
-                cont.innerHTML = `<p class="DH_T2 DH_NoSel" style="text-align:center;color:rgb(var(--DH-red));padding:8px 0;">${_t('quest_failed')}</p>`;
+                console.error('[DH] Monthly quest load error:', e, e?.message);
+                cont.innerHTML = `<p class="DH_T2 DH_NoSel" style="text-align:center;color:rgb(var(--DH-red));padding:8px 0;">${_t('quest_failed')}: ${e?.message||''}</p>`;
             }
+        }
+
+
+        // Build a map of goalId -> schema goal for quick lookup
+        function _buildSchemaMap(schema) {
+            const map = new Map();
+            (schema.goals || []).forEach(g => {
+                const m = g.goalId.match(/^(\d{4}_\d{2})_monthly/);
+                if (!m) return;
+                const key = m[1];
+                const ex = map.get(key);
+                if (!ex || (g.category?.includes('CHALLENGE') && !ex.category?.includes('CHALLENGE'))) {
+                    map.set(key, g);
+                }
+            });
+            return map;
         }
 
         function _renderMonthlyQuests(schema, progress, earned, gh) {
@@ -5193,85 +5856,113 @@
             if (!cont) return;
             cont.innerHTML = '';
             const now = new Date();
-            const yr = now.getFullYear().toString();
-            const mo = (now.getMonth() + 1).toString().padStart(2, '0');
-            const mReg = new RegExp(`^${yr}_${mo}_monthly`);
-            const map = new Map();
-            schema.goals.forEach(g => {
-                const m2 = g.goalId.match(/^(\d{4}_\d{2})_monthly/);
-                if (!m2) return;
-                const key = m2[1];
-                const existing = map.get(key);
-                if (!existing) {
-                    map.set(key, g);
-                } else {
-                    const existIsChallenge = existing.category?.includes('CHALLENGE');
-                    const newIsChallenge = g.category?.includes('CHALLENGE');
-                    if (!existIsChallenge && newIsChallenge) map.set(key, g);
+            const curYM = `${now.getFullYear()}_${String(now.getMonth()+1).padStart(2,'0')}`;
+
+            // Schema map: YYYY_MM -> best goal entry
+            const schemaMap = _buildSchemaMap(schema);
+
+            // All metrics from schema (for brute-force old quest claim)
+            const allMetrics = [];
+            const metricSeen = {};
+            (schema.goals || []).forEach(g => {
+                if (g.metric && !metricSeen[g.metric] && g.metric !== 'QUESTS') {
+                    metricSeen[g.metric] = true;
+                    allMetrics.push(g.metric);
                 }
             });
-            const goals = [...map.values()].filter(g => g.goalId.match(mReg) || true).reverse();
-            const monthly = goals.filter(g => g.category && g.category.includes('MONTHLY'));
-            if (monthly.length === 0) {
+
+            // Collect all monthly YYYY_MM keys from progress (sorted newest first)
+            const monthKeys = [];
+            Object.keys(progress).forEach(k => {
+                const m = k.match(/^(\d{4}_\d{2})_monthly/);
+                if (m) monthKeys.push(m[1]);
+            });
+            // Also add keys from schema not in progress
+            schemaMap.forEach((_, key) => { if (!monthKeys.includes(key)) monthKeys.push(key); });
+            // Dedupe and sort descending
+            const uniqMonths = [...new Set(monthKeys)].sort().reverse();
+
+            if (uniqMonths.length === 0) {
                 cont.innerHTML = `<p class="DH_T2 DH_NoSel" style="text-align:center;padding:8px 0;">${_t('no_monthly_quests')}</p>`;
                 return;
             }
-            monthly.forEach(g => {
-                const isEarned = earned.has(g.badgeId) || earned.has(g.goalId);
-                let cur = 0;
-                const raw = progress[g.goalId];
-                if (typeof raw === 'number') cur = raw;
-                else if (raw && typeof raw === 'object') cur = raw.progress || 0;
-                const tgt = g.threshold || 10;
-                let pct = Math.min(100, (cur / tgt) * 100);
-                if (isEarned) {
-                    pct = 100;
-                    cur = tgt;
-                }
+
+            uniqMonths.forEach(ym => {
+                const isCurrentMonth = ym === curYM;
+                const schemaGoal = schemaMap.get(ym);
+                const progressKey = Object.keys(progress).find(k => k.startsWith(ym + '_monthly'));
+                const rawProg = progressKey ? progress[progressKey] : undefined;
+                let cur = typeof rawProg === 'number' ? rawProg : (rawProg?.progress || 0);
+
+                const isEarned = schemaGoal
+                    ? (earned.has(schemaGoal.badgeId) || earned.has(schemaGoal.goalId))
+                    : (cur > 0 && cur >= (schemaGoal?.threshold || 1));
+                const tgt = schemaGoal?.threshold || 1;
+                let pct = isEarned ? 100 : Math.min(100, (cur / tgt) * 100);
+                if (isEarned) cur = tgt;
                 const remaining = Math.max(0, tgt - cur);
 
+                const [yr, mo] = ym.split('_');
+                const monthLabel = new Date(parseInt(yr), parseInt(mo)-1, 1)
+                    .toLocaleString('default', { month: 'long', year: 'numeric' });
+                const title = schemaGoal?.title?.uiString || `Monthly Quest – ${monthLabel}`;
+                const metric = schemaGoal?.metric || 'XP';
+
                 let icon = 'https://d35aaqx5ub95lt.cloudfront.net/images/achievement/aca5f82d97f5e67c1acb1ea05a0e6d1a.svg';
-                const badge = schema.badges?.find(x => x.badgeId === g.badgeId);
-                if (badge && badge.icon?.enabled?.lightMode) {
-                    icon = badge.icon.enabled.lightMode.svg || badge.icon.enabled.lightMode.url || icon;
+                if (schemaGoal) {
+                    const badge = schema.badges?.find(x => x.badgeId === schemaGoal.badgeId);
+                    if (badge?.icon?.enabled?.lightMode) {
+                        icon = badge.icon.enabled.lightMode.svg || badge.icon.enabled.lightMode.url || icon;
+                    }
                 }
 
                 const item = document.createElement('div');
-                item.className = `DH_Quest_Item${isEarned?' done':''}`;
+                item.className = `DH_Quest_Item${isEarned ? ' done' : ''}`;
                 item.innerHTML = `
             <img src="${icon}" class="DH_Quest_Icon" onerror="this.src='https://d35aaqx5ub95lt.cloudfront.net/images/achievement/aca5f82d97f5e67c1acb1ea05a0e6d1a.svg'">
             <div class="DH_Quest_Info">
-                <p class="DH_Quest_Title DH_NoSel">${g.title?.uiString||g.goalId}</p>
-                <p class="DH_Quest_Meta DH_NoSel">${isEarned?'COMPLETED':''+cur+' / '+tgt+' · '+g.metric}</p>
+                <p class="DH_Quest_Title DH_NoSel">${title}</p>
+                <p class="DH_Quest_Meta DH_NoSel">${isEarned ? 'COMPLETED' : cur + ' / ' + tgt + ' · ' + metric}</p>
                 <div class="DH_Quest_Bar_Bg"><div class="DH_Quest_Bar_Fill" style="width:${pct}%"></div></div>
             </div>
-            ${!isEarned&&remaining>0?`<button class="DH_Quest_Get_Btn" data-metric="${g.metric}" data-amount="${remaining}" data-id="${g.goalId}">GET +${remaining}</button>`:''}
-            ${isEarned?`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><circle cx="12" cy="12" r="10" fill="rgba(var(--DH-green),0.15)" stroke="rgb(var(--DH-green))" stroke-width="1.5"/><path d="M7.5 12.5l3 3 6-6" stroke="rgb(var(--DH-green))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}
+            ${!isEarned && !isCurrentMonth ? `<button class="DH_Quest_Get_Btn" data-ym="${ym}" data-metric="${metric}" data-amount="${remaining}" data-id="${progressKey || ym + '_monthly_challenge'}">GET</button>` : ''}
+            ${!isEarned && isCurrentMonth && remaining > 0 ? `<button class="DH_Quest_Get_Btn" data-ym="${ym}" data-metric="${metric}" data-amount="${remaining}" data-id="${progressKey || ym + '_monthly_challenge'}">GET +${remaining}</button>` : ''}
+            ${isEarned ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><circle cx="12" cy="12" r="10" fill="rgba(var(--DH-green),0.15)" stroke="rgb(var(--DH-green))" stroke-width="1.5"/><path d="M7.5 12.5l3 3 6-6" stroke="rgb(var(--DH-green))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ''}
         `;
+
                 const btn = item.querySelector('.DH_Quest_Get_Btn');
                 if (btn) btn.addEventListener('click', async () => {
                     btn.disabled = true;
                     btn.textContent = '…';
                     try {
+                        const [qYr, qMo] = btn.dataset.ym.split('_');
+                        const ts = new Date(Date.UTC(parseInt(qYr), parseInt(qMo)-1, 15, 12, 0, 0)).toISOString();
+                        // Send only the specific metric for this month
+                        const updates = [{ metric: btn.dataset.metric, quantity: parseInt(btn.dataset.amount) }];
                         const payload = {
-                            metric_updates: [{
-                                metric: btn.dataset.metric,
-                                quantity: parseInt(btn.dataset.amount)
-                            }],
-                            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                            timestamp: _mqGetTimestamp(btn.dataset.id)
+                            metric_updates: updates,
+                            timestamp: ts,
+                            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
                         };
-                        const r = await _mqGm('POST', `${GOALS_API}/users/${_sub}/progress/batch`, payload, gh);
-                        if (r.status === 200) {
+                        // Call twice: 1st updates progress, 2nd triggers badge award (Duolingo quirk)
+                        const r1 = await _mqGm('POST', `${GOALS_API}/users/${_sub}/progress/batch`, payload, gh);
+                        if (r1.status !== 200) {
+                            btn.textContent = 'ERR ' + r1.status;
+                            btn.disabled = false;
+                            return;
+                        }
+                        await new Promise(res => setTimeout(res, 800));
+                        const r2 = await _mqGm('POST', `${GOALS_API}/users/${_sub}/progress/batch`, payload, gh);
+                        if (r2.status === 200) {
                             btn.textContent = '✓';
                             btn.classList.add('done');
                             _notif('✅', 'Quest Done!', 'Progress injected successfully.');
                             setTimeout(() => _loadMonthlyQuests(), 900);
                         } else {
-                            btn.textContent = 'ERR';
+                            btn.textContent = 'ERR ' + r2.status;
                             btn.disabled = false;
                         }
-                    } catch {
+                    } catch(e) {
                         btn.textContent = 'ERR';
                         btn.disabled = false;
                     }
@@ -5285,46 +5976,73 @@
                 _notif('⚠️', 'Not loaded', 'Open Monthly Quests first.');
                 return;
             }
-            const claimBtn = document.getElementById('DH_MQ_ClaimAll_Btn');
-            if (claimBtn) {
-                claimBtn.disabled = true;
-                const lbl = claimBtn.querySelector('.DH_Sm_Btn_Label');
-                if (lbl) lbl.textContent = '…';
+            const cont = document.getElementById('DH_MQ_Container');
+            const buttons = cont ? [...cont.querySelectorAll('.DH_Quest_Get_Btn')] : [];
+            if (buttons.length === 0) {
+                _notif('ℹ️', 'Nothing to do', 'No unclaimed quests found.');
+                return;
             }
+
+            const claimBtn = document.getElementById('DH_MQ_ClaimAll_Btn');
+            const lbl = claimBtn?.querySelector('.DH_Sm_Btn_Label');
+            if (claimBtn) claimBtn.disabled = true;
+            if (lbl) lbl.textContent = '0%';
+
+            const progEl = document.getElementById('DH_MQ_Prog');
+            const fillEl = document.getElementById('DH_MQ_Fill');
+            if (progEl) progEl.classList.add('on');
+            if (fillEl) fillEl.style.width = '0%';
+
+            buttons.forEach(b => { b.disabled = true; b.textContent = '…'; });
+
             const gh = _goalHdrsLocal(_jwt);
-            const uniqueMetrics = new Set();
-            _questState.schema.goals.forEach(g => {
-                if (g.category && g.category.includes('MONTHLY') && g.metric) uniqueMetrics.add(g.metric);
-            });
-            if (uniqueMetrics.size > 0) {
-                const updates = [...uniqueMetrics].map(m => ({
-                    metric: m,
-                    quantity: 2000
-                }));
-                updates.push({
-                    metric: 'QUESTS',
-                    quantity: 1
-                });
+            const total = buttons.length;
+            let done = 0, ok = 0;
+
+            async function _claimOne(btn) {
+                const [qYr, qMo] = btn.dataset.ym.split('_');
+                const ts = new Date(Date.UTC(parseInt(qYr), parseInt(qMo) - 1, 15, 12, 0, 0)).toISOString();
                 const payload = {
-                    metric_updates: updates,
-                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                    timestamp: new Date().toISOString()
+                    metric_updates: [{ metric: btn.dataset.metric, quantity: parseInt(btn.dataset.amount) }],
+                    timestamp: ts,
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
                 };
                 try {
-                    await _mqGm('POST', `${GOALS_API}/users/${_sub}/progress/batch`, payload, gh);
-                    _notif('✅', 'Monthly Quests', 'All monthly quests claimed!');
-                    setTimeout(() => _loadMonthlyQuests(), 900);
-                } catch {
-                    _notif('❌', 'Error', 'Failed to claim quests.');
-                }
+                    const r1 = await _mqGm('POST', `${GOALS_API}/users/${_sub}/progress/batch`, payload, gh);
+                    if (r1.status !== 200) return false;
+                    await new Promise(res => setTimeout(res, 800));
+                    const r2 = await _mqGm('POST', `${GOALS_API}/users/${_sub}/progress/batch`, payload, gh);
+                    return r2.status === 200;
+                } catch { return false; }
+            }
+
+            const THREADS = 3;
+            for (let i = 0; i < buttons.length; i += THREADS) {
+                const chunk = buttons.slice(i, i + THREADS);
+                const results = await Promise.all(chunk.map(b => _claimOne(b)));
+                results.forEach((success, j) => {
+                    const b = chunk[j];
+                    b.textContent = success ? '✓' : 'ERR';
+                    if (success) { b.classList.add('done'); ok++; }
+                    done++;
+                });
+                const pct = Math.round((done / total) * 100);
+                if (fillEl) fillEl.style.width = pct + '%';
+                if (lbl) lbl.textContent = pct + '%';
+            }
+
+            if (progEl) progEl.classList.remove('on');
+            if (claimBtn) claimBtn.disabled = false;
+            if (lbl) lbl.textContent = _t('btn_claim');
+
+            if (ok === total) {
+                _notif('✅', 'Monthly Quests', `All ${total} quest(s) claimed!`);
+            } else if (ok > 0) {
+                _notif('⚠️', 'Partial', `${ok}/${total} quests claimed.`);
             } else {
-                _notif('ℹ️', 'Nothing to do', 'No monthly metrics found.');
+                _notif('❌', 'Failed', 'No quests could be claimed.');
             }
-            if (claimBtn) {
-                claimBtn.disabled = false;
-                const lbl = claimBtn.querySelector('.DH_Sm_Btn_Label');
-                if (lbl) lbl.textContent = _t('btn_claim');
-            }
+            setTimeout(() => _loadMonthlyQuests(), 900);
         }
 
         document.getElementById('DH_Hide_Btn').addEventListener('click', () => _doHide(!_hidden));
@@ -5358,13 +6076,7 @@
         document.getElementById('DH_V1_Gem_Btn').addEventListener('click', () => _v1RunToggle('gems'));
         document.getElementById('DH_V1_Streak_Btn').addEventListener('click', () => _v1RunToggle('streak'));
 
-        // ── Free Super Duolingo ──
-        function _getSuperJWT() {
-            const match = document.cookie.split('; ').find(r => r.startsWith('jwt_token='));
-            return match ? match.split('=')[1] : null;
-        }
-
-        async function _activateFreeSuper(btnId, lblId, progId, fillId) {
+        async function _activateFreeSuper_REMOVED(btnId, lblId, progId, fillId) { return; // removed
             const jwt = _getSuperJWT();
             if (!jwt) {
                 _notif('⚠️', 'Not logged in', 'Could not find your Duolingo token. Please log in first.', 5);
@@ -5431,16 +6143,6 @@
             }
         }
 
-        // Enable Super buttons after user connects (jwt available from cookie)
-        // V2 Extra Features (page 2)
-        const superBtn = document.getElementById('DH_Super_Activate_Btn');
-        superBtn.disabled = false;
-        superBtn.addEventListener('click', () => _activateFreeSuper('DH_Super_Activate_Btn', 'DH_Super_Activate_Lbl', 'DH_Super_Prog', 'DH_Super_Fill'));
-
-        // V1
-        const superV1Btn = document.getElementById('DH_V1_Super_Activate_Btn');
-        superV1Btn.disabled = false;
-        superV1Btn.addEventListener('click', () => _activateFreeSuper('DH_V1_Super_Activate_Btn', 'DH_V1_Super_Activate_Lbl', 'DH_V1_Super_Prog', 'DH_V1_Super_Fill'));
         document.getElementById('DH_V1_Settings_Btn').addEventListener('click', () => {
             _goPage(4);
             _initHideProfileToggle();
@@ -5540,6 +6242,9 @@
         document.getElementById('DH_Back_Btn').addEventListener('click', () => _goBack());
         document.getElementById('DH_Shop_Btn').addEventListener('click', () => _goPage(3));
         document.getElementById('DH_Shop_Back_Btn').addEventListener('click', () => _goBack());
+        document.getElementById('DH_LB_Nav_Btn').addEventListener('click', () => _goPage(11));
+        document.getElementById('DH_LB_Back_Btn').addEventListener('click', () => _goBack());
+        document.getElementById('DH_React_Back_Btn').addEventListener('click', () => _goBack());
         document.getElementById('DH_Settings_Back_Btn').addEventListener('click', () => {
             _initHideProfileToggle();
             _goBack();
